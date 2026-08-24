@@ -1,9 +1,9 @@
 "use client";
-import { Mail, Lock, ArrowRight, ShieldCheck, User } from "lucide-react";
+import { ArrowRight, Lock, Mail } from "lucide-react";
 
-import { FaLinkedinIn } from "react-icons/fa";
-import Link from "next/link";
 import { Logo } from "@/components/Logo/Logo";
+import Link from "next/link";
+import { FaLinkedinIn } from "react-icons/fa";
 
 export default function LoginPage() {
   return (

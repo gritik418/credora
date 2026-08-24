@@ -1,20 +1,17 @@
 "use client";
-import React from "react";
 import {
-  Mail,
-  Lock,
-  User,
   ArrowRight,
-  ShieldCheck,
-  Building2,
   CheckCircle2,
-  Users,
+  Lock,
+  Mail,
+  ShieldCheck,
   Sparkles,
+  User,
 } from "lucide-react";
 
-import { FaLinkedinIn } from "react-icons/fa";
-import Link from "next/link";
 import { Logo } from "@/components/Logo/Logo";
+import Link from "next/link";
+import { FaLinkedinIn } from "react-icons/fa";
 
 export default function RegisterPage() {
   return (
