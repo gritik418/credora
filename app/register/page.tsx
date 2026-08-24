@@ -9,6 +9,7 @@ import {
   Building2,
   CheckCircle2,
   Users,
+  Sparkles,
 } from "lucide-react";
 
 import { FaLinkedinIn } from "react-icons/fa";
@@ -49,43 +50,49 @@ export default function RegisterPage() {
               <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.15)] group-hover:border-primary/40 group-hover:scale-105 transition-all duration-300">
                 <CheckCircle2 className="w-6 h-6 text-primary" />
               </div>
-              <div className="">
+
+              <div>
                 <h3 className="font-bold text-lg text-white mb-1 group-hover:text-primary transition-colors">
-                  Verified Experience
+                  Build Your Professional Identity
                 </h3>
+
                 <p className="text-slate-400 leading-relaxed font-medium text-sm">
-                  Every profile is authenticated, ensuring a network built on
-                  trust and 100% verified credentials.
+                  Create a profile that captures your experience, contributions,
+                  skills, and professional journey.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-5 group cursor-default">
               <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.15)] group-hover:border-primary/40 group-hover:scale-105 transition-all duration-300">
-                <Building2 className="w-6 h-6 text-primary" />
+                <ShieldCheck className="w-6 h-6 text-primary" />
               </div>
-              <div className="">
+
+              <div>
                 <h3 className="font-bold text-lg text-white mb-1 group-hover:text-primary transition-colors">
-                  Organization Access
+                  Make Your Experience Verifiable
                 </h3>
+
                 <p className="text-slate-400 leading-relaxed font-medium text-sm">
-                  Seamlessly connect with your company and colleagues in a
-                  secure, verified environment.
+                  Build credibility with a professional history connected to the
+                  organizations and work that shaped your career.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-5 group cursor-default">
               <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.15)] group-hover:border-primary/40 group-hover:scale-105 transition-all duration-300">
-                <Users className="w-6 h-6 text-primary" />
+                <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <div className="">
+
+              <div>
                 <h3 className="font-bold text-lg text-white mb-1 group-hover:text-primary transition-colors">
-                  Exclusive Network
+                  Unlock Your Next Opportunity
                 </h3>
+
                 <p className="text-slate-400 leading-relaxed font-medium text-sm">
-                  Join a curated community of top-tier professionals and unlock
-                  new career opportunities.
+                  Turn your verified experience into a stronger professional
+                  presence and discover new opportunities.
                 </p>
               </div>
             </div>
@@ -101,7 +108,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="mb-10 text-center lg:text-left">
-            <h2 className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
+            <h2 className="text-4xl font-extrabold text-foreground mb-3 tracking-tight">
               Create your account
             </h2>
             <p className="text-muted-foreground font-medium">
@@ -185,7 +192,7 @@ export default function RegisterPage() {
                   htmlFor="email"
                   className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 pl-1"
                 >
-                  Work Email Address
+                  Email Address
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground/60 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300">
@@ -243,9 +250,9 @@ export default function RegisterPage() {
 
             <button
               type="button"
-              className="w-full group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 mt-8 active:scale-[0.98] hover:-translate-y-0.5"
+              className="w-full cursor-pointer group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 mt-8 active:scale-[0.98] hover:-translate-y-0.5"
             >
-              Create Account
+              Agree & Join
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </form>
@@ -255,13 +262,9 @@ export default function RegisterPage() {
             <a href="#" className="font-bold text-primary hover:underline">
               User Agreement
             </a>
-            ,{" "}
+            {" and "}
             <a href="#" className="font-bold text-primary hover:underline">
               Privacy Policy
-            </a>
-            , and{" "}
-            <a href="#" className="font-bold text-primary hover:underline">
-              Cookie Policy
             </a>
             .
           </p>
