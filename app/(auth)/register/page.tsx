@@ -20,7 +20,6 @@ import { FaLinkedinIn } from "react-icons/fa";
 import { useRegisterMutation } from "@/features/auth/auth.api";
 import RegisterSchema from "@/features/auth/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { da } from "zod/locales";
 
 export default function RegisterPage() {
   const [registerUser] = useRegisterMutation();
