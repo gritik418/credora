@@ -1,6 +1,7 @@
 "use client";
 import {
   ArrowRight,
+  BriefcaseBusiness,
   CheckCircle2,
   Lock,
   Mail,
@@ -10,10 +11,65 @@ import {
 } from "lucide-react";
 
 import { Logo } from "@/components/Logo/Logo";
+import { UserRole } from "@/features/auth/auth.interface";
+import RegisterDto from "@/features/auth/dto/register.dto";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { FaLinkedinIn } from "react-icons/fa";
 
+import { useRegisterMutation } from "@/features/auth/auth.api";
+import RegisterSchema from "@/features/auth/schemas/register.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { da } from "zod/locales";
+
 export default function RegisterPage() {
+  const [registerUser] = useRegisterMutation();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterDto>({
+    defaultValues: {
+      name: "",
+      email: "",
+      role: UserRole.EMPLOYEE,
+      password: "",
+      passwordConfirmation: "",
+    },
+    resolver: zodResolver(RegisterSchema),
+  });
+
+  const handleRegister = async (values: RegisterDto) => {
+    try {
+      const { data, error } = await registerUser(values);
+
+      // if(data){
+      //   if(data.success){
+      //     toast.success(data.message);
+      //     reset();
+      //     router.push("/");
+      //     return;
+      //   }
+      // }
+
+      console.log("data", data);
+      console.log("error", error);
+      // if(error) {
+      //   toast.error(error.data.message)
+      // }
+
+      // if(data) {
+      //   toast.success(data.message)
+      // }
+
+      // reset();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex w-full bg-background">
       {/* Left Section: Immersive Brand Hero (Hidden on Mobile) */}
@@ -162,7 +218,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-4" onSubmit={handleSubmit(handleRegister)}>
             <div className="space-y-5">
               <div className="space-y-2">
                 <label
@@ -176,12 +232,18 @@ export default function RegisterPage() {
                     <User className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("name")}
                     id="fullName"
                     type="text"
                     placeholder="John Doe"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.name && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -196,12 +258,50 @@ export default function RegisterPage() {
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("email")}
                     id="email"
                     type="email"
                     placeholder="you@company.com"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="role"
+                  className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 pl-1"
+                >
+                  Role
+                </label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground/60 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300">
+                    <BriefcaseBusiness className="h-5 w-5" />
+                  </div>
+                  <select
+                    {...register("role")}
+                    id="role"
+                    className="block w-full capitalize pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
+                  >
+                    {Object.values(UserRole)
+                      .filter((role) => role !== UserRole.ADMIN)
+                      .map((role) => (
+                        <option key={role} value={role} className="capitalize">
+                          {role.toLowerCase()}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                {errors.role && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.role.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -216,12 +316,18 @@ export default function RegisterPage() {
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("password")}
                     id="password"
                     type="password"
                     placeholder="••••••••"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -236,17 +342,24 @@ export default function RegisterPage() {
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("passwordConfirmation")}
                     id="confirmPassword"
                     type="password"
                     placeholder="••••••••"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.passwordConfirmation && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.passwordConfirmation.message}
+                  </p>
+                )}
               </div>
             </div>
 
             <button
-              type="button"
+              type="submit"
+              disabled={isSubmitting}
               className="w-full cursor-pointer group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 mt-8 active:scale-[0.98] hover:-translate-y-0.5"
             >
               Agree & Join
