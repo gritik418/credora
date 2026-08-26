@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo } from "@/components/Logo/Logo";
+import { Logo } from "@/components/logo/Logo";
 import Feature from "@/components/onboarding/Feature";
 import ProfileStep from "@/components/onboarding/ProfileStep";
 import StartStep from "@/components/onboarding/StartStep";
