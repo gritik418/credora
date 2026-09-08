@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Globe2 } from "lucide-react";
+import { MapPin, Globe2, Home, Map } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import { useRouter } from "next/navigation";
 
@@ -20,9 +20,35 @@ const LocationPage = () => {
     >
       <div className="space-y-5">
         <div>
+          <label className="mb-2 block text-sm text-white/70">City</label>
+
+          <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
+            <MapPin size={17} className="text-white/25" />
+
+            <input
+              placeholder="e.g. Gurugram"
+              className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm text-white/70">State</label>
+
+          <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
+            <Map size={17} className="text-white/25" />
+
+            <input
+              placeholder="e.g. Haryana"
+              className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
+            />
+          </div>
+        </div>
+
+        <div>
           <label className="mb-2 block text-sm text-white/70">Country</label>
 
-          <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.035] px-4">
+          <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
             <Globe2 size={17} className="text-white/25" />
 
             <select className="w-full bg-transparent py-3.5 text-sm outline-none">
@@ -33,26 +59,6 @@ const LocationPage = () => {
               <option>Canada</option>
             </select>
           </div>
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm text-white/70">City</label>
-
-          <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.035] px-4">
-            <MapPin size={17} className="text-white/25" />
-
-            <input
-              placeholder="e.g. Chandigarh"
-              className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
-            />
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-4">
-          <p className="text-sm">🌎 Open to remote work</p>
-          <p className="mt-1 text-xs text-white/30">
-            Let people know you're comfortable working remotely.
-          </p>
         </div>
       </div>
     </OnboardingShell>
