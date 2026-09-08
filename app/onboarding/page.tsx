@@ -1,150 +1,100 @@
 "use client";
 
-import { Logo } from "@/components/logo/Logo";
-import Feature from "@/components/onboarding/Feature";
-import ProfileStep from "@/components/onboarding/ProfileStep";
-import StartStep from "@/components/onboarding/StartStep";
-import WelcomeStep from "@/components/onboarding/WelcomeStep";
-import { Sparkles, UserRound } from "lucide-react";
 import { useState } from "react";
+import { Camera, User } from "lucide-react";
+import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import { useRouter } from "next/navigation";
 
-const steps = [
-  {
-    id: 1,
-    title: "Welcome",
-    description: "Let's get your professional identity ready.",
-  },
-  {
-    id: 2,
-    title: "Your Profile",
-    description: "Tell us how you want to be represented.",
-  },
-  {
-    id: 3,
-    title: "Get Started",
-    description: "Choose how you want to begin with Credora.",
-  },
-];
+const BasicInfoPage = () => {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
-const OnboardingPage = () => {
-  const [step, setStep] = useState(1);
-
-  const progress = (step / steps.length) * 100;
-
-  const nextStep = () => {
-    if (step < steps.length) {
-      setStep((current) => current + 1);
-    }
-  };
-
-  const previousStep = () => {
-    if (step > 1) {
-      setStep((current) => current - 1);
-    }
+  const handleOnContinue = () => {
+    router.push("/onboarding/professional");
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="grid min-h-screen lg:grid-cols-2">
-        {/* Left Panel */}
-        <aside className="relative hidden overflow-hidden bg-secondary lg:flex lg:flex-col lg:justify-between lg:p-12">
-          {/* Decorative gradients */}
-          <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
+    <OnboardingShell
+      currentStep="BASIC_INFO"
+      title="Let's start with the basics."
+      description="Create the foundation of your professional identity on Credora."
+      onContinue={handleOnContinue}
+    >
+      <div className="space-y-7">
+        {/* Avatar */}
+        <div className="flex items-center gap-5">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+            <User className="text-white/25" size={30} />
 
-          <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+            <button className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-lg border border-[#080b14] bg-indigo-500">
+              <Camera size={14} />
+            </button>
+          </div>
 
-          {/* Logo */}
-          <Logo />
-
-          {/* Main Content */}
-          <div className="relative max-w-lg">
-            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10">
-              <UserRound className="h-6 w-6 text-primary" />
-            </div>
-
-            <h1 className="text-4xl font-semibold leading-tight tracking-tight text-secondary-foreground xl:text-5xl">
-              Your work tells your
-              <span className="block text-primary"> real story.</span>
-            </h1>
-
-            <p className="mt-6 text-base leading-7 text-muted-foreground">
-              Credora helps you build a verified record of the work,
-              contributions, and experiences that define your professional
-              journey.
+          <div>
+            <p className="text-sm font-medium">Profile photo</p>
+            <p className="mt-1 text-xs text-white/35">
+              A professional photo works best.
             </p>
+          </div>
+        </div>
 
-            {/* Feature Cards */}
-            <div className="mt-10 space-y-4">
-              <Feature
-                number="01"
-                title="Real work"
-                description="Track projects, tasks, and meaningful contributions."
-              />
+        {/* Name */}
+        <div>
+          <label className="mb-2 block text-sm text-white/70">Full Name</label>
 
-              <Feature
-                number="02"
-                title="Verified experience"
-                description="Build a professional record backed by real organizations."
-              />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Ritik Gupta"
+            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.035] px-4 py-3.5 text-sm outline-none transition placeholder:text-white/20 focus:border-indigo-500/60"
+          />
+        </div>
 
-              <Feature
-                number="03"
-                title="Your identity"
-                description="Own a professional profile that grows with your work."
-              />
-            </div>
+        {/* Username */}
+        <div>
+          <label className="mb-2 block text-sm text-white/70">Username</label>
+
+          <div className="flex overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.035] cursor-default">
+            <span className="flex items-center border-r border-white/[0.06] px-4 text-sm text-white/30">
+              credora.me/
+            </span>
+
+            <input
+              value={username}
+              readOnly
+              placeholder="username"
+              className="min-w-0 cursor-default outline-0 flex-1 bg-transparent px-4 py-3.5 text-sm outline-none placeholder:text-white/20"
+            />
           </div>
 
-          <p className="relative text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Credora. Your work. Your story.
+          <p className="mt-2 text-xs text-white/25">
+            This will be your public Credora URL.
           </p>
-        </aside>
+        </div>
 
-        {/* Right Panel */}
-        <section className="flex min-h-screen items-center justify-center p-6 sm:p-10 lg:p-16">
-          <div className="w-full max-w-xl">
-            {/* Mobile Logo */}
-            <div className="mb-10 flex items-center gap-3 lg:hidden">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Sparkles className="h-5 w-5" />
-              </div>
+        {/* Email */}
+        <div>
+          <label className="mb-2 block text-sm text-white/70">Email</label>
 
-              <span className="text-xl font-semibold">Credora</span>
-            </div>
-
-            {/* Progress */}
-            <div className="mb-10">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Step {step} of {steps.length}
-                </span>
-
-                <span className="text-sm font-medium text-primary">
-                  {Math.round(progress)}% complete
-                </span>
-              </div>
-
-              <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Step Content */}
-            {step === 1 && <WelcomeStep onNext={nextStep} />}
-
-            {step === 2 && (
-              <ProfileStep onNext={nextStep} onBack={previousStep} />
-            )}
-
-            {step === 3 && <StartStep onBack={previousStep} />}
+          <div className="flex overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.035]">
+            <input
+              readOnly
+              value={email}
+              placeholder="Email address"
+              className="min-w-0 cursor-default border-0 flex-1 bg-transparent px-4 py-3.5 text-sm focus:outline-none placeholder:text-white/20"
+            />
           </div>
-        </section>
+
+          <p className="mt-2 text-xs text-white/25">
+            We will send you important notifications on this email address.
+          </p>
+        </div>
       </div>
-    </main>
+    </OnboardingShell>
   );
 };
 
-export default OnboardingPage;
+export default BasicInfoPage;

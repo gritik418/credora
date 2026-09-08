@@ -1,7 +1,7 @@
 "use client";
 import {
   ArrowRight,
-  BriefcaseBusiness,
+  AtSign,
   CheckCircle2,
   Lock,
   Mail,
@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 import { Logo } from "@/components/logo/Logo";
-import { UserRole } from "@/features/auth/auth.interface";
 import RegisterDto from "@/features/auth/dto/register.dto";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -33,7 +32,7 @@ export default function RegisterPage() {
     defaultValues: {
       name: "",
       email: "",
-      role: UserRole.EMPLOYEE,
+      username: "",
       password: "",
       passwordConfirmation: "",
     },
@@ -273,32 +272,25 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <label
-                  htmlFor="role"
+                  htmlFor="username"
                   className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 pl-1"
                 >
-                  Role
+                  Username
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground/60 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300">
-                    <BriefcaseBusiness className="h-5 w-5" />
+                    <AtSign className="h-5 w-5" />
                   </div>
-                  <select
-                    {...register("role")}
-                    id="role"
-                    className="block w-full capitalize pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
-                  >
-                    {Object.values(UserRole)
-                      .filter((role) => role !== UserRole.ADMIN)
-                      .map((role) => (
-                        <option key={role} value={role} className="capitalize">
-                          {role.toLowerCase()}
-                        </option>
-                      ))}
-                  </select>
+                  <input
+                    {...register("username")}
+                    id="username"
+                    placeholder="username"
+                    className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
+                  />
                 </div>
-                {errors.role && (
+                {errors.username && (
                   <p className="text-xs text-red-500 mt-1">
-                    {errors.role.message}
+                    {errors.username.message}
                   </p>
                 )}
               </div>

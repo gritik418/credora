@@ -148,19 +148,19 @@ export default function LoginPage() {
             <div className="space-y-5">
               <div className="space-y-2">
                 <label
-                  htmlFor="email"
+                  htmlFor="identifier"
                   className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 pl-1"
                 >
-                  Email Address
+                  Email or Username
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground/60 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300">
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
-                    id="email"
-                    type="email"
-                    placeholder="you@company.com"
+                    id="identifier"
+                    type="text"
+                    placeholder="Email or username"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>

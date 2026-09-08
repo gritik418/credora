@@ -5,7 +5,15 @@ const RegisterSchema = z
   .object({
     name: z.string().trim().min(3, "Name must be at least 3 characters long."),
     email: z.email("Please enter a valid email address.").toLowerCase(),
-    role: z.enum(UserRole).default(UserRole.EMPLOYEE).optional(),
+    username: z
+      .string()
+      .trim()
+      .min(3, "Username must be at least 3 characters long.")
+      .max(40, "Username can't exceed 40 characters.")
+      .regex(
+        /^[a-zA-Z0-9_]*$/,
+        "Username can only contain letters, numbers and underscores.",
+      ),
     password: z
       .string()
       .min(1, "Password is required")
