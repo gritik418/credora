@@ -45,7 +45,7 @@ const SkillsPage = () => {
     >
       <div className="space-y-6">
         {/* Search */}
-        <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.035] px-4">
+        <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
           <Search size={17} className="text-white/25" />
 
           <input
@@ -87,7 +87,7 @@ const SkillsPage = () => {
               <button
                 key={skill}
                 onClick={() => addSkill(skill)}
-                className="rounded-lg border border-white/[0.08] bg-white/[0.025] px-3 py-2 text-sm text-white/40 transition hover:border-white/20 hover:text-white"
+                className="rounded-lg border border-white/8 bg-white/[0.035] px-3 py-2 text-sm text-white/40 transition hover:border-white/20 hover:text-white"
               >
                 + {skill}
               </button>
