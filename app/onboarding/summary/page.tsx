@@ -27,14 +27,14 @@ const SummaryPage = () => {
         </div>
 
         <div className="relative">
-          <FileText size={17} className="absolute left-4 top-4 text-white/20" />
+          <FileText size={17} className="absolute top-5 left-4 text-white/20" />
 
           <textarea
             value={summary}
             maxLength={500}
             onChange={(e) => setSummary(e.target.value)}
             placeholder="Tell people what you do, what you're passionate about, and what you're building..."
-            className="min-h-[220px] w-full resize-none rounded-xl border border-white/[0.08] bg-white/[0.035] px-11 py-4 text-sm leading-6 outline-none placeholder:text-white/20 focus:border-indigo-500/60"
+            className="min-h-55 w-full resize-none rounded-xl border border-white/8 bg-white/[0.035] px-11 py-4 text-sm leading-6 outline-none placeholder:text-white/20 focus:border-indigo-500/60"
           />
         </div>
 
