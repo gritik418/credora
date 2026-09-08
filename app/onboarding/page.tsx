@@ -25,7 +25,7 @@ const BasicInfoPage = () => {
       <div className="space-y-7">
         {/* Avatar */}
         <div className="flex items-center gap-5">
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/4">
             <User className="text-white/25" size={30} />
 
             <button className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-lg border border-[#080b14] bg-indigo-500">
@@ -49,7 +49,7 @@ const BasicInfoPage = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ritik Gupta"
-            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.035] px-4 py-3.5 text-sm outline-none transition placeholder:text-white/20 focus:border-indigo-500/60"
+            className="w-full rounded-xl border border-white/8 bg-white/[0.035] px-4 py-3.5 text-sm outline-none transition placeholder:text-white/20 focus:border-indigo-500/60"
           />
         </div>
 
@@ -57,8 +57,8 @@ const BasicInfoPage = () => {
         <div>
           <label className="mb-2 block text-sm text-white/70">Username</label>
 
-          <div className="flex overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.035] cursor-default">
-            <span className="flex items-center border-r border-white/[0.06] px-4 text-sm text-white/30">
+          <div className="flex overflow-hidden rounded-xl border border-white/8 bg-white/[0.035] cursor-default">
+            <span className="flex items-center border-r border-white/6 px-4 text-sm text-white/30">
               credora.me/
             </span>
 
@@ -79,7 +79,7 @@ const BasicInfoPage = () => {
         <div>
           <label className="mb-2 block text-sm text-white/70">Email</label>
 
-          <div className="flex overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.035]">
+          <div className="flex overflow-hidden rounded-xl border border-white/8 bg-white/[0.035]">
             <input
               readOnly
               value={email}
