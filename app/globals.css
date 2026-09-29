@@ -1,65 +1,77 @@
 @import "tailwindcss";
 
 :root {
-  /* Deep Navy + Indigo (Light Mode) */
-  --background: #f0f4f8; /* Very soft cool gray */
-  --foreground: #0A192F; /* Deep Navy */
-  
+  --background: #f0f4f8;
+  --foreground: #0a192f;
   --card: #ffffff;
-  --card-foreground: #0A192F; /* Deep Navy */
-
-  --primary: #4F46E5; /* Indigo 600 - Trust, Tech, Professional */
+  --card-foreground: #0a192f;
+  --primary: #4f46e5;
   --primary-foreground: #ffffff;
-  
-  --secondary: #0A192F; /* Deep Navy */
+  --secondary: #0a192f;
   --secondary-foreground: #ffffff;
-
-  --muted: #E2E8F0;
+  --muted: #e2e8f0;
   --muted-foreground: #475569;
+  --border: #cbd5e1;
 
-  --border: #CBD5E1;
+  --credora-bg: #050505;
+  --credora-surface: #141414;
+  --credora-text: #ffffff;
+
+  --credora-blue: #3b82f6;
+  --credora-indigo: #6366f1;
+  --credora-violet: #7c3aed;
+
+  --credora-muted: #18181b;
+  --credora-muted-text: #a1a1aa;
+
+  --credora-border: rgba(255, 255, 255, 0.08);
+
+  --credora-success: #10b981;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  
   --color-border: var(--border);
-  
+
+  --color-credora-bg: var(--credora-bg);
+  --color-credora-surface: var(--credora-surface);
+  --color-credora-text: var(--credora-text);
+
+  --color-credora-blue: var(--credora-blue);
+  --color-credora-indigo: var(--credora-indigo);
+  --color-credora-violet: var(--credora-violet);
+
+  --color-credora-muted: var(--credora-muted);
+  --color-credora-muted-text: var(--credora-muted-text);
+
+  --color-credora-border: var(--credora-border);
+  --color-credora-success: var(--credora-success);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Deep Navy + Indigo (Dark Mode) */
-    --background: #060B19; /* Very dark navy */
-    --foreground: #F8FAFC; 
-    
-    --card: #0A192F; /* Deep Navy */
-    --card-foreground: #F8FAFC;
-
-    --primary: #6366F1; /* Indigo 500 */
+    --background: #060b19;
+    --foreground: #f8fafc;
+    --card: #0a192f;
+    --card-foreground: #f8fafc;
+    --primary: #6366f1;
     --primary-foreground: #ffffff;
-    
-    --secondary: #1E293B;
-    --secondary-foreground: #F8FAFC;
-
-    --muted: #112240; /* Lighter Navy tint */
-    --muted-foreground: #94A3B8;
-
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --muted: #112240;
+    --muted-foreground: #94a3b8;
     --border: #233554;
   }
 }

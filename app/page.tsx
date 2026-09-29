@@ -1,44 +1,6 @@
-import Link from "next/link";
-
-export default function Home() {
+const Home = () => {
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans overflow-x-hidden relative selection:bg-blue-500/30">
-      {/* Background glows */}
-      <div className="absolute top-[-20vw] left-[-20vw] w-[60vw] h-[60vw] rounded-full bg-violet-900/20 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-[-10vw] right-[-10vw] w-[60vw] h-[60vw] rounded-full bg-blue-600/20 blur-[120px] pointer-events-none z-0" />
-
-      {/* Navigation */}
-      <nav className="relative z-10 flex justify-between items-center px-6 sm:px-16 py-6 backdrop-blur-md border-b border-white/5">
-        <div className="text-2xl font-bold tracking-tight bg-linear-to-br from-white to-zinc-400 bg-clip-text text-transparent flex items-center gap-3">
-          <div className="w-7 h-7 bg-linear-to-br from-blue-400 to-blue-600 rounded-lg shadow-lg shadow-blue-500/20" />
-          Credora
-        </div>
-        <div className="hidden sm:flex gap-8">
-          <Link
-            href="#features"
-            className="text-zinc-400 hover:text-white transition-colors text-sm font-medium"
-          >
-            Features
-          </Link>
-          <Link
-            href="#organizations"
-            className="text-zinc-400 hover:text-white transition-colors text-sm font-medium"
-          >
-            For Organizations
-          </Link>
-          <Link
-            href="#developers"
-            className="text-zinc-400 hover:text-white transition-colors text-sm font-medium"
-          >
-            For Developers
-          </Link>
-        </div>
-        <button className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-2.5 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5">
-          Sign In
-        </button>
-      </nav>
-
-      {/* Hero Section */}
+    <>
       <main className="relative z-10 flex flex-col items-center text-center px-4 pt-24 pb-20 sm:pt-32 sm:pb-24 max-w-4xl mx-auto">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
           <div className="inline-block bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 tracking-widest uppercase shadow-[0_0_20px_rgba(59,130,246,0.1)]">
@@ -69,9 +31,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Demo Section - Comparing Old vs New */}
       <section className="relative z-10 max-w-300 mx-auto mb-32 px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        {/* The Old Way */}
         <div className="group bg-[#141414]/60 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-1 opacity-70 grayscale-30 hover:grayscale-0 scale-[0.97] hover:scale-[0.98]">
           <div className="text-sm uppercase tracking-widest text-zinc-500 mb-8 font-bold flex items-center gap-2">
             The Old Way (Self-Reported)
@@ -226,6 +186,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
-}
+};
+
+export default Home;
