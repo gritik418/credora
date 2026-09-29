@@ -1,7 +1,7 @@
 "use client";
 import { ArrowRight, Lock, Mail } from "lucide-react";
 
-import { Logo } from "@/components/logo/Logo";
+import Logo from "@/components/logo/Logo";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
 

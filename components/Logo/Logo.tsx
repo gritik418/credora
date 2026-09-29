@@ -1,21 +1,43 @@
-import { Globe2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface LogoProps {
+  size: "base" | "small" | "large";
+  isIcon?: boolean;
   className?: string;
   href?: string;
 }
 
-export function Logo({ className = "", href = "/" }: LogoProps) {
+const getSize = (size: "base" | "small" | "large") => {
+  switch (size) {
+    case "base":
+      return "h-20 w-44";
+    case "small":
+      return "h-16 w-36";
+    case "large":
+      return "h-24 w-48";
+  }
+};
+
+const Logo = ({
+  size = "base",
+  className = "",
+  href = "/",
+  isIcon = false,
+}: LogoProps) => {
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-2.5 text-2xl font-bold tracking-tight text-foreground hover:opacity-80 transition-opacity ${className}`}
+      className={`inline-flex items-center gap-2.5 text-2xl font-bold tracking-tight transition-opacity hover:opacity-85 ${className} ${getSize(size)}`}
     >
-      <div className="p-2 bg-primary rounded-xl shadow-sm text-primary-foreground">
-        <Globe2 className="w-5 h-5" />
-      </div>
-      Credora
+      <Image
+        src={isIcon ? "/logo-icon.png" : "/logo.jpg"}
+        alt="logo"
+        height={400}
+        width={900}
+      />
     </Link>
   );
-}
+};
+
+export default Logo;

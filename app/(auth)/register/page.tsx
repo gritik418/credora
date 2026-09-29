@@ -10,7 +10,7 @@ import {
   User,
 } from "lucide-react";
 
-import { Logo } from "@/components/logo/Logo";
+import Logo from "@/components/logo/Logo";
 import RegisterDto from "@/features/auth/dto/register.dto";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
