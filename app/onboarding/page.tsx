@@ -1,15 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Camera, User } from "lucide-react";
-import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import { useRouter } from "next/navigation";
+import OnboardingShell from "@/components/onboarding/OnboardingShell";
 
 const BasicInfoPage = () => {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setAvatar(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
 
   const handleOnContinue = () => {
     router.push("/onboarding/professional");
@@ -22,75 +43,112 @@ const BasicInfoPage = () => {
       description="Create the foundation of your professional identity on Credora."
       onContinue={handleOnContinue}
     >
-      <div className="space-y-7">
-        {/* Avatar */}
+      <div className="space-y-8">
         <div className="flex items-center gap-5">
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/4">
-            <User className="text-white/25" size={30} />
+          <div className="relative">
+            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#51566343]">
+              {avatarPreview ? (
+                <img
+                  src={avatarPreview}
+                  alt="Profile preview"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <User size={28} className="text-white/25" />
+              )}
+            </div>
 
-            <button className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-lg border border-[#080b14] bg-indigo-500">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute cursor-pointer -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-lg border-[3px] border-[#050505] bg-credora-blue text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-500"
+            >
               <Camera size={14} />
             </button>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium">Profile photo</p>
-            <p className="mt-1 text-xs text-white/35">
-              A professional photo works best.
-            </p>
-          </div>
-        </div>
-
-        {/* Name */}
-        <div>
-          <label className="mb-2 block text-sm text-white/70">Full Name</label>
-
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Ritik Gupta"
-            className="w-full rounded-xl border border-white/8 bg-white/[0.035] px-4 py-3.5 text-sm outline-none transition placeholder:text-white/20 focus:border-indigo-500/60"
-          />
-        </div>
-
-        {/* Username */}
-        <div>
-          <label className="mb-2 block text-sm text-white/70">Username</label>
-
-          <div className="flex overflow-hidden rounded-xl border border-white/8 bg-white/[0.035] cursor-default">
-            <span className="flex items-center border-r border-white/6 px-4 text-sm text-white/30">
-              credora.me/
-            </span>
 
             <input
-              value={username}
-              readOnly
-              placeholder="username"
-              className="min-w-0 cursor-default outline-0 flex-1 bg-transparent px-4 py-3.5 text-sm outline-none placeholder:text-white/20"
+              ref={fileInputRef}
+              id="avatar"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
             />
           </div>
 
-          <p className="mt-2 text-xs text-white/25">
-            This will be your public Credora URL.
-          </p>
+          <div>
+            <p className="text-sm font-medium text-white">Profile photo</p>
+
+            <p className="mt-1 text-xs text-white/40">
+              Use a clear, professional photo.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-2 cursor-pointer text-xs font-medium text-credora-blue transition hover:text-blue-400"
+            >
+              {avatar ? "Change photo" : "Upload photo"}
+            </button>
+          </div>
         </div>
 
-        {/* Email */}
-        <div>
-          <label className="mb-2 block text-sm text-white/70">Email</label>
+        <div className="h-px bg-white/[0.07]" />
 
-          <div className="flex overflow-hidden rounded-xl border border-white/8 bg-white/[0.035]">
+        <div className="space-y-6">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/75">
+              Full name
+            </label>
+
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="John Doe"
+              className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 hover:border-credora-blue/60 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/75">
+              Username
+            </label>
+
+            <div className="flex h-12 overflow-hidden rounded-xl border border-white/10 transition-all">
+              <span className="flex items-center border-r border-white/[0.07] bg-white/2.5 px-4 text-sm text-white/30">
+                credora.me/
+              </span>
+
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="username"
+                readOnly
+                className="h-12 w-full cursor-default rounded-r-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25"
+              />
+            </div>
+
+            <p className="mt-2 text-xs text-white/30">
+              Your unique public profile URL.
+            </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-white/75">
+              Email
+            </label>
+
             <input
               readOnly
               value={email}
               placeholder="Email address"
-              className="min-w-0 cursor-default border-0 flex-1 bg-transparent px-4 py-3.5 text-sm focus:outline-none placeholder:text-white/20"
+              className="h-12 w-full cursor-default rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25"
             />
-          </div>
 
-          <p className="mt-2 text-xs text-white/25">
-            We will send you important notifications on this email address.
-          </p>
+            <p className="mt-2 text-xs text-white/30">
+              Used for important account notifications.
+            </p>
+          </div>
         </div>
       </div>
     </OnboardingShell>
