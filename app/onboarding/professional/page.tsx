@@ -13,7 +13,7 @@ const ProfessionalPage = () => {
   const [headline, setHeadline] = useState("");
 
   const handleOnContinue = () => {
-    router.push("/onboarding/summary");
+    router.push("/onboarding/experience");
   };
 
   return (

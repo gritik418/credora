@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 const steps = [
   { key: "BASIC_INFO", label: "Basics" },
   { key: "PROFESSIONAL", label: "Professional" },
+  { key: "EXPERIENCE", label: "Experience" },
   { key: "SUMMARY", label: "Summary" },
   { key: "LOCATION", label: "Location" },
   { key: "SKILLS", label: "Skills" },
