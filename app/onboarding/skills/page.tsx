@@ -76,7 +76,6 @@ const SkillsPage = () => {
           </div>
         </div>
 
-        {/* Suggestions */}
         <div>
           <p className="mb-3 text-xs uppercase tracking-wider text-white/25">
             Popular skills

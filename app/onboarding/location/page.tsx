@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Globe2, Home, Map } from "lucide-react";
+import { MapPin, Globe2, Map } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import { useRouter } from "next/navigation";
 

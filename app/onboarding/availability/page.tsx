@@ -1,82 +1,111 @@
 "use client";
 
 import { useState } from "react";
-import { BriefcaseBusiness, Clock3, Home } from "lucide-react";
+import { BriefcaseBusiness, UsersRound } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 
-const options = [
-  {
-    id: "full-time",
-    title: "Full-time",
-    description: "I'm looking for a full-time opportunity.",
-    icon: BriefcaseBusiness,
-  },
-  {
-    id: "part-time",
-    title: "Part-time",
-    description: "I'm open to part-time opportunities.",
-    icon: Clock3,
-  },
-  {
-    id: "remote",
-    title: "Remote",
-    description: "I'm specifically looking for remote work.",
-    icon: Home,
-  },
-];
-
 const AvailabilityPage = () => {
-  const [selected, setSelected] = useState("full-time");
+  const [isOpenToWork, setIsOpenToWork] = useState(false);
+  const [isOpenToCollaborate, setIsOpenToCollaborate] = useState(false);
+
+  const handleOnContinue = () => {
+    console.log({
+      isOpenToWork,
+      isOpenToCollaborate,
+    });
+  };
 
   return (
     <OnboardingShell
       currentStep="AVAILABILITY"
-      title="What are you looking for?"
-      description="Tell us about your availability and the kind of opportunities you're open to."
+      title="What are you open to?"
+      description="Let people know what kind of professional opportunities you're interested in."
       continueText="Finish onboarding"
-      onContinue={() => console.log(selected)}
+      onContinue={handleOnContinue}
     >
       <div className="space-y-3">
-        {options.map((option) => {
-          const Icon = option.icon;
-          const active = selected === option.id;
+        <button
+          type="button"
+          onClick={() => setIsOpenToWork((prev) => !prev)}
+          className={`flex w-full cursor-pointer items-center gap-4 rounded-2xl border p-5 text-left transition ${
+            isOpenToWork
+              ? "border-indigo-500/50 bg-indigo-500/10"
+              : "border-white/8 bg-white/2.5 hover:border-white/15"
+          }`}
+        >
+          <div
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+              isOpenToWork
+                ? "bg-indigo-500 text-white"
+                : "bg-white/5 text-white/30"
+            }`}
+          >
+            <BriefcaseBusiness size={19} />
+          </div>
 
-          return (
-            <button
-              key={option.id}
-              onClick={() => setSelected(option.id)}
-              className={`flex w-full items-center gap-4 rounded-2xl border p-5 text-left transition ${
-                active
-                  ? "border-indigo-500/50 bg-indigo-500/10"
-                  : "border-white/[0.08] bg-white/[0.025] hover:border-white/15"
+          <div className="flex-1">
+            <p className="text-sm font-medium text-white">Open to work</p>
+
+            <p className="mt-1 text-xs text-white/35">
+              I'm open to full-time, part-time, or other job opportunities.
+            </p>
+          </div>
+
+          <div
+            className={`relative h-5 w-9 shrink-0 rounded-full transition ${
+              isOpenToWork ? "bg-indigo-500" : "bg-white/10"
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
+                isOpenToWork ? "translate-x-4" : "translate-x-0.5"
               }`}
-            >
-              <div
-                className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                  active
-                    ? "bg-indigo-500 text-white"
-                    : "bg-white/[0.05] text-white/30"
-                }`}
-              >
-                <Icon size={19} />
-              </div>
+            />
+          </div>
+        </button>
 
-              <div className="flex-1">
-                <p className="text-sm font-medium">{option.title}</p>
+        <button
+          type="button"
+          onClick={() => setIsOpenToCollaborate((prev) => !prev)}
+          className={`flex w-full cursor-pointer items-center gap-4 rounded-2xl border p-5 text-left transition ${
+            isOpenToCollaborate
+              ? "border-indigo-500/50 bg-indigo-500/10"
+              : "border-white/8 bg-white/2.5 hover:border-white/15"
+          }`}
+        >
+          <div
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+              isOpenToCollaborate
+                ? "bg-indigo-500 text-white"
+                : "bg-white/5 text-white/30"
+            }`}
+          >
+            <UsersRound size={19} />
+          </div>
 
-                <p className="mt-1 text-xs text-white/35">
-                  {option.description}
-                </p>
-              </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-white">
+              Open to collaborate
+            </p>
 
-              <div
-                className={`h-4 w-4 rounded-full border ${
-                  active ? "border-indigo-400 bg-indigo-400" : "border-white/20"
-                }`}
-              />
-            </button>
-          );
-        })}
+            <p className="mt-1 text-xs text-white/35">
+              I'm open to collaborating on projects, ideas, and professional
+              opportunities.
+            </p>
+          </div>
+
+          <div
+            className={`relative h-5 w-9 shrink-0 rounded-full transition ${
+              isOpenToCollaborate ? "bg-indigo-500" : "bg-white/10"
+            }`}
+          >
+            <div
+              className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
+                isOpenToCollaborate ? "translate-x-4" : "translate-x-0.5"
+              }`}
+            />
+          </div>
+        </button>
       </div>
     </OnboardingShell>
   );
