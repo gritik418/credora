@@ -3,16 +3,15 @@
 import { useState } from "react";
 import { BriefcaseBusiness, UsersRound } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import { useRouter } from "next/navigation";
 
 const AvailabilityPage = () => {
   const [isOpenToWork, setIsOpenToWork] = useState(false);
   const [isOpenToCollaborate, setIsOpenToCollaborate] = useState(false);
+  const router = useRouter();
 
   const handleOnContinue = () => {
-    console.log({
-      isOpenToWork,
-      isOpenToCollaborate,
-    });
+    router.push("/onboarding/completed");
   };
 
   return (

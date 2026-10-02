@@ -48,6 +48,25 @@ const OnboardingShell = ({
 
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-6 sm:px-8 lg:px-10">
         <div className="pt-6 sm:pt-8">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-credora-blue shadow-[0_0_12px_rgba(59,130,246,0.7)]" />
+                <span className="text-lg font-semibold uppercase tracking-[0.18em] text-white/70">
+                  Credora
+                </span>
+              </div>
+
+              <p className="mt-1.5 font-semibold text-sm text-white/35">
+                Build your professional identity
+              </p>
+            </div>
+
+            <span className="rounded-full border border-white/8 font-semibold bg-white/3 px-3 py-1.5 text-[10px] uppercase tracking-wider text-white/55">
+              ONBOARDING
+            </span>
+          </div>
+
           <div className="h-1 overflow-hidden rounded-full bg-white/6">
             <div
               className="h-full rounded-full bg-linear-to-r from-credora-blue via-credora-indigo to-credora-violet transition-all duration-500"
