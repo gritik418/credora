@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import React from "react";
-import PageWrapper from "./PageWrapper";
 import Navbar from "../navbar/Navbar";
+import PageWrapper from "./PageWrapper";
 
 const AUTH_PAGES = ["/login", "/register"];
 
