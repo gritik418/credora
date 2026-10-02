@@ -4,10 +4,8 @@ import {
   Activity,
   BriefcaseBusiness,
   FolderKanban,
-  Globe,
   Mail,
   MapPin,
-  Share2,
 } from "lucide-react";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 
@@ -24,38 +22,14 @@ import ActivitySection from "./ActivitySection";
 
 const IdentityPage = ({ username }: { username: string }) => {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       {/* Ambient background */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/2 top-0 h-125 w-200 -translate-x-1/2 rounded-full bg-primary/8 blur-[140px]" />
         <div className="absolute right-0 top-150 h-100 w-100 rounded-full bg-indigo-500/5 blur-[120px]" />
       </div>
 
-      <div className="mx-auto w-full max-w-360 px-4 py-6 sm:px-6 lg:px-8">
-        {/* Top navigation */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-              <span className="text-sm font-bold">C</span>
-            </div>
-
-            <span className="text-sm font-semibold tracking-tight">
-              Credora
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="hidden items-center gap-2 rounded-xl border border-border bg-card/70 px-3 py-2 text-sm font-medium transition hover:bg-muted sm:flex">
-              <Share2 className="h-4 w-4" />
-              Share
-            </button>
-
-            <button className="rounded-xl border border-border bg-card/70 p-2 transition hover:bg-muted">
-              <Globe className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
+      <div className="mx-auto w-full max-w-360 px-4 py-6 sm:px-6 lg:px-0">
         {/* Identity header */}
         <IdentityHeader username={username} />
 

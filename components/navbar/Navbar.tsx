@@ -9,8 +9,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 border-b border-white/5 bg-transparent px-6 py-0 backdrop-blur-md sm:px-16">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+    <nav className="relative z-50 border-b border-white/5 bg-transparent px-6 py-0 backdrop-blur-md sm:px-0">
+      <div className="mx-auto flex max-w-360 items-center justify-between">
         <Logo size="base" />
 
         <div className="hidden items-center gap-8 sm:flex">

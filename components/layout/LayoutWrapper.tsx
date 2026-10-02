@@ -5,7 +5,7 @@ import React from "react";
 import Navbar from "../navbar/Navbar";
 import PageWrapper from "./PageWrapper";
 
-const AUTH_PAGES = ["/login", "/register"];
+const AUTH_PAGES = ["/login", "/register", "/verify-email"];
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();

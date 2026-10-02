@@ -23,6 +23,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const RegisterPage = () => {
   const isSocialLoginAllowed: boolean = false;
   const [registerUser] = useRegisterMutation();
+  const isEmailVerificationRequired: boolean =
+    process.env.NEXT_PUBLIC_EMAIL_VERIFICATION_REQUIRED === "true";
 
   const {
     register,
