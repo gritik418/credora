@@ -101,10 +101,10 @@ const RegisterSuccessPage = () => {
             </button>
 
             <Link
-              href="/login"
+              href="/register"
               className="w-full flex items-center justify-center py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-primary/30 transition-all duration-300 "
             >
-              Continue to Sign In
+              Back to Register
             </Link>
           </div>
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed">

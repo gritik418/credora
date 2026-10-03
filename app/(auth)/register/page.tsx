@@ -19,10 +19,15 @@ import { FaLinkedinIn } from "react-icons/fa";
 import { useRegisterMutation } from "@/features/auth/auth.api";
 import RegisterSchema from "@/features/auth/schemas/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const RegisterPage = () => {
-  const isSocialLoginAllowed: boolean = false;
+  const router = useRouter();
   const [registerUser] = useRegisterMutation();
+
+  const isSocialLoginAllowed: boolean = false;
   const isEmailVerificationRequired: boolean =
     process.env.NEXT_PUBLIC_EMAIL_VERIFICATION_REQUIRED === "true";
 
@@ -42,34 +47,40 @@ const RegisterPage = () => {
     resolver: zodResolver(RegisterSchema),
   });
 
-  const handleRegister = async (values: RegisterDto) => {
+  const handleRegister = async (data: RegisterDto) => {
     try {
-      const { data, error } = await registerUser(values);
+      const result = await registerUser(data).unwrap();
 
-      // if(data){
-      //   if(data.success){
-      //     toast.success(data.message);
-      //     reset();
-      //     router.push("/");
-      //     return;
-      //   }
-      // }
+      if (!result.success) {
+        toast.error(
+          result.message || "Something went wrong. Please try again later.",
+        );
+      } else {
+        toast.success(result.message || "Account created successfully.");
 
-      console.log("data", data);
-      console.log("error", error);
-      // if(error) {
-      //   toast.error(error.data.message)
-      // }
+        if (isEmailVerificationRequired) {
+          localStorage.setItem("registeredEmail", data.email);
 
-      // if(data) {
-      //   toast.success(data.message)
-      // }
+          router.push("/register/success");
+        } else {
+          router.push("/login");
+        }
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
 
-      // reset();
-    } catch (error) {
-      console.error(error);
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      reset();
     }
   };
+
+  useEffect(() => {
+    localStorage.removeItem("registeredEmail");
+  }, []);
 
   return (
     <div className="min-h-screen flex w-full bg-background">

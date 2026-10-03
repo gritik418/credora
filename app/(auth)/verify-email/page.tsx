@@ -12,7 +12,7 @@ const VerifyEmail = () => {
     console.log("Verifying...");
   };
 
-  const isInvalid = true;
+  const isInvalid = false;
 
   if (isInvalid) return <InvalidVerificationToken />;
 

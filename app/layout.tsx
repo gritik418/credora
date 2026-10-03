@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <ReduxProvider>
           <LayoutWrapper>{children}</LayoutWrapper>
+          <ToastContainer />
         </ReduxProvider>
       </body>
     </html>
