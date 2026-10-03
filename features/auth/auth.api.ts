@@ -1,10 +1,12 @@
 import baseApi from "@/store/api/base-api";
 import RegisterDto from "./dto/register.dto";
 import {
+  LoginResponseDto,
   RegisterResponseDto,
   ResendVerificationEmailResponseDto,
 } from "./auth.interface";
 import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
+import LoginDto from "./dto/login.dto";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -25,10 +27,21 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    login: builder.mutation<LoginResponseDto, LoginDto>({
+      query: (body: LoginDto) => ({
+        url: "/auth/login",
+        method: "POST",
+        credentials: "include",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useResendVerificationEmailMutation } =
-  authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useResendVerificationEmailMutation,
+} = authApi;
 
 export default authApi;

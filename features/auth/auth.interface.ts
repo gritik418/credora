@@ -1,3 +1,4 @@
+import LoginDto from "./dto/login.dto";
 import RegisterDto from "./dto/register.dto";
 import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
 
@@ -11,6 +12,22 @@ export interface RegisterResponseDto {
   message: string;
   data?: { userId: string; userEmail: string };
   errors?: Partial<RegisterDto>;
+}
+
+export interface LoginResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    user: {
+      id: string;
+      avatar: string;
+      name: string;
+      email: string;
+      username: string;
+      role: UserRole;
+    };
+  };
+  errors?: Partial<LoginDto>;
 }
 
 export interface ResendVerificationEmailResponseDto {

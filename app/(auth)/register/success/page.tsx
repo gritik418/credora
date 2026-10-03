@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Mail, RefreshCw } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, RefreshCw } from "lucide-react";
 import Logo from "@/components/logo/Logo";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -172,15 +172,20 @@ const RegisterSuccessPage = () => {
               disabled={timeLeft > 0 || isResending}
               className="w-full cursor-pointer flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-border/60 text-sm font-bold text-white disabled:opacity-60 disabled:cursor-not-allowed bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300"
             >
-              <RefreshCw
-                className={`w-4 h-4 ${isResending ? "animate-spin" : ""}`}
-              />
+              {isResending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="w-4 h-4" />
 
-              {isResending
-                ? "Sending..."
-                : timeLeft > 0
-                  ? `Resend available in ${timeLeft}s`
-                  : "Resend verification email"}
+                  {timeLeft > 0
+                    ? `Resend available in ${timeLeft}s`
+                    : "Resend verification email"}
+                </>
+              )}
             </button>
 
             <button

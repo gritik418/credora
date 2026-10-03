@@ -1,12 +1,60 @@
 "use client";
-import { ArrowRight, Lock, Mail } from "lucide-react";
+import { ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 
 import Logo from "@/components/logo/Logo";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
+import { useLoginMutation } from "@/features/auth/auth.api";
+import LoginDto from "@/features/auth/dto/login.dto";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import LoginSchema from "@/features/auth/schemas/login.schema";
 
 const LoginPage = () => {
+  const [login] = useLoginMutation();
+  const router = useRouter();
+
   const isSocialLoginAllowed: boolean = false;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginDto>({
+    defaultValues: {
+      identifier: "",
+      password: "",
+    },
+    resolver: zodResolver(LoginSchema),
+  });
+
+  const handleLogin = async (data: LoginDto) => {
+    try {
+      const result = await login(data).unwrap();
+
+      if (!result.success) {
+        toast.error(
+          result.message || "Something went wrong. Please try again later.",
+        );
+      } else {
+        toast.success(result.message || "Logged in successfully.");
+
+        router.push("/");
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      reset();
+    }
+  };
 
   return (
     <div className="min-h-screen flex w-full bg-background">
@@ -146,7 +194,7 @@ const LoginPage = () => {
             </>
           ) : null}
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-4" onSubmit={handleSubmit(handleLogin)}>
             <div className="space-y-5">
               <div className="space-y-2">
                 <label
@@ -160,12 +208,18 @@ const LoginPage = () => {
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("identifier")}
                     id="identifier"
                     type="text"
                     placeholder="Email or username"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.identifier && (
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.identifier.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -188,21 +242,36 @@ const LoginPage = () => {
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
+                    {...register("password")}
                     id="password"
                     type="password"
                     placeholder="••••••••"
                     className="block w-full pl-11 pr-4 py-3.5 border border-border/60 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 text-foreground placeholder-muted-foreground/50 focus:outline-none focus:bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary/60 transition-all duration-300 shadow-sm font-medium"
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
             </div>
-
             <button
-              type="button"
-              className="w-full group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 mt-8 active:scale-[0.98] hover:-translate-y-0.5"
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full group cursor-pointer flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 mt-8 active:scale-[0.98] hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              Sign In
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </>
+              )}
             </button>
           </form>
         </div>
