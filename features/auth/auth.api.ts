@@ -4,9 +4,11 @@ import {
   LoginResponseDto,
   RegisterResponseDto,
   ResendVerificationEmailResponseDto,
+  VerifyEmailResponseDto,
 } from "./auth.interface";
 import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
 import LoginDto from "./dto/login.dto";
+import VerifyEmailDto from "./dto/verify-email.dto";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -35,12 +37,21 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    verifyEmail: builder.mutation<VerifyEmailResponseDto, VerifyEmailDto>({
+      query: (body: VerifyEmailDto) => ({
+        url: "/auth/verify-email",
+        method: "POST",
+        credentials: "include",
+        body,
+      }),
+    }),
   }),
 });
 
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useVerifyEmailMutation,
   useResendVerificationEmailMutation,
 } = authApi;
 

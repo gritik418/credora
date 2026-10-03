@@ -1,18 +1,72 @@
 "use client";
 
-import { CheckCircle2, Mail, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, ShieldCheck } from "lucide-react";
 import Logo from "@/components/logo/Logo";
 import InvalidVerificationToken from "@/components/verify-email/InvalidVerificationToken";
+import { toast } from "react-toastify";
+import { useVerifyEmailMutation } from "@/features/auth/auth.api";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const VerifyEmail = () => {
-  const email = "gritik418@gmail.com";
-  const isVerifying = false;
+  const [verify] = useVerifyEmailMutation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const onVerify = () => {
-    console.log("Verifying...");
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [uid, setUid] = useState<string | null>(null);
+
+  const handleVerifyEmail = async () => {
+    try {
+      if (!token || !uid) {
+        setIsInvalid(true);
+        return;
+      }
+
+      setIsVerifying(true);
+
+      const result = await verify({
+        token,
+        uid,
+      }).unwrap();
+
+      if (!result.success) {
+        toast.error(
+          result.message || "Something went wrong. Please try again later.",
+        );
+      } else {
+        toast.success(result.message || "Email verified successfully.");
+
+        router.push("/");
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  const isInvalid = false;
+  useEffect(() => {
+    if (!searchParams) return;
+
+    const token = searchParams.get("token");
+    const uid = searchParams.get("uid");
+
+    if (!token || !uid) {
+      setIsInvalid(true);
+      return;
+    }
+
+    setToken(token);
+    setUid(uid);
+  }, [searchParams]);
 
   if (isInvalid) return <InvalidVerificationToken />;
 
@@ -99,13 +153,6 @@ const VerifyEmail = () => {
             <p className="text-muted-foreground leading-relaxed font-medium">
               Confirm your email address to activate your account.
             </p>
-
-            <p className="mt-2 font-bold text-foreground break-all">{email}</p>
-
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Click “Verify Email” to confirm this address and continue to
-              Credora.
-            </p>
           </div>
 
           <div className="mt-8 rounded-2xl border border-border/60 bg-slate-50/60 dark:bg-slate-900/50 p-5">
@@ -129,14 +176,20 @@ const VerifyEmail = () => {
 
           <button
             type="button"
-            onClick={onVerify}
+            onClick={handleVerifyEmail}
             disabled={isVerifying}
             className="w-full mt-6 cursor-pointer group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] hover:-translate-y-0.5"
           >
-            {isVerifying ? "Verifying..." : "Verify Email"}
-
-            {!isVerifying && (
-              <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+            {isVerifying ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              <>
+                Verify Email
+                <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+              </>
             )}
           </button>
 
