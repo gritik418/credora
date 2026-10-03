@@ -1,4 +1,5 @@
 import RegisterDto from "./dto/register.dto";
+import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
 
 export enum UserRole {
   ADMIN = "ADMIN",
@@ -10,4 +11,11 @@ export interface RegisterResponseDto {
   message: string;
   data?: { userId: string; userEmail: string };
   errors?: Partial<RegisterDto>;
+}
+
+export interface ResendVerificationEmailResponseDto {
+  success: boolean;
+  message: string;
+  data?: { userId: string; userEmail: string };
+  errors?: Partial<ResendVerificationEmailDto>;
 }

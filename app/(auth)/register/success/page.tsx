@@ -1,19 +1,75 @@
 "use client";
 
 import { CheckCircle2, Mail, RefreshCw } from "lucide-react";
-import Link from "next/link";
 import Logo from "@/components/logo/Logo";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useResendVerificationEmailMutation } from "@/features/auth/auth.api";
+import { toast } from "react-toastify";
 
 const RegisterSuccessPage = () => {
   const router = useRouter();
-  const [isResending, setIsResending] = useState<boolean>(false);
+  const [resendEmail] = useResendVerificationEmailMutation();
 
-  const handleResend = () => {
+  const [isResending, setIsResending] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [timeLeft, setTimeLeft] = useState<number>(60);
+
+  const handleResend = async () => {
+    if (timeLeft > 0 || isResending) return;
+
     setIsResending(true);
+    try {
+      const result = await resendEmail({ email }).unwrap();
+
+      if (!result.success) {
+        toast.error(
+          result.message || "Something went wrong. Please try again later.",
+        );
+      } else {
+        toast.success(result.message || "Email sent successfully.");
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      setIsResending(false);
+      setTimeLeft(60);
+    }
+  };
+
+  const handleBackToRegister = () => {
+    localStorage.removeItem("registeredEmail");
     router.push("/register");
   };
+
+  useEffect(() => {
+    const registeredEmail = localStorage.getItem("registeredEmail");
+
+    if (registeredEmail) {
+      setEmail(registeredEmail);
+    } else {
+      router.push("/register");
+    }
+
+    return () => {
+      localStorage.removeItem("registeredEmail");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
 
   return (
     <div className="min-h-screen flex w-full bg-background">
@@ -55,18 +111,23 @@ const RegisterSuccessPage = () => {
           <div className="lg:hidden mb-12 flex justify-center">
             <Logo size="base" />
           </div>
+
           <div className="mx-auto w-24 h-24 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(79,70,229,0.15)]">
             <Mail className="w-10 h-10 text-primary" />
           </div>
+
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">
             Account created
           </p>
+
           <h2 className="text-4xl font-extrabold text-foreground tracking-tight mb-4">
             Check your email
           </h2>
+
           <p className="text-muted-foreground leading-relaxed font-medium">
             Your Credora account has been created successfully.
           </p>
+
           <div className="mt-6 rounded-2xl border border-border/60 bg-slate-50/60 dark:bg-slate-900/50 p-5 text-left">
             <div className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -84,29 +145,52 @@ const RegisterSuccessPage = () => {
                 </p>
               </div>
             </div>
+
+            <div className="rounded-xl mt-4 border border-white/10 bg-white/4 px-4 py-3.5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+                  <Mail className="h-4 w-4" />
+                </div>
+
+                <div className="min-w-0">
+                  <p className="mb-0.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                    Verification email
+                  </p>
+
+                  <p className="truncate text-sm font-semibold text-white/90">
+                    {email}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 space-y-4">
             <button
               type="button"
               onClick={handleResend}
-              disabled={isResending}
-              className="w-full cursor-pointer flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-border/60 text-sm font-bold text-foreground disabled:opacity-60 disabled:cursor-not-allowed bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300"
+              disabled={timeLeft > 0 || isResending}
+              className="w-full cursor-pointer flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl border border-border/60 text-sm font-bold text-white disabled:opacity-60 disabled:cursor-not-allowed bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300"
             >
               <RefreshCw
                 className={`w-4 h-4 ${isResending ? "animate-spin" : ""}`}
               />
 
-              {isResending ? "Sending..." : "Resend verification email"}
+              {isResending
+                ? "Sending..."
+                : timeLeft > 0
+                  ? `Resend available in ${timeLeft}s`
+                  : "Resend verification email"}
             </button>
 
-            <Link
-              href="/register"
-              className="w-full flex items-center justify-center py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-primary/30 transition-all duration-300 "
+            <button
+              onClick={handleBackToRegister}
+              className="w-full cursor-pointer flex items-center justify-center py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white hover:bg-slate-50 dark:hover:bg-slate-900 hover:border-primary/30 transition-all duration-300"
             >
               Back to Register
-            </Link>
+            </button>
           </div>
+
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed">
             Didn’t receive the email? Check your spam or promotions folder, or
             resend the verification link above.

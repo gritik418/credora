@@ -1,6 +1,10 @@
 import baseApi from "@/store/api/base-api";
 import RegisterDto from "./dto/register.dto";
-import { RegisterResponseDto } from "./auth.interface";
+import {
+  RegisterResponseDto,
+  ResendVerificationEmailResponseDto,
+} from "./auth.interface";
+import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,9 +15,20 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    resendVerificationEmail: builder.mutation<
+      ResendVerificationEmailResponseDto,
+      ResendVerificationEmailDto
+    >({
+      query: (body: ResendVerificationEmailDto) => ({
+        url: "/auth/resend-verification-email",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation } = authApi;
+export const { useRegisterMutation, useResendVerificationEmailMutation } =
+  authApi;
 
 export default authApi;
