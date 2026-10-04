@@ -1,6 +1,7 @@
 import baseApi from "@/store/api/base-api";
 import RegisterDto from "./dto/register.dto";
 import {
+  GetMeResponseDto,
   LoginResponseDto,
   RegisterResponseDto,
   ResendVerificationEmailResponseDto,
@@ -36,6 +37,7 @@ const authApi = baseApi.injectEndpoints({
         credentials: "include",
         body,
       }),
+      invalidatesTags: ["Auth"],
     }),
     verifyEmail: builder.mutation<VerifyEmailResponseDto, VerifyEmailDto>({
       query: (body: VerifyEmailDto) => ({
@@ -44,11 +46,21 @@ const authApi = baseApi.injectEndpoints({
         credentials: "include",
         body,
       }),
+      invalidatesTags: ["Auth"],
+    }),
+    getMe: builder.query<GetMeResponseDto, void>({
+      query: () => ({
+        url: `/auth/me`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Auth"],
     }),
   }),
 });
 
 export const {
+  useGetMeQuery,
   useLoginMutation,
   useRegisterMutation,
   useVerifyEmailMutation,

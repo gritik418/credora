@@ -53,3 +53,20 @@ export interface ResendVerificationEmailResponseDto {
   data?: { userId: string; userEmail: string };
   errors?: Partial<ResendVerificationEmailDto>;
 }
+
+export interface GetMeResponseDto {
+  success: boolean;
+  message: string;
+  data?: { user: ICurrentUser };
+}
+
+export interface ICurrentUser {
+  id: string;
+  name: string;
+  username: string;
+  avatar: string;
+  email: string;
+  role: UserRole;
+  lastLoginAt: string;
+  isActive: boolean;
+}

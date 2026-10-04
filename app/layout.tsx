@@ -4,6 +4,7 @@ import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { ToastContainer } from "react-toastify";
+import AuthGuard from "@/guards/AuthGuard/AuthGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <ReduxProvider>
-          <LayoutWrapper>{children}</LayoutWrapper>
+          <AuthGuard>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </AuthGuard>
           <ToastContainer />
         </ReduxProvider>
       </body>
