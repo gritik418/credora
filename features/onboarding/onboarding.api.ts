@@ -1,5 +1,9 @@
 import baseApi from "@/store/api/base-api";
-import { UpdateBasicOnboardingInfoResponseDto } from "./onboarding.interface";
+import {
+  AddProfessionalOnboardingInfoResponseDto,
+  UpdateBasicOnboardingInfoResponseDto,
+} from "./onboarding.interface";
+import AddProfessionalInfoDto from "./dto/add-professional-info.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,9 +18,21 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addProfessionalInfo: builder.mutation<
+      AddProfessionalOnboardingInfoResponseDto,
+      AddProfessionalInfoDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/professional",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
-export const { useUpdateBasicInfoMutation } = onboardingApi;
+export const { useUpdateBasicInfoMutation, useAddProfessionalInfoMutation } =
+  onboardingApi;
 
 export default onboardingApi;

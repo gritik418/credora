@@ -1,19 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { Briefcase, Building2, Code2, Sparkles } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
-import { useRouter } from "next/navigation";
+import AddProfessionalInfoDto from "@/features/onboarding/dto/add-professional-info.dto";
+import { useAddProfessionalInfoMutation } from "@/features/onboarding/onboarding.api";
+import AddProfessionalInfoSchema from "@/features/onboarding/schemas/add-professional-info.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Briefcase, Building2, Code2, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { useForm, UseFormRegisterReturn } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const ProfessionalPage = () => {
-  const router = useRouter();
+  const [addProfessionalInfo] = useAddProfessionalInfoMutation();
 
-  const [profession, setProfession] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [headline, setHeadline] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleOnContinue = () => {
-    router.push("/onboarding/experience");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AddProfessionalInfoDto>({
+    defaultValues: {
+      headline: "",
+      industry: "",
+      profession: "",
+    },
+    resolver: zodResolver(AddProfessionalInfoSchema),
+  });
+
+  const handleOnContinue = async (data: AddProfessionalInfoDto) => {
+    try {
+      setIsLoading(true);
+
+      const result = await addProfessionalInfo(data).unwrap();
+
+      if (result.success) {
+        toast.success(
+          result.message || "Professional info added successfully.",
+        );
+      } else {
+        toast.error(result.message || "Failed to add professional info.");
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -21,23 +58,26 @@ const ProfessionalPage = () => {
       currentStep="PROFESSIONAL"
       title="Tell us about your work."
       description="Help people understand what you do and where your professional journey is headed."
-      onContinue={handleOnContinue}
+      onContinue={handleSubmit(handleOnContinue)}
+      loading={isLoading || isSubmitting}
     >
       <div className="space-y-6">
         <Field
           icon={<Briefcase size={17} />}
           label="Profession"
           placeholder="e.g. Full Stack Developer"
-          value={profession}
-          onChange={setProfession}
+          register={register("profession")}
+          isError={!!errors.profession}
+          error={errors.profession?.message}
         />
 
         <Field
           icon={<Building2 size={17} />}
           label="Industry"
+          register={register("industry")}
           placeholder="e.g. Information Technology"
-          value={industry}
-          onChange={setIndustry}
+          isError={!!errors.industry}
+          error={errors.industry?.message}
         />
 
         <div>
@@ -49,13 +89,18 @@ const ProfessionalPage = () => {
             </span>
 
             <textarea
-              value={headline}
+              {...register("headline")}
               rows={3}
-              onChange={(e) => setHeadline(e.target.value)}
               placeholder={"e.g. Aspiring Full Stack Developer"}
               className="w-full resize-none bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
             />
           </div>
+
+          {errors.headline?.message && (
+            <p className="mt-2 text-xs text-red-500">
+              {errors.headline?.message}
+            </p>
+          )}
         </div>
 
         <div className="rounded-xl border border-indigo-500/10 bg-indigo-500/4 p-4">
@@ -81,14 +126,16 @@ function Field({
   icon,
   label,
   placeholder,
-  value,
-  onChange,
+  register,
+  isError,
+  error,
 }: {
   icon: React.ReactNode;
   label: string;
   placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
+  register: UseFormRegisterReturn;
+  isError?: boolean;
+  error?: string;
 }) {
   return (
     <div>
@@ -98,12 +145,12 @@ function Field({
         <span className="text-white/25">{icon}</span>
 
         <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          {...register}
           placeholder={placeholder}
           className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
         />
       </div>
+      {isError && error && <p className="mt-2 text-xs text-red-500">{error}</p>}
     </div>
   );
 }
