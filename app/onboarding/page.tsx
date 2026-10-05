@@ -4,16 +4,38 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import { useAppSelector } from "@/store/hooks";
+import { selectCurrentUser } from "@/features/auth/auth.selectors";
+import { useForm } from "react-hook-form";
+import UpdateBasicInfoDto from "@/features/onboarding/dto/update-basic-info.dto";
+import { zodResolver } from "@hookform/resolvers/zod";
+import UpdateBasicInfoSchema from "@/features/onboarding/schemas/update-basic-info.schema";
+import { useUpdateBasicInfoMutation } from "@/features/onboarding/onboarding.api";
+import { toast } from "react-toastify";
 
 const BasicInfoPage = () => {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const user = useAppSelector(selectCurrentUser);
+  const [updateBasicInfo] = useUpdateBasicInfoMutation();
 
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState<string>(
+    user?.avatar || "",
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors, isSubmitting },
+  } = useForm<UpdateBasicInfoDto>({
+    defaultValues: {
+      name: user?.name,
+    },
+    resolver: zodResolver(UpdateBasicInfoSchema),
+  });
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,16 +54,44 @@ const BasicInfoPage = () => {
     };
   }, [avatarPreview]);
 
-  const handleOnContinue = () => {
-    router.push("/onboarding/professional");
+  const handleOnContinue = async (data: UpdateBasicInfoDto) => {
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("name", getValues("name"));
+      if (avatar) formData.append("avatar", avatar);
+
+      const result = await updateBasicInfo(formData).unwrap();
+
+      if (result.success) {
+        toast.success(result.message || "Basic info updated successfully.");
+      } else {
+        toast.error(result.message || "Failed to update basic info.");
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (!user) {
+    router.push("/login");
+    return;
+  }
 
   return (
     <OnboardingShell
       currentStep="BASIC_INFO"
       title="Let's start with the basics."
       description="Create the foundation of your professional identity on Credora."
-      onContinue={handleOnContinue}
+      onContinue={handleSubmit(handleOnContinue)}
+      loading={isSubmitting || isLoading}
     >
       <div className="space-y-8">
         <div className="flex items-center gap-5">
@@ -102,12 +152,14 @@ const BasicInfoPage = () => {
             </label>
 
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              {...register("name")}
               placeholder="John Doe"
               className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25 hover:border-credora-blue/60 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
             />
           </div>
+          {errors.name?.message && (
+            <p className="mt-2 text-xs text-red-500">{errors.name?.message}</p>
+          )}
 
           <div>
             <label className="mb-2 block text-sm font-medium text-white/75">
@@ -120,11 +172,10 @@ const BasicInfoPage = () => {
               </span>
 
               <input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={user?.username}
                 placeholder="username"
                 readOnly
-                className="h-12 w-full cursor-default rounded-r-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25"
+                className="h-12 w-full cursor-default rounded-r-xl border border-white/10 px-4 text-sm text-white/60 outline-none transition-all placeholder:text-white/25"
               />
             </div>
 
@@ -140,9 +191,9 @@ const BasicInfoPage = () => {
 
             <input
               readOnly
-              value={email}
+              value={user?.email}
               placeholder="Email address"
-              className="h-12 w-full cursor-default rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition-all placeholder:text-white/25"
+              className="h-12 w-full cursor-default rounded-xl border border-white/10 px-4 text-sm text-white/60 outline-none transition-all placeholder:text-white/25"
             />
 
             <p className="mt-2 text-xs text-white/30">

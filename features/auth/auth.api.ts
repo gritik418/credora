@@ -54,7 +54,7 @@ const authApi = baseApi.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
-      providesTags: ["Auth"],
+      providesTags: ["Auth", "Onboarding"],
     }),
   }),
 });

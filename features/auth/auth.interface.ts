@@ -69,4 +69,55 @@ export interface ICurrentUser {
   role: UserRole;
   lastLoginAt: string;
   isActive: boolean;
+  profile: ICurrentProfile;
+  onboarding: ICurrentOnboarding;
+}
+
+export interface ICurrentProfile {
+  id: string;
+  userId: string;
+  headline: string | null;
+  profession: string | null;
+  industry: string | null;
+  bio: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  website: string | null;
+  linkedinUrl: string | null;
+  githubUrl: string | null;
+  isOpenToWork: boolean;
+  isOpenToCollaborate: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ICurrentOnboarding {
+  id: string;
+  userId: string;
+  currentStep: OnboardingStep;
+  isCompleted: boolean;
+  completedAt: string | null;
+  basicInfoCompleted: boolean;
+  professionalInfoCompleted: boolean;
+  experienceInfoCompleted: boolean;
+  summaryCompleted: boolean;
+  locationInfoCompleted: boolean;
+  skillsCompleted: boolean;
+  educationInfoCompleted: boolean;
+  availabilityInfoCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export enum OnboardingStep {
+  BASIC_INFO = "BASIC_INFO",
+  PROFESSIONAL = "PROFESSIONAL",
+  EXPERIENCE = "EXPERIENCE",
+  SUMMARY = "SUMMARY",
+  LOCATION = "LOCATION",
+  SKILLS = "SKILLS",
+  EDUCATION = "EDUCATION",
+  AVAILABILITY = "AVAILABILITY",
+  COMPLETED = "COMPLETED",
 }

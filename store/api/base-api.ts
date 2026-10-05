@@ -8,7 +8,7 @@ const baseApi = createApi({
   }),
 
   endpoints: () => ({}),
-  tagTypes: ["Auth"],
+  tagTypes: ["Auth", "Onboarding"],
 });
 
 export default baseApi;
