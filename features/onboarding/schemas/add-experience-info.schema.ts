@@ -1,24 +1,24 @@
-import { EmploymentType } from 'generated/prisma/enums';
-import { z } from 'zod';
+import { z } from "zod";
+import { EmploymentType } from "../onboarding.interface";
 
 const ExperienceSchema = z
   .object({
     company: z
       .string()
       .trim()
-      .min(2, 'Company name must be at least 2 characters.')
+      .min(2, "Company name must be at least 2 characters.")
       .max(200),
 
     position: z
       .string()
       .trim()
-      .min(2, 'Position must be at least 2 characters.')
+      .min(2, "Position must be at least 2 characters.")
       .max(150),
 
-    employmentType: z.enum(EmploymentType).optional(),
+    employmentType: z.enum(EmploymentType).default(EmploymentType.FULL_TIME),
 
     startDate: z.coerce.date({
-      message: 'Invalid start date.',
+      message: "Invalid start date.",
     }),
 
     endDate: z.coerce.date().optional(),
@@ -38,8 +38,8 @@ const ExperienceSchema = z
       return true;
     },
     {
-      message: 'End date is required when you are not currently working.',
-      path: ['endDate'],
+      message: "End date is required when you are not currently working.",
+      path: ["endDate"],
     },
   )
   .refine(
@@ -49,16 +49,18 @@ const ExperienceSchema = z
       return data.endDate >= data.startDate;
     },
     {
-      message: 'End date must be after the start date.',
-      path: ['endDate'],
+      message: "End date must be after the start date.",
+      path: ["endDate"],
     },
   );
 
 const AddExperienceInfoSchema = z.object({
   experiences: z
     .array(ExperienceSchema)
-    .min(1, 'Please add at least one experience record.')
-    .max(20, 'Maximum 20 experience records allowed.'),
+    .min(1, "Please add at least one experience record.")
+    .max(20, "Maximum 20 experience records allowed."),
 });
+
+export { ExperienceSchema };
 
 export default AddExperienceInfoSchema;

@@ -2,23 +2,43 @@
 
 import AddExperienceForm from "@/components/onboarding/AddExperienceForm";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import AddExperienceInfoDto, {
+  ExperienceDto,
+} from "@/features/onboarding/dto/add-experience-info.dto";
+import { EmploymentType } from "@/features/onboarding/onboarding.interface";
+import AddExperienceInfoSchema from "@/features/onboarding/schemas/add-experience-info.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { BriefcaseBusiness, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 const ExperiencePage = () => {
   const router = useRouter();
-
-  const [experiences, setExperiences] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const handleAddExperience = (experience: any) => {
-    setExperiences((prev) => [...prev, experience]);
+  const {
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      experiences: [],
+    },
+    resolver: zodResolver(AddExperienceInfoSchema),
+  });
+
+  const handleAddExperience = (experience: ExperienceDto) => {
+    const experiences = getValues("experiences");
+    setValue("experiences", [...experiences, experience]);
     setShowForm(false);
   };
 
-  const handleOnContinue = () => {
-    router.push("/onboarding/summary");
+  const handleOnContinue = (data: any) => {
+    console.log(data);
+    // router.push("/onboarding/summary");
   };
 
   return (
@@ -26,7 +46,7 @@ const ExperiencePage = () => {
       currentStep="EXPERIENCE"
       title="Tell us about your experience."
       description="Add your professional experience to build a stronger and more complete Credora profile."
-      onContinue={handleOnContinue}
+      onContinue={handleSubmit(handleOnContinue)}
     >
       <div className="space-y-4">
         {showForm ? (
@@ -36,9 +56,9 @@ const ExperiencePage = () => {
               onCancel={() => setShowForm(false)}
             />
           </div>
-        ) : experiences.length > 0 ? (
+        ) : getValues("experiences").length > 0 ? (
           <>
-            {experiences.map((item, index) => (
+            {getValues("experiences").map((item, index) => (
               <div
                 key={index}
                 className="rounded-2xl border border-white/8 bg-white/2.5 p-5"

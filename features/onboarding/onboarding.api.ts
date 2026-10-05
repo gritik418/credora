@@ -1,9 +1,11 @@
 import baseApi from "@/store/api/base-api";
 import {
+  AddExperienceOnboardingInfoResponseDto,
   AddProfessionalOnboardingInfoResponseDto,
   UpdateBasicOnboardingInfoResponseDto,
 } from "./onboarding.interface";
 import AddProfessionalInfoDto from "./dto/add-professional-info.dto";
+import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -29,10 +31,24 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addExperienceInfo: builder.mutation<
+      AddExperienceOnboardingInfoResponseDto,
+      AddExperienceInfoDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/experience",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
-export const { useUpdateBasicInfoMutation, useAddProfessionalInfoMutation } =
-  onboardingApi;
+export const {
+  useUpdateBasicInfoMutation,
+  useAddExperienceInfoMutation,
+  useAddProfessionalInfoMutation,
+} = onboardingApi;
 
 export default onboardingApi;

@@ -1,28 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { ExperienceDto } from "@/features/onboarding/dto/add-experience-info.dto";
+import { EmploymentType } from "@/features/onboarding/onboarding.interface";
+import { ExperienceSchema } from "@/features/onboarding/schemas/add-experience-info.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface Props {
-  onAdd: (experience: any) => void;
+  onAdd: (experience: ExperienceDto) => void;
   onCancel: () => void;
 }
 
+type ExperienceFormInput = z.input<typeof ExperienceSchema>;
+type ExperienceFormOutput = z.output<typeof ExperienceSchema>;
+
 const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [employmentType, setEmploymentType] = useState<any>();
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [isCurrentlyWorking, setIsCurrentlyWorking] = useState(false);
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ExperienceFormInput, unknown, ExperienceFormOutput>({
+    defaultValues: {
+      company: "",
+      description: "",
+      employmentType: EmploymentType.FULL_TIME,
+      isCurrentlyWorking: false,
+      location: "",
+      position: "",
+      startDate: new Date().toISOString().split("T")[0],
+      endDate: undefined,
+    },
+    resolver: zodResolver(ExperienceSchema),
+  });
 
-  const handleSubmit = (data: any) => {
-    setError("");
+  const isCurrentlyWorking = watch("isCurrentlyWorking");
 
-    onAdd(data);
+  const handleAddExperience = (data: ExperienceFormOutput) => {
+    onAdd(data as ExperienceDto);
   };
 
   return (
@@ -34,11 +50,16 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
           </label>
 
           <input
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            {...register("company")}
             placeholder="Company name"
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition placeholder:text-white/25 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
           />
+
+          {errors.company?.message && (
+            <p className="mt-2 text-xs text-red-400">
+              {errors.company.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -47,11 +68,16 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
           </label>
 
           <input
-            value={position}
-            onChange={(e) => setPosition(e.target.value)}
+            {...register("position")}
             placeholder="e.g. Frontend Developer"
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition placeholder:text-white/25 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
           />
+
+          {errors.position?.message && (
+            <p className="mt-2 text-xs text-red-400">
+              {errors.position.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -61,10 +87,7 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
         </label>
 
         <select
-          value={employmentType || ""}
-          onChange={(e) =>
-            setEmploymentType(e.target.value ? e.target.value : undefined)
-          }
+          {...register("employmentType")}
           className="h-12 w-full cursor-pointer rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20 scheme-dark"
         >
           <option value="">Select employment type</option>
@@ -77,6 +100,12 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
           <option value="APPRENTICESHIP">Apprenticeship</option>
           <option value="OTHER">Other</option>
         </select>
+
+        {errors.employmentType?.message && (
+          <p className="mt-2 text-xs text-red-400">
+            {errors.employmentType.message}
+          </p>
+        )}
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -86,11 +115,17 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
           </label>
 
           <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            {...register("startDate")}
+            defaultValue={new Date().toISOString().split("T")[0]}
+            max={new Date().toISOString().split("T")[0]}
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20 scheme-dark"
           />
+
+          {errors.startDate?.message && (
+            <p className="mt-2 text-xs text-red-400">
+              {errors.startDate.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -100,19 +135,23 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
 
           <input
             type="date"
-            value={endDate}
+            {...register("endDate")}
             disabled={isCurrentlyWorking}
-            onChange={(e) => setEndDate(e.target.value)}
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition disabled:cursor-not-allowed disabled:opacity-30 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20 scheme-dark"
           />
+
+          {errors.endDate?.message && (
+            <p className="mt-2 text-xs text-red-400">
+              {errors.endDate.message}
+            </p>
+          )}
         </div>
       </div>
 
       <label className="flex cursor-pointer items-center gap-3 text-sm text-white/60">
         <input
           type="checkbox"
-          checked={isCurrentlyWorking}
-          onChange={(e) => setIsCurrentlyWorking(e.target.checked)}
+          {...register("isCurrentlyWorking")}
           className="h-4 w-4 cursor-pointer accent-blue-500"
         />
         I currently work here
@@ -124,11 +163,14 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
         </label>
 
         <input
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          {...register("location")}
           placeholder="e.g. New Delhi, India or Remote"
           className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition placeholder:text-white/25 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
         />
+
+        {errors.location?.message && (
+          <p className="mt-2 text-xs text-red-400">{errors.location.message}</p>
+        )}
       </div>
 
       <div>
@@ -137,15 +179,18 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
         </label>
 
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          {...register("description")}
           placeholder="Describe your responsibilities, achievements, or work..."
           rows={5}
           className="w-full resize-none rounded-xl border border-white/10 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20"
         />
-      </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+        {errors.description?.message && (
+          <p className="mt-2 text-xs text-red-400">
+            {errors.description.message}
+          </p>
+        )}
+      </div>
 
       <div className="flex items-center justify-end gap-3 pt-2">
         <button
@@ -158,7 +203,7 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
 
         <button
           type="button"
-          onClick={handleSubmit}
+          onClick={handleSubmit(handleAddExperience)}
           className="cursor-pointer rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-white/90"
         >
           Add experience
