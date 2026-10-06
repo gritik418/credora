@@ -1,6 +1,23 @@
 import { z } from "zod";
 import { EmploymentType } from "../onboarding.interface";
 
+const dateSchema = z.preprocess(
+  (value) => {
+    if (value === "" || value === undefined || value === null) {
+      return undefined;
+    }
+
+    if (value instanceof Date) {
+      return value;
+    }
+
+    return new Date(value as string);
+  },
+  z.date({
+    message: "End date is required when you are not currently working.",
+  }),
+);
+
 const ExperienceSchema = z
   .object({
     company: z
@@ -17,11 +34,9 @@ const ExperienceSchema = z
 
     employmentType: z.enum(EmploymentType).default(EmploymentType.FULL_TIME),
 
-    startDate: z.coerce.date({
-      message: "Invalid start date.",
-    }),
+    startDate: dateSchema,
 
-    endDate: z.coerce.date().optional(),
+    endDate: dateSchema.optional(),
 
     isCurrentlyWorking: z.boolean().default(false),
 
@@ -44,7 +59,9 @@ const ExperienceSchema = z
   )
   .refine(
     (data) => {
-      if (!data.endDate) return true;
+      if (!data.endDate) {
+        return true;
+      }
 
       return data.endDate >= data.startDate;
     },

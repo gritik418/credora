@@ -1,0 +1,14 @@
+export const APP_CONFIG = {
+  VERSION: "0.1.0 Beta",
+  NAME: "Credora.",
+  COMPANY: "Credora",
+  YEAR: 2026,
+  BASE_URL: "credora.vercel.app",
+  TECH_SUPPORT_EMAIL: "gritik418@gmail.com",
+  SALES_EMAIL: "gritik418@gmail.com",
+  PARTNERS_EMAIL: "gritik418@gmail.com",
+  TECH_SECURITY_EMAIL: "gritik418@gmail.com",
+  HEADQUARTERS: "India",
+  GITHUB_URL: "https://github.com/gritik418",
+  LINKEDIN_URL: "https://www.linkedin.com/in/ritik-gupta-849680251/",
+};

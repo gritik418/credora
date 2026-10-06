@@ -4,6 +4,8 @@ import { ExperienceDto } from "@/features/onboarding/dto/add-experience-info.dto
 import { EmploymentType } from "@/features/onboarding/onboarding.interface";
 import { ExperienceSchema } from "@/features/onboarding/schemas/add-experience-info.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -13,14 +15,17 @@ interface Props {
 }
 
 type ExperienceFormInput = z.input<typeof ExperienceSchema>;
-type ExperienceFormOutput = z.output<typeof ExperienceSchema>;
+
+export type ExperienceFormOutput = z.output<typeof ExperienceSchema>;
 
 const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
   const {
     register,
     watch,
+    setValue,
+    clearErrors,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ExperienceFormInput, unknown, ExperienceFormOutput>({
     defaultValues: {
       company: "",
@@ -37,8 +42,15 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
 
   const isCurrentlyWorking = watch("isCurrentlyWorking");
 
+  useEffect(() => {
+    if (isCurrentlyWorking) {
+      clearErrors("endDate");
+      setValue("endDate", undefined);
+    }
+  }, [isCurrentlyWorking, clearErrors, setValue]);
+
   const handleAddExperience = (data: ExperienceFormOutput) => {
-    onAdd(data as ExperienceDto);
+    onAdd(data);
   };
 
   return (
@@ -115,8 +127,8 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
           </label>
 
           <input
+            type="date"
             {...register("startDate")}
-            defaultValue={new Date().toISOString().split("T")[0]}
             max={new Date().toISOString().split("T")[0]}
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20 scheme-dark"
           />
@@ -137,6 +149,8 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
             type="date"
             {...register("endDate")}
             disabled={isCurrentlyWorking}
+            min={watch("startDate") as string}
+            max={new Date().toISOString().split("T")[0]}
             className="h-12 w-full rounded-xl border border-white/10 px-4 text-sm text-white outline-none transition disabled:cursor-not-allowed disabled:opacity-30 hover:border-white/15 focus:border-credora-blue/60 focus:ring-1 focus:ring-credora-blue/20 scheme-dark"
           />
 
@@ -204,9 +218,11 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
         <button
           type="button"
           onClick={handleSubmit(handleAddExperience)}
-          className="cursor-pointer rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-white/90"
+          disabled={isSubmitting}
+          className="flex cursor-pointer items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Add experience
+          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+          {isSubmitting ? "Adding..." : "Add experience"}
         </button>
       </div>
     </div>
