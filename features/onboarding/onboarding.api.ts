@@ -3,6 +3,7 @@ import {
   AddExperienceOnboardingInfoResponseDto,
   AddLocationOnboardingInfoResponseDto,
   AddProfessionalOnboardingInfoResponseDto,
+  AddSkillsOnboardingInfoResponseDto,
   AddSummaryOnboardingInfoResponseDto,
   UpdateBasicOnboardingInfoResponseDto,
 } from "./onboarding.interface";
@@ -10,6 +11,7 @@ import AddProfessionalInfoDto from "./dto/add-professional-info.dto";
 import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 import AddSummaryDto from "./dto/add-summary.dto";
 import AddLocationInfoDto from "./dto/add-location-info.dto";
+import SaveSkillsDto from "../skills/dto/save-skills.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -68,6 +70,17 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addSkillsOnboardingInfo: builder.mutation<
+      AddSkillsOnboardingInfoResponseDto,
+      SaveSkillsDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/skills",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
@@ -77,6 +90,7 @@ export const {
   useUpdateBasicInfoMutation,
   useAddExperienceInfoMutation,
   useAddProfessionalInfoMutation,
+  useAddSkillsOnboardingInfoMutation,
 } = onboardingApi;
 
 export default onboardingApi;

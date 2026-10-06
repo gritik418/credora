@@ -18,9 +18,10 @@ interface Props {
 
 const SkillSearchInput = ({ onSelect, searchQuery, setSearchQuery }: Props) => {
   const [suggestions, setSuggestions] = useState<Skill[]>([]);
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-
-  const showDropdown = searchQuery.trim().length > 0;
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+  const [showDropdown, setShowDropdown] = useState<boolean>(
+    searchQuery.trim().length > 0,
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -52,6 +53,10 @@ const SkillSearchInput = ({ onSelect, searchQuery, setSearchQuery }: Props) => {
     }
   }, [suggestionsData]);
 
+  useEffect(() => {
+    setShowDropdown(searchQuery.trim().length > 0);
+  }, [searchQuery]);
+
   return (
     <div className="relative">
       <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4 transition focus-within:border-indigo-500/30 focus-within:bg-white/4.5">
@@ -82,7 +87,11 @@ const SkillSearchInput = ({ onSelect, searchQuery, setSearchQuery }: Props) => {
                 <button
                   key={skill.id}
                   type="button"
-                  onClick={() => onSelect(skill)}
+                  onClick={() => {
+                    onSelect(skill);
+                    setSearchQuery("");
+                    setShowDropdown(false);
+                  }}
                   className="flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2.5 text-left transition hover:bg-white/5"
                 >
                   <span className="text-sm text-white/70">{skill.name}</span>
