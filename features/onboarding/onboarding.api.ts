@@ -1,5 +1,6 @@
 import baseApi from "@/store/api/base-api";
 import {
+  AddEducationOnboardingInfoResponseDto,
   AddExperienceOnboardingInfoResponseDto,
   AddLocationOnboardingInfoResponseDto,
   AddProfessionalOnboardingInfoResponseDto,
@@ -12,6 +13,7 @@ import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 import AddSummaryDto from "./dto/add-summary.dto";
 import AddLocationInfoDto from "./dto/add-location-info.dto";
 import SaveSkillsDto from "../skills/dto/save-skills.dto";
+import AddEducationInfoDto from "./dto/add-education-info.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -81,6 +83,17 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addEducationInfo: builder.mutation<
+      AddEducationOnboardingInfoResponseDto,
+      AddEducationInfoDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/education",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
@@ -88,6 +101,7 @@ export const {
   useAddSummaryMutation,
   useAddLocationInfoMutation,
   useUpdateBasicInfoMutation,
+  useAddEducationInfoMutation,
   useAddExperienceInfoMutation,
   useAddProfessionalInfoMutation,
   useAddSkillsOnboardingInfoMutation,

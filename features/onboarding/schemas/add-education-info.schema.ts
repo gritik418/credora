@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+const dateSchema = z.preprocess(
+  (value) => {
+    if (value === "" || value === undefined || value === null) {
+      return undefined;
+    }
+
+    if (value instanceof Date) {
+      return value;
+    }
+
+    return new Date(value as string);
+  },
+  z.date({
+    message: "End date is required when you are not currently studying.",
+  }),
+);
+
 const EducationSchema = z
   .object({
     institution: z
@@ -11,8 +28,8 @@ const EducationSchema = z
     degree: z
       .string()
       .trim()
-      .max(150, "Degree name must be at most 150 characters.")
-      .optional(),
+      .min(1, "Degree is required.")
+      .max(150, "Degree must be at most 150 characters."),
 
     fieldOfStudy: z
       .string()
@@ -20,11 +37,9 @@ const EducationSchema = z
       .max(150, "Field of study must be at most 150 characters.")
       .optional(),
 
-    startDate: z.coerce.date({
-      message: "Invalid start date.",
-    }),
+    startDate: dateSchema,
 
-    endDate: z.coerce.date().optional(),
+    endDate: dateSchema.optional(),
 
     grade: z
       .string()
@@ -71,5 +86,7 @@ const AddEducationInfoSchema = z.object({
     .min(1, "Please add at least one education record.")
     .max(10, "Maximum 10 education records allowed."),
 });
+
+export { EducationSchema };
 
 export default AddEducationInfoSchema;

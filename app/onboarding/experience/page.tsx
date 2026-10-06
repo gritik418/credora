@@ -17,9 +17,8 @@ type AddExperienceInfoInput = z.input<typeof AddExperienceInfoSchema>;
 type AddExperienceInfoOutput = z.output<typeof AddExperienceInfoSchema>;
 
 const ExperiencePage = () => {
-  const [addExperience] = useAddExperienceInfoMutation();
+  const [addExperience, { isLoading }] = useAddExperienceInfoMutation();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
 
   const {
@@ -50,8 +49,6 @@ const ExperiencePage = () => {
 
   const handleOnContinue = async (data: AddExperienceInfoOutput) => {
     try {
-      setIsLoading(true);
-
       const result = await addExperience(data).unwrap();
 
       if (result.success) {
@@ -66,8 +63,6 @@ const ExperiencePage = () => {
       }
 
       toast.error(error?.data?.message || "Something went wrong.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
