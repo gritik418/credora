@@ -24,13 +24,13 @@ const ExperienceSchema = z
       .string()
       .trim()
       .min(2, "Company name must be at least 2 characters.")
-      .max(200),
+      .max(200, "Company name must be at most 200 characters."),
 
     position: z
       .string()
       .trim()
       .min(2, "Position must be at least 2 characters.")
-      .max(150),
+      .max(150, "Position must be at most 150 characters."),
 
     employmentType: z.enum(EmploymentType).default(EmploymentType.FULL_TIME),
 
@@ -40,9 +40,17 @@ const ExperienceSchema = z
 
     isCurrentlyWorking: z.boolean().default(false),
 
-    location: z.string().trim().max(200).optional(),
+    location: z
+      .string()
+      .trim()
+      .max(200, "Location must be at most 200 characters.")
+      .optional(),
 
-    description: z.string().trim().max(2000).optional(),
+    description: z
+      .string()
+      .trim()
+      .max(2000, "Description must be at most 2000 characters.")
+      .optional(),
   })
   .refine(
     (data) => {

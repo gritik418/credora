@@ -1,6 +1,7 @@
 import { OnboardingStep } from "../auth/auth.interface";
 import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 import AddProfessionalInfoDto from "./dto/add-professional-info.dto";
+import AddSummaryDto from "./dto/add-summary.dto";
 import UpdateBasicInfoDto from "./dto/update-basic-info.dto";
 
 export interface UpdateBasicOnboardingInfoResponseDto {
@@ -25,6 +26,15 @@ export interface AddExperienceOnboardingInfoResponseDto {
   success: boolean;
   message: string;
   errors?: Partial<AddExperienceInfoDto>;
+  data?: {
+    nextStep: OnboardingStep;
+  };
+}
+
+export interface AddSummaryOnboardingInfoResponseDto {
+  success: boolean;
+  message: string;
+  errors?: Partial<AddSummaryDto>;
   data?: {
     nextStep: OnboardingStep;
   };

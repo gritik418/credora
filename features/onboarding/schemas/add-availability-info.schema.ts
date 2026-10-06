@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const AddAvailabilityInfoSchema = z.object({
   isOpenToWork: z.boolean().default(false),
