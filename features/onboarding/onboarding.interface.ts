@@ -1,5 +1,6 @@
 import { OnboardingStep } from "../auth/auth.interface";
 import SaveSkillsDto from "../skills/dto/save-skills.dto";
+import AddAvailabilityInfoDto from "./dto/add-availability-info.dto";
 import AddEducationInfoDto from "./dto/add-education-info.dto";
 import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 import AddLocationInfoDto from "./dto/add-location-info.dto";
@@ -65,6 +66,15 @@ export interface AddEducationOnboardingInfoResponseDto {
   success: boolean;
   message: string;
   errors?: Partial<AddEducationInfoDto>;
+  data?: {
+    nextStep: OnboardingStep;
+  };
+}
+
+export interface AddAvailabilityInfoResponseDto {
+  success: boolean;
+  message: string;
+  errors?: Partial<AddAvailabilityInfoDto>;
   data?: {
     nextStep: OnboardingStep;
   };

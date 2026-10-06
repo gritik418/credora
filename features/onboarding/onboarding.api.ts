@@ -1,5 +1,6 @@
 import baseApi from "@/store/api/base-api";
 import {
+  AddAvailabilityInfoResponseDto,
   AddEducationOnboardingInfoResponseDto,
   AddExperienceOnboardingInfoResponseDto,
   AddLocationOnboardingInfoResponseDto,
@@ -14,6 +15,7 @@ import AddSummaryDto from "./dto/add-summary.dto";
 import AddLocationInfoDto from "./dto/add-location-info.dto";
 import SaveSkillsDto from "../skills/dto/save-skills.dto";
 import AddEducationInfoDto from "./dto/add-education-info.dto";
+import AddAvailabilityInfoDto from "./dto/add-availability-info.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -94,6 +96,17 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addAvailabilityInfo: builder.mutation<
+      AddAvailabilityInfoResponseDto,
+      AddAvailabilityInfoDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/availability",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
@@ -104,6 +117,7 @@ export const {
   useAddEducationInfoMutation,
   useAddExperienceInfoMutation,
   useAddProfessionalInfoMutation,
+  useAddAvailabilityInfoMutation,
   useAddSkillsOnboardingInfoMutation,
 } = onboardingApi;
 

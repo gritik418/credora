@@ -1,17 +1,75 @@
 "use client";
 
-import { useState } from "react";
-import { BriefcaseBusiness, UsersRound } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import AddAvailabilityInfoDto from "@/features/onboarding/dto/add-availability-info.dto";
+import { useAddAvailabilityInfoMutation } from "@/features/onboarding/onboarding.api";
+import AddAvailabilityInfoSchema from "@/features/onboarding/schemas/add-availability-info.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BriefcaseBusiness, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const AvailabilityPage = () => {
-  const [isOpenToWork, setIsOpenToWork] = useState(false);
-  const [isOpenToCollaborate, setIsOpenToCollaborate] = useState(false);
+  const [addAvailability, { isLoading }] = useAddAvailabilityInfoMutation();
   const router = useRouter();
 
-  const handleOnContinue = () => {
-    router.push("/onboarding/completed");
+  const {
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<Partial<AddAvailabilityInfoDto>>({
+    defaultValues: {
+      isOpenToCollaborate: false,
+      isOpenToWork: true,
+    },
+    mode: "onChange",
+    resolver: zodResolver(AddAvailabilityInfoSchema),
+  });
+
+  const isOpenToWork = watch("isOpenToWork");
+  const isOpenToCollaborate = watch("isOpenToCollaborate");
+
+  const handleOnContinue = async (data: Partial<AddAvailabilityInfoDto>) => {
+    try {
+      const result = await addAvailability({
+        isOpenToWork: data.isOpenToWork ?? false,
+        isOpenToCollaborate: data.isOpenToCollaborate ?? false,
+      }).unwrap();
+
+      if (result.success) {
+        toast.success(
+          result.message || "Availability information added successfully.",
+        );
+        router.replace("/onboarding/completed");
+      } else {
+        toast.error(
+          result.message || "Failed to save availability information.",
+        );
+      }
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
+  };
+
+  const toggleWorkStatus = () => {
+    setValue("isOpenToWork", !isOpenToWork, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
+  const toggleCollaborationStatus = () => {
+    setValue("isOpenToCollaborate", !isOpenToCollaborate, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (
@@ -20,12 +78,13 @@ const AvailabilityPage = () => {
       title="What are you open to?"
       description="Let people know what kind of professional opportunities you're interested in."
       continueText="Finish onboarding"
-      onContinue={handleOnContinue}
+      onContinue={handleSubmit(handleOnContinue)}
+      loading={isLoading || isSubmitting}
     >
       <div className="space-y-3">
         <button
           type="button"
-          onClick={() => setIsOpenToWork((prev) => !prev)}
+          onClick={toggleWorkStatus}
           className={`flex w-full cursor-pointer items-center gap-4 rounded-2xl border p-5 text-left transition ${
             isOpenToWork
               ? "border-indigo-500/50 bg-indigo-500/10"
@@ -65,7 +124,7 @@ const AvailabilityPage = () => {
 
         <button
           type="button"
-          onClick={() => setIsOpenToCollaborate((prev) => !prev)}
+          onClick={toggleCollaborationStatus}
           className={`flex w-full cursor-pointer items-center gap-4 rounded-2xl border p-5 text-left transition ${
             isOpenToCollaborate
               ? "border-indigo-500/50 bg-indigo-500/10"
@@ -105,6 +164,21 @@ const AvailabilityPage = () => {
             />
           </div>
         </button>
+
+        {(errors.isOpenToWork?.message ||
+          errors.isOpenToCollaborate?.message) && (
+          <p className="pt-2 text-center text-xs text-red-400">
+            {errors.isOpenToWork?.message ||
+              errors.isOpenToCollaborate?.message}
+          </p>
+        )}
+
+        <div className="flex items-center gap-2 px-1 pt-3">
+          <div className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+          <p className="text-xs text-white/25">
+            You can change these preferences anytime from your profile.
+          </p>
+        </div>
       </div>
     </OnboardingShell>
   );

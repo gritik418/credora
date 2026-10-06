@@ -1,10 +1,19 @@
 "use client";
 
+import { selectCurrentUser } from "@/features/auth/auth.selectors";
+import { useAppSelector } from "@/store/hooks";
 import { ArrowRight, Check, CircleCheckBigIcon, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const OnboardingCompletedPage = () => {
   const router = useRouter();
+
+  const user = useAppSelector(selectCurrentUser);
+
+  if (!user) {
+    router.replace("/login");
+    return null;
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden text-credora-text">
@@ -40,8 +49,8 @@ const OnboardingCompletedPage = () => {
 
           <div className="mx-auto mt-10 max-w-md rounded-3xl border border-credora-border bg-credora-surface/70 p-5 text-left shadow-2xl shadow-black/30 backdrop-blur-xl">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-credora-blue to-credora-violet text-lg font-semibold text-white">
-                R
+              <div className="flex uppercase h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-credora-blue to-credora-violet text-lg font-semibold text-white">
+                {user.name.charAt(0)}
               </div>
 
               <div className="min-w-0 flex-1">

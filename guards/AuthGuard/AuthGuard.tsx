@@ -63,7 +63,9 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
     const isAuthRoute = AUTH_ROUTES.includes(pathname);
-    const isOnboardingRoute = pathname.startsWith("/onboarding");
+    const isOnboardingRoute =
+      pathname.startsWith("/onboarding") &&
+      pathname !== "/onboarding/completed";
 
     if (isError && !isPublicRoute && !isAuthRoute) {
       router.replace("/login");
