@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import UpdateBasicInfoSchema from "@/features/onboarding/schemas/update-basic-info.schema";
 import { useUpdateBasicInfoMutation } from "@/features/onboarding/onboarding.api";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 const BasicInfoPage = () => {
   const router = useRouter();
@@ -99,10 +100,12 @@ const BasicInfoPage = () => {
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#51566343]">
               {avatarPreview ? (
-                <img
+                <Image
                   src={avatarPreview}
                   alt="Profile preview"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full rounded-2xl object-cover"
+                  height={100}
+                  width={100}
                 />
               ) : (
                 <User size={28} className="text-white/25" />
