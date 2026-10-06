@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Search, X } from "lucide-react";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
-import { useRouter } from "next/navigation";
+import { useGetPopularSkillsQuery } from "@/features/skills/skills.api";
+import { Skill } from "@/features/skills/skills.interface";
+import { Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const suggestions = [
   "React",
@@ -20,21 +21,28 @@ const suggestions = [
 
 const SkillsPage = () => {
   const [skills, setSkills] = useState<string[]>(["React", "Node.js"]);
-  const router = useRouter();
+  const [popularSkills, setPopularSkills] = useState<Skill[]>([]);
 
-  const handleOnContinue = () => {
-    router.push("/onboarding/education");
-  };
+  const { data: popularSkillsData, isLoading: isLoadingPopularSkills } =
+    useGetPopularSkillsQuery();
 
-  const addSkill = (skill: string) => {
-    if (!skills.includes(skill)) {
-      setSkills([...skills, skill]);
+  const handleOnContinue = () => {};
+
+  const addSkill = (skill: Skill) => {
+    if (!skills.includes(skill.name)) {
+      setSkills([...skills, skill.name]);
     }
   };
 
   const removeSkill = (skill: string) => {
     setSkills(skills.filter((item) => item !== skill));
   };
+
+  useEffect(() => {
+    if (popularSkillsData?.success && popularSkillsData.data.skills.length) {
+      setPopularSkills(popularSkillsData.data.skills);
+    }
+  }, [popularSkillsData]);
 
   return (
     <OnboardingShell
@@ -44,7 +52,6 @@ const SkillsPage = () => {
       onContinue={handleOnContinue}
     >
       <div className="space-y-6">
-        {/* Search */}
         <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
           <Search size={17} className="text-white/25" />
 
@@ -54,7 +61,6 @@ const SkillsPage = () => {
           />
         </div>
 
-        {/* Selected */}
         <div>
           <p className="mb-3 text-xs uppercase tracking-wider text-white/25">
             Selected skills
@@ -82,15 +88,31 @@ const SkillsPage = () => {
           </p>
 
           <div className="flex flex-wrap gap-2">
-            {suggestions.map((skill) => (
-              <button
-                key={skill}
-                onClick={() => addSkill(skill)}
-                className="rounded-lg border border-white/8 bg-white/[0.035] px-3 py-2 text-sm text-white/40 transition hover:border-white/20 hover:text-white"
-              >
-                + {skill}
-              </button>
-            ))}
+            {isLoadingPopularSkills ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="h-9 w-24 animate-pulse rounded-lg border border-white/8 bg-white/[0.035]"
+                />
+              ))
+            ) : popularSkills.length > 0 ? (
+              popularSkills.map((skill) => (
+                <button
+                  key={skill.id}
+                  type="button"
+                  onClick={() => addSkill(skill)}
+                  className="rounded-lg border border-white/8 bg-white/[0.035] px-3 py-2 text-sm text-white/40 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-300"
+                >
+                  + {skill.name}
+                </button>
+              ))
+            ) : (
+              <div className="flex w-full items-center justify-center rounded-xl border border-dashed border-white/8 bg-white/1.5 px-4 py-6">
+                <p className="text-xs text-white/30">
+                  No popular skills available right now.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
