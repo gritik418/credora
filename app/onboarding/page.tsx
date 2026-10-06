@@ -35,6 +35,7 @@ const BasicInfoPage = () => {
       name: user?.name,
     },
     resolver: zodResolver(UpdateBasicInfoSchema),
+    mode: "onChange",
   });
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {

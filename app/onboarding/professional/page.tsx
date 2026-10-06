@@ -26,6 +26,7 @@ const ProfessionalPage = () => {
       profession: "",
     },
     resolver: zodResolver(AddProfessionalInfoSchema),
+    mode: "onChange",
   });
 
   const handleOnContinue = async (data: AddProfessionalInfoDto) => {

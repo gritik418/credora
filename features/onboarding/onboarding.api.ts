@@ -1,6 +1,7 @@
 import baseApi from "@/store/api/base-api";
 import {
   AddExperienceOnboardingInfoResponseDto,
+  AddLocationOnboardingInfoResponseDto,
   AddProfessionalOnboardingInfoResponseDto,
   AddSummaryOnboardingInfoResponseDto,
   UpdateBasicOnboardingInfoResponseDto,
@@ -8,6 +9,7 @@ import {
 import AddProfessionalInfoDto from "./dto/add-professional-info.dto";
 import AddExperienceInfoDto from "./dto/add-experience-info.dto";
 import AddSummaryDto from "./dto/add-summary.dto";
+import AddLocationInfoDto from "./dto/add-location-info.dto";
 
 const onboardingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -55,11 +57,23 @@ const onboardingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Onboarding"],
     }),
+    addLocationInfo: builder.mutation<
+      AddLocationOnboardingInfoResponseDto,
+      AddLocationInfoDto
+    >({
+      query: (data) => ({
+        url: "/onboarding/location",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Onboarding"],
+    }),
   }),
 });
 
 export const {
   useAddSummaryMutation,
+  useAddLocationInfoMutation,
   useUpdateBasicInfoMutation,
   useAddExperienceInfoMutation,
   useAddProfessionalInfoMutation,

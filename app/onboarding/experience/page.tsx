@@ -30,6 +30,7 @@ const ExperiencePage = () => {
     defaultValues: {
       experiences: [],
     },
+    mode: "onChange",
     resolver: zodResolver(AddExperienceInfoSchema),
   });
 

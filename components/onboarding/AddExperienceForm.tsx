@@ -38,6 +38,7 @@ const AddExperienceForm = ({ onAdd, onCancel }: Props) => {
       endDate: undefined,
     },
     resolver: zodResolver(ExperienceSchema),
+    mode: "onChange",
   });
 
   const isCurrentlyWorking = watch("isCurrentlyWorking");
