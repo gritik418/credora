@@ -1,24 +1,27 @@
 "use client";
 
 import countries from "@/constants/countries";
-import { selectCurrentUser } from "@/features/auth/auth.selectors";
-import { useAppSelector } from "@/store/hooks";
+import { ICurrentUser } from "@/features/auth/auth.interface";
 import {
   BriefcaseBusiness,
+  Check,
   GraduationCap,
   MapPin,
   Pencil,
   Share2,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
 
-const ProfileHeader = () => {
-  const router = useRouter();
-  const user = useAppSelector(selectCurrentUser);
+interface Props {
+  user?: ICurrentUser;
+}
+
+const ProfileHeader = ({ user }: Props) => {
+  const [isCopied, setIsCopied] = useState<boolean>(false);
 
   if (!user) {
-    router.replace("/auth");
     return null;
   }
 
@@ -38,6 +41,19 @@ const ProfileHeader = () => {
     return country || countryCode;
   };
 
+  const handleShare = async () => {
+    if (!user.username) return;
+
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/${user.username}`,
+    );
+
+    setIsCopied(true);
+
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
   const getRecentEducation = () => {
     const educations = user.profile?.educations;
 
@@ -105,19 +121,23 @@ const ProfileHeader = () => {
         <div className="z-10 flex gap-2 px-5 pt-6 sm:px-8 sm:pt-8">
           <button
             type="button"
-            className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/8 bg-white/3.5 px-4 py-2.5 text-sm font-medium text-white/60 transition hover:border-white/15 hover:bg-white/6 hover:text-white"
+            onClick={handleShare}
+            className="flex cursor-pointer items-center gap-2 rounded-xl border border-white/8 bg-white/[0.035] px-4 py-2.5 text-sm font-medium text-white/60 transition hover:border-white/15 hover:bg-white/6 hover:text-white"
           >
-            <Share2 size={15} />
-            <span className="hidden sm:inline">Share</span>
+            {isCopied ? <Check size={15} /> : <Share2 size={15} />}
+
+            <span className="hidden sm:inline">
+              {isCopied ? "Copied" : "Share"}
+            </span>
           </button>
 
-          <button
-            type="button"
+          <Link
+            href="/profile/edit"
             className="flex cursor-pointer items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-black transition hover:bg-white/90"
           >
             <Pencil size={15} />
             Edit profile
-          </button>
+          </Link>
         </div>
       </div>
 

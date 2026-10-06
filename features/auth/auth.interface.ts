@@ -1,3 +1,5 @@
+import { EmploymentType } from "../onboarding/onboarding.interface";
+import { Skill } from "../skills/skills.interface";
 import LoginDto from "./dto/login.dto";
 import RegisterDto from "./dto/register.dto";
 import ResendVerificationEmailDto from "./dto/resend-verification-email.dto";
@@ -76,20 +78,23 @@ export interface ICurrentUser {
 export interface ICurrentProfile {
   id: string;
   userId: string;
-  headline: string | null;
-  profession: string | null;
-  industry: string | null;
-  bio: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  website: string | null;
-  linkedinUrl: string | null;
-  githubUrl: string | null;
+  headline?: string | null;
+  profession?: string | null;
+  industry?: string | null;
+  bio?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  website?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
   isOpenToWork: boolean;
   isOpenToCollaborate: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+  educations: ICurrentEducation[];
+  experiences: ICurrentExperience[];
+  skills: Skill[];
 }
 
 export interface ICurrentOnboarding {
@@ -106,6 +111,36 @@ export interface ICurrentOnboarding {
   skillsCompleted: boolean;
   educationInfoCompleted: boolean;
   availabilityInfoCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ICurrentEducation {
+  id: string;
+  institution: string;
+  degree?: string;
+  fieldOfStudy?: string;
+  description?: string;
+  grade?: string;
+  startDate: string;
+  endDate?: string;
+  isCurrentlyStudying: boolean;
+  profileId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ICurrentExperience {
+  id: string;
+  company: string;
+  position: string;
+  employmentType: EmploymentType;
+  location?: string;
+  description?: string;
+  startDate: string;
+  endDate?: string;
+  isCurrentlyWorking: boolean;
+  profileId: string;
   createdAt: string;
   updatedAt: string;
 }
