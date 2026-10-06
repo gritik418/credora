@@ -1,26 +1,15 @@
 "use client";
 
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import SkillSearchInput from "@/components/onboarding/SkillSearchInput";
 import { useGetPopularSkillsQuery } from "@/features/skills/skills.api";
 import { Skill } from "@/features/skills/skills.interface";
 import { Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const suggestions = [
-  "React",
-  "Next.js",
-  "Node.js",
-  "TypeScript",
-  "NestJS",
-  "Python",
-  "PostgreSQL",
-  "MongoDB",
-  "Docker",
-  "AWS",
-];
-
 const SkillsPage = () => {
   const [skills, setSkills] = useState<string[]>(["React", "Node.js"]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [popularSkills, setPopularSkills] = useState<Skill[]>([]);
 
   const { data: popularSkillsData, isLoading: isLoadingPopularSkills } =
@@ -52,14 +41,11 @@ const SkillsPage = () => {
       onContinue={handleOnContinue}
     >
       <div className="space-y-6">
-        <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] px-4">
-          <Search size={17} className="text-white/25" />
-
-          <input
-            placeholder="Search or add a skill..."
-            className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-white/20"
-          />
-        </div>
+        <SkillSearchInput
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSelect={handleOnContinue}
+        />
 
         <div>
           <p className="mb-3 text-xs uppercase tracking-wider text-white/25">
