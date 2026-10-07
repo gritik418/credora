@@ -20,7 +20,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     <>{children}</>
   ) : (
     <PageWrapper>
-      <Navbar />
+      {pathname.startsWith("/org/") ? null : <Navbar />}
       {children}
     </PageWrapper>
   );
