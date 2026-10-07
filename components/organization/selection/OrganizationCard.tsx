@@ -1,23 +1,14 @@
 "use client";
 
-import {
-  ArrowRight,
-  Building2,
-  Check,
-  FolderKanban,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Building2, Check, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+  Organization,
+  OrganizationMemberRole,
+} from "@/features/organization/organization.interface";
 
 interface Props {
-  name: string;
-  slug: string;
-  description: string;
-  members: number;
-  projects: number;
-  role: string;
-  color: "indigo" | "violet" | "blue";
-  active?: boolean;
+  organization: Organization;
 }
 
 const colorMap = {
@@ -25,41 +16,62 @@ const colorMap = {
     icon: "border-indigo-400/15 bg-indigo-500/10 text-indigo-300",
     glow: "bg-indigo-500/10",
     badge: "border-indigo-400/15 bg-indigo-500/10 text-indigo-300",
-    progress: "from-indigo-500 to-blue-500",
   },
   violet: {
     icon: "border-violet-400/15 bg-violet-500/10 text-violet-300",
     glow: "bg-violet-500/10",
     badge: "border-violet-400/15 bg-violet-500/10 text-violet-300",
-    progress: "from-violet-500 to-indigo-500",
   },
   blue: {
     icon: "border-blue-400/15 bg-blue-500/10 text-blue-300",
     glow: "bg-blue-500/10",
     badge: "border-blue-400/15 bg-blue-500/10 text-blue-300",
-    progress: "from-blue-500 to-cyan-400",
+  },
+  emerald: {
+    icon: "border-emerald-400/15 bg-emerald-500/10 text-emerald-300",
+    glow: "bg-emerald-500/10",
+    badge: "border-emerald-400/15 bg-emerald-500/10 text-emerald-300",
+  },
+  amber: {
+    icon: "border-amber-400/15 bg-amber-500/10 text-amber-300",
+    glow: "bg-amber-500/10",
+    badge: "border-amber-400/15 bg-amber-500/10 text-amber-300",
   },
 };
 
-const OrganizationCard = ({
-  name,
-  slug,
-  description,
-  members,
-  projects,
-  role,
-  color,
-  active,
-}: Props) => {
+const OrganizationCard = ({ organization }: Props) => {
   const router = useRouter();
-  const theme = colorMap[color];
+
+  const getColorTheme = (role: OrganizationMemberRole) => {
+    switch (role) {
+      case OrganizationMemberRole.OWNER:
+        return colorMap.indigo;
+
+      case OrganizationMemberRole.ADMIN:
+        return colorMap.violet;
+
+      case OrganizationMemberRole.RECRUITER:
+        return colorMap.blue;
+
+      case OrganizationMemberRole.MANAGER:
+        return colorMap.emerald;
+
+      case OrganizationMemberRole.MEMBER:
+        return colorMap.amber;
+
+      default:
+        return colorMap.indigo;
+    }
+  };
+
+  const theme = getColorTheme(organization.role);
 
   return (
     <button
       type="button"
-      onClick={() => router.push(`/org/${slug}`)}
+      onClick={() => router.push(`/org/${organization.slug}`)}
       className={`group relative w-full cursor-pointer overflow-hidden rounded-3xl border text-left transition duration-300 ${
-        active
+        organization.isActive
           ? "border-indigo-400/25 bg-indigo-500/[0.07] shadow-[0_20px_70px_rgba(79,70,229,0.12)]"
           : "border-white/8 bg-white/2.5 hover:-translate-y-1 hover:border-white/15 hover:bg-white/4.5"
       }`}
@@ -71,13 +83,23 @@ const OrganizationCard = ({
       <div className="relative p-5 sm:p-6">
         <div className="flex items-start justify-between">
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-2xl border ${theme.icon}`}
+            className={`flex h-12 w-12 items-center justify-center rounded-xl border ${theme.icon}`}
           >
-            <Building2 size={21} />
+            {organization.logo ? (
+              <img
+                src={organization.logo}
+                alt={organization.name}
+                className="h-full w-full rounded-xl object-cover"
+                width={100}
+                height={100}
+              />
+            ) : (
+              <Building2 size={21} />
+            )}
           </div>
 
           <div className="flex items-center gap-2">
-            {active && (
+            {organization.isActive && (
               <span className="flex items-center gap-1.5 rounded-full border border-emerald-400/15 bg-emerald-400/8 px-2.5 py-1 text-[10px] font-medium text-emerald-300">
                 <Check size={11} />
                 Active
@@ -93,11 +115,14 @@ const OrganizationCard = ({
 
         <div className="mt-6">
           <h2 className="text-lg font-semibold tracking-tight text-white">
-            {name}
+            {organization.name}
           </h2>
 
-          <p className="mt-1.5 min-h-10 max-w-md text-xs leading-5 text-white/35">
-            {description}
+          <p className="mt-1 text-xs text-white/25">@{organization.slug}</p>
+
+          <p className="mt-3 min-h-10 max-w-md text-xs leading-5 text-white/35">
+            {organization.description ||
+              "No organization description has been added yet."}
           </p>
         </div>
 
@@ -105,33 +130,27 @@ const OrganizationCard = ({
           <span
             className={`rounded-lg border px-2.5 py-1.5 text-[10px] font-medium ${theme.badge}`}
           >
-            {role}
+            {organization.role}
           </span>
 
           <span className="flex items-center gap-1.5 rounded-lg border border-white/6 bg-white/2.5 px-2.5 py-1.5 text-[10px] text-white/35">
-            <Users size={12} />
-            {members} members
-          </span>
-
-          <span className="flex items-center gap-1.5 rounded-lg border border-white/6 bg-white/2.5 px-2.5 py-1.5 text-[10px] text-white/35">
-            <FolderKanban size={12} />
-            {projects} projects
+            <Mail size={12} />
+            {organization.supportEmail}
           </span>
         </div>
 
         <div className="mt-6 border-t border-white/6 pt-4">
           <div className="flex items-center justify-between">
             <span className="text-[10px] uppercase tracking-[0.14em] text-white/20">
-              Workspace activity
+              Member since
             </span>
 
-            <span className="text-[10px] text-white/35">Healthy</span>
-          </div>
-
-          <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/6">
-            <div
-              className={`h-full w-[72%] rounded-full bg-linear-to-r ${theme.progress}`}
-            />
+            <span className="text-[10px] text-white/35">
+              {new Date(organization.joinedAt).toLocaleDateString("en-IN", {
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
           </div>
         </div>
       </div>

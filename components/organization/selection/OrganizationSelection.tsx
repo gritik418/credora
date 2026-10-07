@@ -1,36 +1,17 @@
 "use client";
 
-import { ArrowLeft, UserRound } from "lucide-react";
-import Link from "next/link";
-import OrganizationCard from "./OrganizationCard";
+import { useGetOrganizationsQuery } from "@/features/organization/organization.api";
+import { selectOrganizations } from "@/features/organization/organization.selectors";
+import { useAppSelector } from "@/store/hooks";
 import CreateOrganizationCard from "./CreateOrganizationCard";
+import OrganizationCard from "./OrganizationCard";
 import OrganizationSelectionHeader from "./OrganizationSelectionHeader";
-
-const organizations = [
-  {
-    name: "Credora",
-    slug: "credora",
-    description:
-      "Build, manage and verify professional work across teams and projects.",
-    members: 24,
-    projects: 12,
-    role: "Owner",
-    color: "indigo" as const,
-    active: true,
-  },
-  {
-    name: "Acme Technologies",
-    slug: "acme-technologies",
-    description:
-      "Product engineering workspace for building modern digital products.",
-    members: 18,
-    projects: 8,
-    role: "Member",
-    color: "violet" as const,
-  },
-];
+import { Organization } from "@/features/organization/organization.interface";
 
 const OrganizationSelection = () => {
+  const organizations: Organization[] = useAppSelector(selectOrganizations);
+  useGetOrganizationsQuery();
+
   return (
     <main className="org-shell org-background min-h-screen">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 pt-6 pb-10 sm:px-8 lg:px-10 lg:py-8">
@@ -38,8 +19,11 @@ const OrganizationSelection = () => {
           <OrganizationSelectionHeader />
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {organizations.map((organization) => (
-              <OrganizationCard key={organization.slug} {...organization} />
+            {organizations.map((organization: Organization) => (
+              <OrganizationCard
+                key={organization.id}
+                organization={organization}
+              />
             ))}
 
             <CreateOrganizationCard />

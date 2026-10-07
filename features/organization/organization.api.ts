@@ -1,6 +1,9 @@
 import baseApi from "@/store/api/base-api";
 import CreateOrganizationDto from "./dto/create-organization.dto";
-import { CreateOrganizationResponseDto } from "./organization.interface";
+import {
+  CreateOrganizationResponseDto,
+  GetOrganizationsResponseDto,
+} from "./organization.interface";
 
 const organizationApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -14,9 +17,16 @@ const organizationApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getOrganizations: build.query<GetOrganizationsResponseDto, void>({
+      query: () => ({
+        url: "/organizations",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateOrganizationMutation } = organizationApi;
+export const { useGetOrganizationsQuery, useCreateOrganizationMutation } =
+  organizationApi;
 
 export default organizationApi;
