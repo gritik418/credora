@@ -5,8 +5,10 @@ import AddExperienceForm, {
 } from "@/components/onboarding/AddExperienceForm";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import { useAddExperienceInfoMutation } from "@/features/onboarding/onboarding.api";
+import { AddExperienceOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddExperienceInfoSchema from "@/features/onboarding/schemas/add-experience-info.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { BriefcaseBusiness, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -57,6 +59,16 @@ const ExperiencePage = () => {
         toast.error(result.message || "Failed to add experience info.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddExperienceOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          toast.error(response.message);
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

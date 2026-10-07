@@ -9,12 +9,15 @@ import AddLocationInfoDto from "@/features/onboarding/dto/add-location-info.dto"
 import countries from "@/constants/countries";
 import { toast } from "react-toastify";
 import { useAddLocationInfoMutation } from "@/features/onboarding/onboarding.api";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { AddLocationOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 
 const LocationPage = () => {
   const [addLocationInfo, { isLoading }] = useAddLocationInfoMutation();
 
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AddLocationInfoDto>({
@@ -37,6 +40,23 @@ const LocationPage = () => {
         toast.error(result.message || "Failed to add location info.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddLocationOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof AddLocationInfoDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

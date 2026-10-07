@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useResendVerificationEmailMutation } from "@/features/auth/auth.api";
 import { toast } from "react-toastify";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { ResendVerificationEmailResponseDto } from "@/features/auth/auth.interface";
 
 const RegisterSuccessPage = () => {
   const router = useRouter();
@@ -32,6 +34,18 @@ const RegisterSuccessPage = () => {
     } catch (error: any) {
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as ResendVerificationEmailResponseDto;
+
+        if (response.errors) {
+          if (response.errors.email) {
+            toast.error(response.errors.email || "Something went wrong.");
+          }
+        }
         return;
       }
 

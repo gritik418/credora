@@ -7,13 +7,15 @@ import { toast } from "react-toastify";
 import { useVerifyEmailMutation } from "@/features/auth/auth.api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { VerifyEmailResponseDto } from "@/features/auth/auth.interface";
+import VerifyEmailDto from "@/features/auth/dto/verify-email.dto";
 
 const VerifyEmail = () => {
-  const [verify] = useVerifyEmailMutation();
+  const [verify, { isLoading }] = useVerifyEmailMutation();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
   const [uid, setUid] = useState<string | null>(null);
@@ -24,8 +26,6 @@ const VerifyEmail = () => {
         setIsInvalid(true);
         return;
       }
-
-      setIsVerifying(true);
 
       const result = await verify({
         token,
@@ -42,14 +42,26 @@ const VerifyEmail = () => {
         router.push("/");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as VerifyEmailResponseDto;
+
+        if (response.errors && Object.entries(response.errors).length) {
+          toast.error(
+            response.errors.token ||
+              response.errors.uid ||
+              "Something went wrong. Please try again later.",
+          );
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;
       }
 
       toast.error(error?.data?.message || "Something went wrong.");
-    } finally {
-      setIsVerifying(false);
     }
   };
 
@@ -177,10 +189,10 @@ const VerifyEmail = () => {
           <button
             type="button"
             onClick={handleVerifyEmail}
-            disabled={isVerifying}
+            disabled={isLoading}
             className="w-full mt-6 cursor-pointer group flex items-center justify-center gap-2 py-4 px-4 rounded-xl shadow-[0_8px_30px_rgb(79,70,229,0.3)] hover:shadow-[0_10px_40px_rgb(79,70,229,0.5)] text-base font-bold text-white bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98] hover:-translate-y-0.5"
           >
-            {isVerifying ? (
+            {isLoading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
                 Verifying...

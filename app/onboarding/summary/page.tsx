@@ -3,8 +3,10 @@
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import AddSummaryDto from "@/features/onboarding/dto/add-summary.dto";
 import { useAddSummaryMutation } from "@/features/onboarding/onboarding.api";
+import { AddSummaryOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddSummarySchema from "@/features/onboarding/schemas/add-summary.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { FileText } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +19,7 @@ const SummaryPage = () => {
   const {
     register,
     watch,
+    setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AddSummaryDto>({
@@ -39,6 +42,23 @@ const SummaryPage = () => {
         toast.error(result.message || "Failed to add summary.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddSummaryOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof AddSummaryDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

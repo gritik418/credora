@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoginSchema from "@/features/auth/schemas/login.schema";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { LoginResponseDto } from "@/features/auth/auth.interface";
 
 const LoginPage = () => {
   const [login] = useLoginMutation();
@@ -22,6 +24,7 @@ const LoginPage = () => {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginDto>({
     defaultValues: {
@@ -45,6 +48,23 @@ const LoginPage = () => {
         router.push("/");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as LoginResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof LoginDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

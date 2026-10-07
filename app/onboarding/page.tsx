@@ -13,6 +13,8 @@ import UpdateBasicInfoSchema from "@/features/onboarding/schemas/update-basic-in
 import { useUpdateBasicInfoMutation } from "@/features/onboarding/onboarding.api";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { UpdateBasicOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 
 const BasicInfoPage = () => {
   const router = useRouter();
@@ -30,6 +32,7 @@ const BasicInfoPage = () => {
     register,
     handleSubmit,
     getValues,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<UpdateBasicInfoDto>({
     defaultValues: {
@@ -71,6 +74,23 @@ const BasicInfoPage = () => {
         toast.error(result.message || "Failed to update basic info.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as UpdateBasicOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof UpdateBasicInfoDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

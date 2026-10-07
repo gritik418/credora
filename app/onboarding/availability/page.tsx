@@ -3,8 +3,10 @@
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import AddAvailabilityInfoDto from "@/features/onboarding/dto/add-availability-info.dto";
 import { useAddAvailabilityInfoMutation } from "@/features/onboarding/onboarding.api";
+import { AddAvailabilityInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddAvailabilityInfoSchema from "@/features/onboarding/schemas/add-availability-info.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { BriefcaseBusiness, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -49,6 +51,20 @@ const AvailabilityPage = () => {
         );
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddAvailabilityInfoResponseDto;
+
+        if (response.errors && Object.entries(response.errors).length) {
+          toast.error(
+            response.errors.isOpenToWork ||
+              response.errors.isOpenToCollaborate ||
+              "Failed to save availability information.",
+          );
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

@@ -3,8 +3,10 @@
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
 import AddProfessionalInfoDto from "@/features/onboarding/dto/add-professional-info.dto";
 import { useAddProfessionalInfoMutation } from "@/features/onboarding/onboarding.api";
+import { AddProfessionalOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddProfessionalInfoSchema from "@/features/onboarding/schemas/add-professional-info.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Briefcase, Building2, Code2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm, UseFormRegisterReturn } from "react-hook-form";
@@ -17,6 +19,7 @@ const ProfessionalPage = () => {
 
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AddProfessionalInfoDto>({
@@ -43,6 +46,23 @@ const ProfessionalPage = () => {
         toast.error(result.message || "Failed to add professional info.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddProfessionalOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof AddProfessionalInfoDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

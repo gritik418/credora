@@ -23,6 +23,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { RegisterResponseDto } from "@/features/auth/auth.interface";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -35,6 +37,7 @@ const RegisterPage = () => {
   const {
     register,
     handleSubmit,
+    setError,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterDto>({
@@ -68,6 +71,23 @@ const RegisterPage = () => {
         }
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as RegisterResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof RegisterDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

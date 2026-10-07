@@ -4,9 +4,12 @@ import AddEducationForm, {
   EducationFormOutput,
 } from "@/components/onboarding/AddEducationForm";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
+import AddEducationInfoDto from "@/features/onboarding/dto/add-education-info.dto";
 import { useAddEducationInfoMutation } from "@/features/onboarding/onboarding.api";
+import { AddEducationOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddEducationInfoSchema from "@/features/onboarding/schemas/add-education-info.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { GraduationCap, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -57,6 +60,16 @@ const EducationPage = () => {
         toast.error(result.message || "Failed to add education info.");
       }
     } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddEducationOnboardingInfoResponseDto;
+
+        if (response.errors) {
+          toast.error(response.message);
+        }
+        return;
+      }
+
       if (error.status === "FETCH_ERROR") {
         toast.error("Network Error. Please check your connection.");
         return;

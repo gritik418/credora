@@ -2,21 +2,34 @@
 
 import { APP_CONFIG } from "@/constants";
 import { selectCurrentUser } from "@/features/auth/auth.selectors";
+import CreateOrganizationDto from "@/features/organization/dto/create-organization.dto";
+import { useCreateOrganizationMutation } from "@/features/organization/organization.api";
+import { CreateOrganizationResponseDto } from "@/features/organization/organization.interface";
+import CreateOrganizationSchema from "@/features/organization/schemas/create-organization.schema";
 import { useAppSelector } from "@/store/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const CreateOrganizationForm = () => {
+  const [createOrganization, { isLoading }] = useCreateOrganizationMutation();
+
+  const router = useRouter();
   const user = useAppSelector(selectCurrentUser);
-  const [useAccountEmail, setUseAccountEmail] = useState(true);
+  const [useAccountEmail, setUseAccountEmail] = useState<boolean>(true);
 
   const {
     register,
     setValue,
     watch,
+    setError,
     handleSubmit,
-    formState: { errors },
-  } = useForm({
+    formState: { errors, isSubmitting },
+  } = useForm<CreateOrganizationDto>({
     defaultValues: {
       name: "",
       supportEmail: "",
@@ -25,6 +38,8 @@ const CreateOrganizationForm = () => {
       logo: "",
       website: "",
     },
+    mode: "onChange",
+    resolver: zodResolver(CreateOrganizationSchema),
   });
 
   const supportEmail = watch("supportEmail");
@@ -51,8 +66,41 @@ const CreateOrganizationForm = () => {
     }
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: CreateOrganizationDto) => {
+    try {
+      const result = await createOrganization(data).unwrap();
+
+      if (result.success) {
+        toast.success(result.message || "Organization created successfully.");
+        router.replace("/org");
+      } else {
+        toast.error(result.message || "Failed to create organization.");
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as CreateOrganizationResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof CreateOrganizationDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
   };
 
   return (
@@ -221,9 +269,17 @@ const CreateOrganizationForm = () => {
 
       <button
         type="submit"
-        className="org-primary-button w-full rounded-xl px-5 py-3 text-sm font-medium"
+        disabled={isSubmitting || isLoading}
+        className="org-primary-button cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-70"
       >
-        Create organization
+        {isSubmitting || isLoading ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Creating organization...
+          </>
+        ) : (
+          "Create organization"
+        )}
       </button>
     </form>
   );
