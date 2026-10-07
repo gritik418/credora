@@ -3,6 +3,7 @@ export const APP_CONFIG = {
   NAME: "Credora.",
   COMPANY: "Credora",
   YEAR: 2026,
+  DOMAIN: "credora.vercel.app/",
   BASE_URL: "credora.vercel.app",
   TECH_SUPPORT_EMAIL: "gritik418@gmail.com",
   SALES_EMAIL: "gritik418@gmail.com",
