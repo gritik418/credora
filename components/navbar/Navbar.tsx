@@ -4,44 +4,119 @@ import Logo from "@/components/logo/Logo";
 import { ICurrentUser } from "@/features/auth/auth.interface";
 import { selectCurrentUser } from "@/features/auth/auth.selectors";
 import { useAppSelector } from "@/store/hooks";
-import { Menu, X } from "lucide-react";
+import {
+  Building2,
+  Code2,
+  Home,
+  Layers3,
+  Menu,
+  Sparkles,
+  Stars,
+  Users,
+  X,
+} from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import ProfileMenu from "./ProfileMenu";
 import { usePathname } from "next/navigation";
+import { useMemo, useState } from "react";
+import { BsChatText } from "react-icons/bs";
+import ProfileMenu from "./ProfileMenu";
 
 interface NavItem {
   label: string;
   href: string;
+  icon: React.ReactElement;
 }
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-
   const user: ICurrentUser | null = useAppSelector(selectCurrentUser);
 
-  const navItems: NavItem[] = [
-    { label: "Features", href: "/features" },
-    { label: "For Organizations", href: "/organizations" },
-    { label: "For Developers", href: "/developers" },
-  ];
+  const navItems: NavItem[] = useMemo(() => {
+    const isPostsPage = pathname.startsWith("/posts");
+
+    if (isPostsPage) {
+      return [
+        {
+          label: "Home",
+          href: "/posts/feed",
+          icon: <Home size={15} />,
+        },
+        {
+          label: "Discover",
+          href: "/posts/discover",
+          icon: <Stars size={15} />,
+        },
+        {
+          label: "Network",
+          href: "/network",
+          icon: <Users size={15} />,
+        },
+        {
+          label: "Messaging",
+          href: "/messaging",
+          icon: <BsChatText size={15} />,
+        },
+      ];
+    }
+
+    return [
+      {
+        label: "Features",
+        href: "/#features",
+        icon: <Layers3 size={15} />,
+      },
+      {
+        label: "Organizations",
+        href: "/#organizations",
+        icon: <Building2 size={15} />,
+      },
+      {
+        label: "Developers",
+        href: "/#developers",
+        icon: <Code2 size={15} />,
+      },
+    ];
+  }, [pathname]);
+
+  const isActive = (href: string) => {
+    if (href.startsWith("/#")) return false;
+    if (href === "/posts") return pathname === "/posts";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
-    <nav className="relative z-50 border-b border-white/5 bg-transparent px-6 py-0 backdrop-blur-md sm:px-8">
-      <div className="mx-auto flex max-w-360 items-center justify-between">
+    <nav className="relative z-50 w-full border-b border-white/6 bg-[#070912]/80 px-5 backdrop-blur-xl sm:px-8">
+      <div className="mx-auto flex h-18 max-w-360 items-center justify-between">
         <Logo size="base" />
 
-        <div className="hidden items-center gap-8 lg:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-sm font-medium  transition-colors hover:text-white ${pathname === item.href ? "text-white" : "text-zinc-400"}`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div className="hidden items-center gap-2 lg:flex">
+          {navItems.map((item) => {
+            const active = isActive(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group text-xs flex items-center gap-2 rounded-xl px-4 py-2.5 font-medium transition-all ${
+                  active
+                    ? "border border-indigo-400/15 bg-indigo-500/10 text-white"
+                    : "border border-transparent text-zinc-400 hover:bg-white/4 hover:text-zinc-100"
+                }`}
+              >
+                <span
+                  className={`transition-colors ${
+                    active
+                      ? "text-indigo-300"
+                      : "text-zinc-500 group-hover:text-indigo-300"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-3">
@@ -50,17 +125,18 @@ const Navbar = () => {
           ) : (
             <Link
               href="/login"
-              className="hidden rounded-full border border-white/10 bg-white/5 px-6 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-white/10 sm:block"
+              className="hidden rounded-xl border border-white/10 bg-white/4 px-5 py-2.5 text-sm font-medium text-white transition-all hover:border-indigo-400/30 hover:bg-indigo-500/10 sm:block"
             >
-              Sign In
+              Sign in
             </Link>
           )}
 
           <button
             type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex cursor-pointer h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-300 transition-all hover:border-blue-500/30 hover:bg-blue-500/10 hover:text-white lg:hidden"
-            aria-label="Toggle navigation"
+            onClick={() => setIsOpen((previous) => !previous)}
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/4 text-zinc-300 transition-all hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white lg:hidden"
+            aria-label={isOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={isOpen}
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -68,31 +144,42 @@ const Navbar = () => {
       </div>
 
       {isOpen && (
-        <div className="mx-auto mt-6 max-w-7xl border-t border-white/5 pt-5 lg:hidden">
+        <div className="mx-auto max-w-360 border-t border-white/6 py-4 lg:hidden">
           <div className="flex flex-col gap-1">
-            <Link
-              href="#features"
-              onClick={() => setIsOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-zinc-400 transition-all hover:bg-blue-500/5 hover:text-blue-400"
-            >
-              Features
-            </Link>
+            {navItems.map((item) => {
+              const active = isActive(item.href);
 
-            <Link
-              href="#organizations"
-              onClick={() => setIsOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-zinc-400 transition-all hover:bg-blue-500/5 hover:text-blue-400"
-            >
-              For Organizations
-            </Link>
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                    active
+                      ? "bg-indigo-500/10 text-white"
+                      : "text-zinc-400 hover:bg-white/4 hover:text-white"
+                  }`}
+                >
+                  <span
+                    className={active ? "text-indigo-300" : "text-zinc-500"}
+                  >
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </Link>
+              );
+            })}
 
-            <Link
-              href="#developers"
-              onClick={() => setIsOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-zinc-400 transition-all hover:bg-violet-500/5 hover:text-violet-400"
-            >
-              For Developers
-            </Link>
+            {!user && (
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="mt-2 flex items-center gap-3 rounded-xl border border-white/6 px-4 py-3 text-sm font-medium text-zinc-300 transition-all hover:bg-white/4 hover:text-white"
+              >
+                <Sparkles size={15} className="text-indigo-300" />
+                Sign in to Credora
+              </Link>
+            )}
           </div>
         </div>
       )}
