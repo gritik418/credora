@@ -86,7 +86,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="relative z-50 w-full border-b border-white/6 bg-[#070912]/80 px-5 backdrop-blur-xl sm:px-8">
+    <nav className="relative z-50 w-full border-b border-white/6 px-5 backdrop-blur-xl sm:px-8">
       <div className="mx-auto flex h-18 max-w-360 items-center justify-between">
         <Logo size="base" />
 
