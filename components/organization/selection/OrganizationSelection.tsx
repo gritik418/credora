@@ -13,7 +13,7 @@ const OrganizationSelection = () => {
   useGetOrganizationsQuery();
 
   return (
-    <main className="org-shell org-background min-h-screen">
+    <main className="org-shell min-h-screen org-background">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 pt-6 pb-10 sm:px-8 lg:px-10 lg:py-8">
         <div className="flex flex-1 flex-col justify-center py-4 lg:py-6">
           <OrganizationSelectionHeader />

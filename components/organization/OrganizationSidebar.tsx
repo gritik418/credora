@@ -11,12 +11,16 @@ import {
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import OrganizationSelector from "./OrganizationSelector";
+import { useAppSelector } from "@/store/hooks";
+import { selectOrganizationMembers } from "@/features/organization-member/organization-member.selectors";
 
 const OrganizationSidebar = () => {
-  const params = useParams<{ orgSlug: string }>();
+  const params = useParams<{ slug: string }>();
   const pathname = usePathname();
 
-  const basePath = `/org/${params.orgSlug}`;
+  const organizationMembers = useAppSelector(selectOrganizationMembers);
+
+  const basePath = `/org/${params.slug}`;
 
   const navigation = [
     {
@@ -53,6 +57,8 @@ const OrganizationSidebar = () => {
 
     return pathname.startsWith(href);
   };
+
+  console.log(organizationMembers);
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-white/6 lg:block">
@@ -91,7 +97,7 @@ const OrganizationSidebar = () => {
 
                 {item.label === "Members" && (
                   <span className="ml-auto rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] text-white/30">
-                    24
+                    {organizationMembers.length}
                   </span>
                 )}
               </Link>

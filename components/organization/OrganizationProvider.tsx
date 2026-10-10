@@ -1,6 +1,7 @@
 "use client";
 
 import OrganizationLoader from "@/components/loaders/OrganizationLoader";
+import { useGetOrganizationMembersQuery } from "@/features/organization-member/organization-member.api";
 import {
   useGetOrganizationBySlugQuery,
   useGetOrganizationsQuery,
@@ -23,6 +24,16 @@ const OrganizationProvider = ({ slug, children }: Props) => {
     isLoading: organizationsLoading,
     isError: organizationsIsError,
   } = useGetOrganizationsQuery();
+
+  const orgId = data?.data?.organization?.id || "";
+
+  useGetOrganizationMembersQuery(
+    { orgId: orgId },
+    {
+      skip: !orgId,
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   if (isLoading || organizationsLoading) {
     return <OrganizationLoader />;
