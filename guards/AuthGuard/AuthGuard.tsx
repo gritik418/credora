@@ -1,6 +1,6 @@
 "use client";
 
-import CredoraLoader from "@/components/common/CredoraLoader";
+import CredoraLoader from "@/components/loaders/CredoraLoader";
 import { useGetMeQuery } from "@/features/auth/auth.api";
 import { OnboardingStep } from "@/features/auth/auth.interface";
 import {

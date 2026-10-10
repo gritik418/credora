@@ -2,6 +2,7 @@ import baseApi from "@/store/api/base-api";
 import CreateOrganizationDto from "./dto/create-organization.dto";
 import {
   CreateOrganizationResponseDto,
+  GetOrganizationBySlugResponseDto,
   GetOrganizationsResponseDto,
 } from "./organization.interface";
 
@@ -23,10 +24,22 @@ const organizationApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getOrganizationBySlug: build.query<
+      GetOrganizationBySlugResponseDto,
+      string
+    >({
+      query: (slug) => ({
+        url: `/organizations/${slug}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetOrganizationsQuery, useCreateOrganizationMutation } =
-  organizationApi;
+export const {
+  useGetOrganizationsQuery,
+  useCreateOrganizationMutation,
+  useGetOrganizationBySlugQuery,
+} = organizationApi;
 
 export default organizationApi;

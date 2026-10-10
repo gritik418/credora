@@ -4,10 +4,12 @@ import organizationApi from "./organization.api";
 
 interface OrganizationState {
   organizations: Organization[];
+  selectedOrganization: Organization | null;
 }
 
 const initialState: OrganizationState = {
   organizations: [],
+  selectedOrganization: null,
 };
 
 const organizationSlice = createSlice({
@@ -31,6 +33,22 @@ const organizationSlice = createSlice({
         organizationApi.endpoints.getOrganizations.matchRejected,
         (state) => {
           state.organizations = [];
+        },
+      )
+      .addMatcher(
+        organizationApi.endpoints.getOrganizationBySlug.matchFulfilled,
+        (state, action) => {
+          if (action.payload.data) {
+            state.selectedOrganization = action.payload.data.organization;
+          } else {
+            state.selectedOrganization = null;
+          }
+        },
+      )
+      .addMatcher(
+        organizationApi.endpoints.getOrganizationBySlug.matchRejected,
+        (state) => {
+          state.selectedOrganization = null;
         },
       );
   },

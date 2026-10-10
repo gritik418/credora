@@ -17,6 +17,14 @@ export interface GetOrganizationsResponseDto {
   };
 }
 
+export interface GetOrganizationBySlugResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    organization: Organization;
+  };
+}
+
 export interface Organization {
   id: string;
   name: string;
