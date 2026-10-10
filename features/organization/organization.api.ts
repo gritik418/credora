@@ -17,12 +17,14 @@ const organizationApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Organization"],
     }),
     getOrganizations: build.query<GetOrganizationsResponseDto, void>({
       query: () => ({
         url: "/organizations",
         method: "GET",
       }),
+      providesTags: ["Organization"],
     }),
     getOrganizationBySlug: build.query<
       GetOrganizationBySlugResponseDto,

@@ -3,7 +3,6 @@
 import {
   Activity,
   Building2,
-  ChevronDown,
   FolderKanban,
   LayoutGrid,
   Settings,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import OrganizationSelector from "./OrganizationSelector";
 
 const OrganizationSidebar = () => {
   const params = useParams<{ orgSlug: string }>();
@@ -57,28 +57,7 @@ const OrganizationSidebar = () => {
   return (
     <aside className="hidden w-64 shrink-0 border-r border-white/6 lg:block">
       <div className="flex h-screen flex-col">
-        <div className="p-4">
-          <button
-            type="button"
-            className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-white/7 bg-white/2.5 p-3 text-left transition hover:border-white/12 hover:bg-white/4.5"
-          >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-indigo-500/20 to-violet-500/10 text-indigo-300">
-              <Building2 size={17} />
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-medium text-white/80">
-                {params.orgSlug
-                  ?.split("-")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-              </p>
-              <p className="mt-0.5 text-[10px] text-white/30">Organization</p>
-            </div>
-
-            <ChevronDown size={15} className="text-white/25" />
-          </button>
-        </div>
+        <OrganizationSelector />
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           <p className="px-3 pb-2 pt-1 text-[10px] font-medium uppercase tracking-[0.16em] text-white/25">

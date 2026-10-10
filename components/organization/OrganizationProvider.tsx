@@ -1,7 +1,10 @@
 "use client";
 
 import OrganizationLoader from "@/components/loaders/OrganizationLoader";
-import { useGetOrganizationBySlugQuery } from "@/features/organization/organization.api";
+import {
+  useGetOrganizationBySlugQuery,
+  useGetOrganizationsQuery,
+} from "@/features/organization/organization.api";
 import type { ReactNode } from "react";
 
 interface Props {
@@ -10,13 +13,22 @@ interface Props {
 }
 
 const OrganizationProvider = ({ slug, children }: Props) => {
-  const { data, isLoading, isError } = useGetOrganizationBySlugQuery(slug);
+  const { data, isLoading, isError } = useGetOrganizationBySlugQuery(slug, {
+    refetchOnMountOrArgChange: true,
+    skip: !slug,
+  });
 
-  if (isLoading) {
+  const {
+    data: organizationsData,
+    isLoading: organizationsLoading,
+    isError: organizationsIsError,
+  } = useGetOrganizationsQuery();
+
+  if (isLoading || organizationsLoading) {
     return <OrganizationLoader />;
   }
 
-  if (isError || !data) {
+  if (isError || !data || organizationsIsError || !organizationsData) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#050505] px-6">
         <div className="max-w-md text-center">
