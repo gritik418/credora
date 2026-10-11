@@ -1,6 +1,7 @@
 "use client";
 
 import OrganizationLoader from "@/components/loaders/OrganizationLoader";
+import { useGetOrganizationInvitesQuery } from "@/features/organization-invite/organization-invite.api";
 import { useGetOrganizationMembersQuery } from "@/features/organization-member/organization-member.api";
 import {
   useGetOrganizationBySlugQuery,
@@ -28,12 +29,22 @@ const OrganizationProvider = ({ slug, children }: Props) => {
   const orgId = data?.data?.organization?.id || "";
 
   useGetOrganizationMembersQuery(
-    { orgId: orgId },
+    { orgId },
     {
       skip: !orgId,
       refetchOnMountOrArgChange: true,
     },
   );
+
+  const { data: invitesData } = useGetOrganizationInvitesQuery(
+    { orgId },
+    {
+      skip: !orgId,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  console.log(invitesData);
 
   if (isLoading || organizationsLoading) {
     return <OrganizationLoader />;
