@@ -1,8 +1,26 @@
 import baseApi from "@/store/api/base-api";
-import { GetOrganizationMemberInvitesResponseDto } from "./organization-invite.interface";
+import SendInviteDto from "./dto/send-invite.dto";
+import {
+  GetOrganizationMemberInvitesResponseDto,
+  SendOrganizationInviteResponseDto,
+} from "./organization-invite.interface";
 
 const organizationInviteApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    sendOrganizationInvite: build.mutation<
+      SendOrganizationInviteResponseDto,
+      {
+        orgId: string;
+        data: SendInviteDto;
+      }
+    >({
+      query: ({ orgId, data }) => ({
+        url: `/organizations/${orgId}/invites`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     getOrganizationInvites: build.query<
       GetOrganizationMemberInvitesResponseDto,
       { orgId: string }
@@ -11,11 +29,13 @@ const organizationInviteApi = baseApi.injectEndpoints({
         url: `/organizations/${orgId}/invites`,
         method: "GET",
       }),
-      transformResponse: (response: any) => response.data,
     }),
   }),
 });
 
-export const { useGetOrganizationInvitesQuery } = organizationInviteApi;
+export const {
+  useGetOrganizationInvitesQuery,
+  useSendOrganizationInviteMutation,
+} = organizationInviteApi;
 
 export default organizationInviteApi;

@@ -52,6 +52,8 @@ const VerifyEmail = () => {
               response.errors.uid ||
               "Something went wrong. Please try again later.",
           );
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

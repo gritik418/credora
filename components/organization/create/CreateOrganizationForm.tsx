@@ -14,6 +14,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import z from "zod";
+
+type CreateOrgInputDto = z.input<typeof CreateOrganizationSchema>;
+type CreateOrgOutputDto = z.output<typeof CreateOrganizationSchema>;
 
 const CreateOrganizationForm = () => {
   const [createOrganization, { isLoading }] = useCreateOrganizationMutation();
@@ -29,7 +33,7 @@ const CreateOrganizationForm = () => {
     setError,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CreateOrganizationDto>({
+  } = useForm<CreateOrgInputDto, unknown, CreateOrgOutputDto>({
     defaultValues: {
       name: "",
       supportEmail: "",
@@ -66,7 +70,7 @@ const CreateOrganizationForm = () => {
     }
   };
 
-  const onSubmit = async (data: CreateOrganizationDto) => {
+  const onSubmit = async (data: CreateOrgOutputDto) => {
     try {
       const result = await createOrganization(data).unwrap();
 
@@ -90,6 +94,8 @@ const CreateOrganizationForm = () => {
               });
             }
           });
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

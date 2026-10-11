@@ -1,29 +1,109 @@
 "use client";
 
-import { useState } from "react";
-import { Mail, Plus, ShieldCheck, X } from "lucide-react";
+import SendInviteDto from "@/features/organization-invite/dto/send-invite.dto";
+import { useSendOrganizationInviteMutation } from "@/features/organization-invite/organization-invite.api";
+import { SendOrganizationInviteResponseDto } from "@/features/organization-invite/organization-invite.interface";
+import SendInviteSchema from "@/features/organization-invite/schemas/send-invite.schema";
+import { OrganizationMemberRole } from "@/features/organization/organization.interface";
+import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
+import { useAppSelector } from "@/store/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { LoaderCircle, Mail, Plus, ShieldCheck, X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onInvite: (email: string, role: "ADMIN" | "MANAGER" | "MEMBER") => void;
 }
 
-const InviteMemberModal = ({ open, onClose, onInvite }: Props) => {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"ADMIN" | "MANAGER" | "MEMBER">("MEMBER");
+const InviteMemberModal = ({ open, onClose }: Props) => {
+  const selectedOrg = useAppSelector(selectSelectedOrganization);
 
-  if (!open) return null;
+  const [sendInvite, { isLoading }] = useSendOrganizationInviteMutation();
 
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    setValue,
+    setError,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SendInviteDto>({
+    defaultValues: {
+      email: "",
+      role: OrganizationMemberRole.MEMBER,
+    },
+    mode: "onChange",
+    resolver: zodResolver(SendInviteSchema),
+  });
 
-    if (!email.trim()) return;
+  const handleInvite = async (data: SendInviteDto) => {
+    try {
+      if (!selectedOrg) return;
 
-    onInvite(email.trim(), role);
-    setEmail("");
-    setRole("MEMBER");
-    onClose();
+      const result = await sendInvite({
+        data,
+        orgId: selectedOrg.id,
+      }).unwrap();
+
+      if (!result.success) {
+        toast.error(
+          result.message || "Something went wrong. Please try again later.",
+        );
+      } else {
+        toast.success(result.message || "Invite sent successfully.");
+
+        onClose();
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as SendOrganizationInviteResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof SendInviteDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        } else {
+          toast.error(response.message || "Something went wrong.");
+        }
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      reset();
+    }
+  };
+  if (!open || !selectedOrg) return null;
+
+  const getRoleLabel = (role: OrganizationMemberRole) => {
+    switch (role) {
+      case OrganizationMemberRole.MEMBER:
+        return "Member — Standard access";
+      case OrganizationMemberRole.MANAGER:
+        return "Manager — Team management";
+      case OrganizationMemberRole.ADMIN:
+        return "Admin — Full organization control";
+      case OrganizationMemberRole.OWNER:
+        return "Owner — Complete ownership and full control";
+      case OrganizationMemberRole.RECRUITER:
+        return "Recruiter — Hiring and recruitment";
+      default:
+        return "Member — Standard access";
+    }
   };
 
   return (
@@ -42,7 +122,7 @@ const InviteMemberModal = ({ open, onClose, onInvite }: Props) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-white/40 transition hover:bg-white/6 hover:text-white"
+            className="rounded-lg cursor-pointer p-2 text-white/40 transition hover:bg-white/6 hover:text-white"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -58,21 +138,26 @@ const InviteMemberModal = ({ open, onClose, onInvite }: Props) => {
           together.
         </p>
 
-        <form onSubmit={submit} className="mt-6 space-y-5">
+        <form onSubmit={handleSubmit(handleInvite)} className="mt-6 space-y-5">
           <div>
             <label className="mb-2 block text-xs font-medium text-white/70">
               Work email
             </label>
 
             <input
+              {...register("email")}
               autoFocus
               type="email"
               required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
               placeholder="name@company.com"
               className="h-11 w-full rounded-xl border border-white/9 bg-black/20 px-3.5 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-indigo-400/50"
             />
+
+            {errors.email?.message && (
+              <p className="mt-1 text-xs text-red-400">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -87,14 +172,23 @@ const InviteMemberModal = ({ open, onClose, onInvite }: Props) => {
               />
 
               <select
-                value={role}
-                onChange={(event) => setRole(event.target.value as typeof role)}
+                onChange={(e) => {
+                  setValue("role", e.target.value as OrganizationMemberRole);
+                }}
                 className="h-11 w-full appearance-none rounded-xl border border-white/9 bg-[#10131d] pl-10 pr-4 text-sm text-white outline-none focus:border-indigo-400/50"
               >
-                <option value="MEMBER">Member — Standard access</option>
-                <option value="MANAGER">Manager — Team management</option>
-                <option value="ADMIN">Admin — Organization management</option>
+                {Object.values(OrganizationMemberRole).map((role) => (
+                  <option key={role} value={role}>
+                    {getRoleLabel(role)}
+                  </option>
+                ))}
               </select>
+
+              {errors.role?.message && (
+                <p className="mt-1 text-xs text-red-400">
+                  {errors.role.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -109,17 +203,27 @@ const InviteMemberModal = ({ open, onClose, onInvite }: Props) => {
             <button
               type="button"
               onClick={onClose}
-              className="org-secondary-button flex-1 rounded-xl px-4 py-3 text-sm font-medium"
+              className="org-secondary-button cursor-pointer flex-1 rounded-xl px-4 py-3 text-sm font-medium"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="org-primary-button flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium"
+              disabled={isLoading || isSubmitting}
+              className="org-primary-button flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <Plus size={16} />
-              Invite member
+              {isLoading || isSubmitting ? (
+                <>
+                  <LoaderCircle size={16} className="animate-spin" />
+                  Inviting...
+                </>
+              ) : (
+                <>
+                  <Plus size={16} />
+                  Invite member
+                </>
+              )}
             </button>
           </div>
         </form>

@@ -61,6 +61,8 @@ const LoginPage = () => {
               });
             }
           });
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

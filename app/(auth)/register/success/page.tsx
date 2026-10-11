@@ -45,6 +45,8 @@ const RegisterSuccessPage = () => {
           if (response.errors.email) {
             toast.error(response.errors.email || "Something went wrong.");
           }
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

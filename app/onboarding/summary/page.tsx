@@ -55,6 +55,8 @@ const SummaryPage = () => {
               });
             }
           });
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

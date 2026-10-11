@@ -61,6 +61,8 @@ const AvailabilityPage = () => {
               response.errors.isOpenToCollaborate ||
               "Failed to save availability information.",
           );
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

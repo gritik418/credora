@@ -66,6 +66,8 @@ const EducationPage = () => {
 
         if (response.errors) {
           toast.error(response.message);
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }

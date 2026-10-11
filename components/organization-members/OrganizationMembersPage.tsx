@@ -342,7 +342,6 @@ const OrganizationMembersPage = () => {
       <InviteMemberModal
         open={inviteOpen}
         onClose={() => setInviteOpen(false)}
-        onInvite={inviteMember}
       />
 
       {selectedMember && (

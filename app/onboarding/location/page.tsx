@@ -53,6 +53,8 @@ const LocationPage = () => {
               });
             }
           });
+        } else {
+          toast.error(response.message || "Something went wrong.");
         }
         return;
       }
