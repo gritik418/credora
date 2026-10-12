@@ -28,6 +28,9 @@ export interface OrganizationInvite {
   };
   role: OrganizationMemberRole;
   status: OrganizationInviteStatus;
+  department: string;
+  designation: string;
+
   createdAt: string;
   expiresAt: string;
 }

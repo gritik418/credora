@@ -34,6 +34,8 @@ const InviteMemberModal = ({ open, onClose }: Props) => {
     defaultValues: {
       email: "",
       role: OrganizationMemberRole.MEMBER,
+      department: "",
+      designation: "",
     },
     mode: "onChange",
     resolver: zodResolver(SendInviteSchema),
@@ -156,6 +158,44 @@ const InviteMemberModal = ({ open, onClose }: Props) => {
             {errors.email?.message && (
               <p className="mt-1 text-xs text-red-400">
                 {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-medium text-white/70">
+              Designation
+            </label>
+
+            <input
+              {...register("designation")}
+              type="text"
+              placeholder="Software Engineer"
+              className="h-11 w-full rounded-xl border border-white/9 bg-black/20 px-3.5 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-indigo-400/50"
+            />
+
+            {errors.designation?.message && (
+              <p className="mt-1 text-xs text-red-400">
+                {errors.designation.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="mb-2 block text-xs font-medium text-white/70">
+              Department
+            </label>
+
+            <input
+              {...register("department")}
+              type="text"
+              placeholder="Engineering"
+              className="h-11 w-full rounded-xl border border-white/9 bg-black/20 px-3.5 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-indigo-400/50"
+            />
+
+            {errors.department?.message && (
+              <p className="mt-1 text-xs text-red-400">
+                {errors.department.message}
               </p>
             )}
           </div>

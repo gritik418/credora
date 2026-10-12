@@ -17,6 +17,8 @@ export interface OrganizationMember {
   organizationId: string;
   role: OrganizationMemberRole;
   joinedAt: Date;
+  designation: string;
+  department: string;
   user: {
     id: string;
     name: string;
