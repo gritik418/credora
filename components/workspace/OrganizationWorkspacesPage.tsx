@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
+import { Workspace } from "@/features/workspace/workspace.interface";
+import { selectWorkspaces } from "@/features/workspace/workspace.selectors";
+import { useAppSelector } from "@/store/hooks";
 import {
   Archive,
   ArrowUpRight,
@@ -10,30 +12,26 @@ import {
   Plus,
   Users,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import CreateWorkspaceModal from "./CreateWorkspaceModal";
+import WorkspaceCard from "./WorkspaceCard";
 import WorkspacesHeader from "./WorkspacesHeader";
 import WorkspacesToolbar, {
   WorkspaceFilter,
   WorkspaceView,
 } from "./WorkspacesToolbar";
-import WorkspaceCard from "./WorkspaceCard";
-import CreateWorkspaceModal, {
-  CreateWorkspaceInput,
-} from "./CreateWorkspaceModal";
-import { Workspace } from "@/features/workspace/workspace.interface";
 
 const OrganizationWorkspacesPage = () => {
   const router = useRouter();
-  const params = useParams<{ slug: string }>();
-  const organizationSlug = params.slug;
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const organization = useAppSelector(selectSelectedOrganization);
+  const workspaces = useAppSelector(selectWorkspaces);
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<WorkspaceFilter>("ALL");
   const [view, setView] = useState<WorkspaceView>("GRID");
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingWorkspace, setEditingWorkspace] = useState<Workspace | null>(
-    null,
-  );
 
   const counts = useMemo(
     () => ({
@@ -86,27 +84,20 @@ const OrganizationWorkspacesPage = () => {
     [workspaces],
   );
 
-  const openCreateModal = () => {
-    setEditingWorkspace(null);
-    setModalOpen(true);
-  };
+  if (!organization) return null;
 
-  const openEditModal = (workspace: Workspace) => {
-    setEditingWorkspace(workspace);
+  const openCreateModal = () => {
     setModalOpen(true);
   };
 
   const handleOpenWorkspace = (workspace: Workspace) => {
-    router.push(`/org/${organizationSlug}/workspaces/${workspace.slug}`);
+    router.push(`/workspaces/${workspace.slug}`);
   };
 
   return (
     <div className="min-h-screen">
       <main className="mx-auto w-full max-w-[1600px] space-y-8">
-        <WorkspacesHeader
-          organizationName={organizationSlug}
-          onCreate={openCreateModal}
-        />
+        <WorkspacesHeader onCreate={openCreateModal} />
 
         <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="org-card flex items-center gap-4 p-4 sm:p-5">
@@ -180,7 +171,6 @@ const OrganizationWorkspacesPage = () => {
                   workspace={workspace}
                   view={view}
                   onOpen={handleOpenWorkspace}
-                  onEdit={openEditModal}
                 />
               ))}
             </div>
@@ -209,7 +199,7 @@ const OrganizationWorkspacesPage = () => {
                 <button
                   type="button"
                   onClick={openCreateModal}
-                  className="org-primary-button mt-5 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium text-white"
+                  className="org-primary-button cursor-pointer mt-5 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium text-white"
                 >
                   <Plus size={15} />
                   Create workspace
@@ -252,15 +242,7 @@ const OrganizationWorkspacesPage = () => {
         open={modalOpen}
         onClose={() => {
           setModalOpen(false);
-          setEditingWorkspace(null);
         }}
-        mode={editingWorkspace ? "EDIT" : "CREATE"}
-        initialValues={{
-          name: "",
-          color: "",
-          description: "",
-        }}
-        onSubmit={() => {}}
       />
     </div>
   );

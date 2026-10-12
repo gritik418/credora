@@ -1,16 +1,12 @@
 "use client";
 
-import { ArrowRight, Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 
 interface Props {
-  organizationName?: string;
   onCreate: () => void;
 }
 
-const WorkspacesHeader = ({
-  organizationName = "Your organization",
-  onCreate,
-}: Props) => {
+const WorkspacesHeader = ({ onCreate }: Props) => {
   return (
     <header className="space-y-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -38,7 +34,7 @@ const WorkspacesHeader = ({
         <button
           type="button"
           onClick={onCreate}
-          className="org-primary-button inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-white transition hover:brightness-110"
+          className="org-primary-button cursor-pointer inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-white transition hover:brightness-110"
         >
           <Plus size={17} />
           Create workspace

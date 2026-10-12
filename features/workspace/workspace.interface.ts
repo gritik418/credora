@@ -24,3 +24,11 @@ export interface CreateWorkspaceResponseDto {
     workspace: Workspace;
   };
 }
+
+export interface GetWorkspacesResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    workspaces: Workspace[];
+  };
+}

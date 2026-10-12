@@ -7,6 +7,7 @@ import {
   useGetOrganizationBySlugQuery,
   useGetOrganizationsQuery,
 } from "@/features/organization/organization.api";
+import { useGetWorkspacesQuery } from "@/features/workspace/workspace.api";
 import type { ReactNode } from "react";
 
 interface Props {
@@ -38,6 +39,16 @@ const OrganizationProvider = ({ slug, children }: Props) => {
 
   useGetOrganizationInvitesQuery(
     { orgId },
+    {
+      skip: !orgId,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetWorkspacesQuery(
+    {
+      orgId,
+    },
     {
       skip: !orgId,
       refetchOnMountOrArgChange: true,

@@ -18,7 +18,6 @@ interface Props {
   workspace: Workspace;
   view: "GRID" | "LIST";
   onOpen: (workspace: Workspace) => void;
-  onEdit: (workspace: Workspace) => void;
 }
 
 const roleStyles: Record<any, string> = {
@@ -28,7 +27,7 @@ const roleStyles: Record<any, string> = {
   MEMBER: "border-white/10 bg-white/5 text-white/50",
 };
 
-const WorkspaceCard = ({ workspace, view, onOpen, onEdit }: Props) => {
+const WorkspaceCard = ({ workspace, view, onOpen }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const updatedDate = new Intl.DateTimeFormat("en-IN", {
@@ -109,13 +108,13 @@ const WorkspaceCard = ({ workspace, view, onOpen, onEdit }: Props) => {
                     type="button"
                     onClick={() => {
                       setMenuOpen(false);
-                      onEdit(workspace);
                     }}
                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-white/65 transition hover:bg-white/5 hover:text-white"
                   >
                     <Pencil size={14} />
                     Edit workspace
                   </button>
+
                   <button
                     type="button"
                     onClick={() => {

@@ -1,5 +1,8 @@
 import baseApi from "@/store/api/base-api";
-import { CreateWorkspaceResponseDto } from "./workspace.interface";
+import {
+  CreateWorkspaceResponseDto,
+  GetWorkspacesResponseDto,
+} from "./workspace.interface";
 import CreateWorkspaceDto from "./dto/create-workspace.dto";
 
 const workspaceApi = baseApi.injectEndpoints({
@@ -17,9 +20,16 @@ const workspaceApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getWorkspaces: build.query<GetWorkspacesResponseDto, { orgId: string }>({
+      query: ({ orgId }) => ({
+        url: `/organizations/${orgId}/workspaces`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateWorkspaceMutation } = workspaceApi;
+export const { useCreateWorkspaceMutation, useGetWorkspacesQuery } =
+  workspaceApi;
 
 export default workspaceApi;
