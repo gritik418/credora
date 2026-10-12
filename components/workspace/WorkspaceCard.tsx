@@ -1,6 +1,9 @@
 "use client";
 
-import { Workspace } from "@/features/workspace/workspace.interface";
+import {
+  Workspace,
+  WorkspaceStatus,
+} from "@/features/workspace/workspace.interface";
 import {
   Archive,
   ArrowUpRight,
@@ -123,9 +126,9 @@ const WorkspaceCard = ({ workspace, view, onOpen }: Props) => {
                     className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-rose-300/80 transition hover:bg-rose-400/10 hover:text-rose-200"
                   >
                     <Archive size={14} />
-                    {workspace.isActive
-                      ? "Restore workspace"
-                      : "Archive workspace"}
+                    {workspace.status === WorkspaceStatus.ACTIVE
+                      ? "Archive workspace"
+                      : "Restore workspace"}
                   </button>
                 </div>
               </>
@@ -172,15 +175,19 @@ const WorkspaceCard = ({ workspace, view, onOpen }: Props) => {
 
           <span
             className={`inline-flex items-center gap-1 text-[10px] ${
-              workspace.isActive ? "text-white/30" : "text-emerald-300/65"
+              workspace.status === WorkspaceStatus.ACTIVE
+                ? "text-white/30"
+                : "text-emerald-300/65"
             }`}
           >
-            {workspace.isActive ? (
+            {workspace.status === WorkspaceStatus.ACTIVE ? (
               <Archive size={11} />
             ) : (
               <Circle size={7} fill="currentColor" />
             )}
-            {workspace.isActive ? "Archived" : "Active"}
+            {workspace.status === WorkspaceStatus.ACTIVE
+              ? "Archived"
+              : "Active"}
           </span>
         </div>
 

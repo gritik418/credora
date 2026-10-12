@@ -10,7 +10,7 @@ export interface Workspace {
   description?: string;
   logo?: string;
 
-  isActive: boolean;
+  status: WorkspaceStatus;
 
   createdById: string;
   updatedAt: string;
@@ -31,4 +31,9 @@ export interface GetWorkspacesResponseDto {
   data?: {
     workspaces: Workspace[];
   };
+}
+
+export enum WorkspaceStatus {
+  ACTIVE = "ACTIVE",
+  ARCHIVED = "ARCHIVED",
 }

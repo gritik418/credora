@@ -1,7 +1,10 @@
 "use client";
 
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
-import { Workspace } from "@/features/workspace/workspace.interface";
+import {
+  Workspace,
+  WorkspaceStatus,
+} from "@/features/workspace/workspace.interface";
 import { selectWorkspaces } from "@/features/workspace/workspace.selectors";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -36,8 +39,12 @@ const OrganizationWorkspacesPage = () => {
   const counts = useMemo(
     () => ({
       ALL: workspaces.length,
-      ACTIVE: workspaces.filter((workspace) => workspace.isActive).length,
-      ARCHIVED: workspaces.filter((workspace) => !workspace.isActive).length,
+      ACTIVE: workspaces.filter(
+        (workspace) => workspace.status === WorkspaceStatus.ACTIVE,
+      ).length,
+      ARCHIVED: workspaces.filter(
+        (workspace) => workspace.status === WorkspaceStatus.ARCHIVED,
+      ).length,
     }),
     [workspaces],
   );
@@ -49,8 +56,10 @@ const OrganizationWorkspacesPage = () => {
       .filter((workspace) => {
         const matchesFilter =
           filter === "ALL" ||
-          (filter === "ACTIVE" && !workspace.isActive) ||
-          (filter === "ARCHIVED" && workspace.isActive);
+          (filter === "ACTIVE" &&
+            workspace.status === WorkspaceStatus.ACTIVE) ||
+          (filter === "ARCHIVED" &&
+            workspace.status === WorkspaceStatus.ARCHIVED);
 
         const matchesSearch =
           !normalizedSearch ||
@@ -70,7 +79,7 @@ const OrganizationWorkspacesPage = () => {
   const totalProjects = useMemo(
     () =>
       workspaces
-        .filter((workspace) => !workspace.isActive)
+        .filter((workspace) => workspace.status === WorkspaceStatus.ACTIVE)
         .reduce((total, workspace) => total + 0, 0),
     [workspaces],
   );
@@ -78,7 +87,9 @@ const OrganizationWorkspacesPage = () => {
   const totalMembers = useMemo(
     () =>
       new Set(
-        workspaces.filter((workspace) => !workspace.isActive),
+        workspaces.filter(
+          (workspace) => workspace.status !== WorkspaceStatus.ACTIVE,
+        ),
         //   .map((workspace) => workspace.memberCount),
       ).size,
     [workspaces],
