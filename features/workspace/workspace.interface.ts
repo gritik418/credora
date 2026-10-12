@@ -1,3 +1,5 @@
+import CreateWorkspaceDto from "./dto/create-workspace.dto";
+
 export interface Workspace {
   id: string;
 
@@ -12,4 +14,13 @@ export interface Workspace {
 
   createdById: string;
   updatedAt: string;
+}
+
+export interface CreateWorkspaceResponseDto {
+  success: boolean;
+  message: string;
+  errors?: Partial<CreateWorkspaceDto>;
+  data?: {
+    workspace: Workspace;
+  };
 }
