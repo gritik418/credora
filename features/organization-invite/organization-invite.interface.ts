@@ -1,10 +1,11 @@
+import { OrganizationMemberRole } from "../organization/organization.interface";
 import SendInviteDto from "./dto/send-invite.dto";
 
 export interface GetOrganizationMemberInvitesResponseDto {
   success: boolean;
   message: string;
   data: {
-    invites: any[];
+    invites: OrganizationInvite[];
   };
 }
 
@@ -13,4 +14,28 @@ export interface SendOrganizationInviteResponseDto {
   message: string;
   errors?: Partial<SendInviteDto>;
   data?: { inviteId: string };
+}
+
+export interface OrganizationInvite {
+  id: string;
+  email: string;
+  invitedBy: {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string;
+    isActive: boolean;
+  };
+  role: OrganizationMemberRole;
+  status: OrganizationInviteStatus;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export enum OrganizationInviteStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+  EXPIRED = "EXPIRED",
+  REVOKED = "REVOKED",
 }

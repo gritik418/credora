@@ -7,11 +7,9 @@ import { OrganizationMember } from "@/features/organization-member/organization-
 
 interface Props {
   members: OrganizationMember[];
-  onRoleChange: (id: string, role: OrganizationMemberRole) => void;
-  onRemove: (member: OrganizationMember) => void;
 }
 
-const MembersTable = ({ members, onRoleChange, onRemove }: Props) => {
+const MembersTable = ({ members }: Props) => {
   return (
     <div className="overflow-visible">
       <div className="hidden grid-cols-[minmax(230px,1.6fr)_minmax(110px,0.8fr)_minmax(110px,0.8fr)_minmax(125px,0.9fr)_40px] gap-3 border-b border-(--org-border) bg-white/[0.012] px-5 py-3 lg:grid">
@@ -25,14 +23,7 @@ const MembersTable = ({ members, onRoleChange, onRemove }: Props) => {
       </div>
 
       {members.length > 0 ? (
-        members.map((member) => (
-          <MemberRow
-            key={member.id}
-            member={member}
-            onRoleChange={onRoleChange}
-            onRemove={onRemove}
-          />
-        ))
+        members.map((member) => <MemberRow key={member.id} member={member} />)
       ) : (
         <div className="flex flex-col items-center px-6 py-16 text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/2.5 text-white/35">

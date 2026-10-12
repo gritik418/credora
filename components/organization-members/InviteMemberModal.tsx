@@ -177,11 +177,13 @@ const InviteMemberModal = ({ open, onClose }: Props) => {
                 }}
                 className="h-11 w-full appearance-none rounded-xl border border-white/9 bg-[#10131d] pl-10 pr-4 text-sm text-white outline-none focus:border-indigo-400/50"
               >
-                {Object.values(OrganizationMemberRole).map((role) => (
-                  <option key={role} value={role}>
-                    {getRoleLabel(role)}
-                  </option>
-                ))}
+                {Object.values(OrganizationMemberRole)
+                  .filter((role) => role !== OrganizationMemberRole.OWNER)
+                  .map((role) => (
+                    <option key={role} value={role}>
+                      {getRoleLabel(role)}
+                    </option>
+                  ))}
               </select>
 
               {errors.role?.message && (

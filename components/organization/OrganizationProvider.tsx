@@ -36,15 +36,13 @@ const OrganizationProvider = ({ slug, children }: Props) => {
     },
   );
 
-  const { data: invitesData } = useGetOrganizationInvitesQuery(
+  useGetOrganizationInvitesQuery(
     { orgId },
     {
       skip: !orgId,
       refetchOnMountOrArgChange: true,
     },
   );
-
-  console.log(invitesData);
 
   if (isLoading || organizationsLoading) {
     return <OrganizationLoader />;

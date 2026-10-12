@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownToLine, Plus, Users } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 
 interface Props {
   onInvite: () => void;
@@ -30,17 +30,8 @@ const MembersHeader = ({ onInvite }: Props) => {
       <div className="flex shrink-0 items-center gap-3">
         <button
           type="button"
-          className="org-secondary-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
-          onClick={() => window.alert("Export UI coming soon")}
-        >
-          <ArrowDownToLine size={16} />
-          <span className="hidden sm:inline">Export</span>
-        </button>
-
-        <button
-          type="button"
           onClick={onInvite}
-          className="org-primary-button flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
+          className="org-primary-button cursor-pointer flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
         >
           <Plus size={17} />
           Invite member

@@ -19,6 +19,7 @@ const organizationInviteApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["OrgInvite"],
     }),
 
     getOrganizationInvites: build.query<
@@ -29,6 +30,7 @@ const organizationInviteApi = baseApi.injectEndpoints({
         url: `/organizations/${orgId}/invites`,
         method: "GET",
       }),
+      providesTags: ["OrgInvite"],
     }),
   }),
 });

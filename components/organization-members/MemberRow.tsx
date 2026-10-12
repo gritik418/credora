@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { OrganizationMember } from "@/features/organization-member/organization-member.interface";
+import { OrganizationMemberRole } from "@/features/organization/organization.interface";
 import {
   Check,
   ChevronDown,
@@ -8,18 +9,13 @@ import {
   Copy,
   Ellipsis,
   ShieldCheck,
-  UserRound,
   X,
 } from "lucide-react";
-import { OrganizationMember } from "@/features/organization-member/organization-member.interface";
-import { OrganizationMemberRole } from "@/features/organization/organization.interface";
-import { BsExclamation } from "react-icons/bs";
+import { useState } from "react";
 import { HiCheckCircle, HiExclamationCircle } from "react-icons/hi";
 
 interface Props {
   member: OrganizationMember;
-  onRoleChange: (id: string, role: OrganizationMemberRole) => void;
-  onRemove: (member: OrganizationMember) => void;
 }
 
 const roleStyles: Record<OrganizationMemberRole, string> = {
@@ -30,7 +26,7 @@ const roleStyles: Record<OrganizationMemberRole, string> = {
   RECRUITER: "border-white/[0.08] bg-white/[0.04] text-white/60",
 };
 
-const MemberRow = ({ member, onRoleChange, onRemove }: Props) => {
+const MemberRow = ({ member }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [roleOpen, setRoleOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -126,7 +122,6 @@ const MemberRow = ({ member, onRoleChange, onRemove }: Props) => {
                   key={role}
                   type="button"
                   onClick={() => {
-                    onRoleChange(member.id, role);
                     setRoleOpen(false);
                   }}
                   className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition hover:bg-white/5 ${
@@ -210,7 +205,6 @@ const MemberRow = ({ member, onRoleChange, onRemove }: Props) => {
               type="button"
               onClick={() => {
                 setMenuOpen(false);
-                onRemove(member);
               }}
               disabled={member.role === "OWNER"}
               className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs text-rose-300 hover:bg-rose-400/8 disabled:cursor-not-allowed disabled:opacity-30"

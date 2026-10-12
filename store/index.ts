@@ -3,6 +3,7 @@ import baseApi from "./api/base-api";
 import authSlice from "@/features/auth/auth.slice";
 import organizationSlice from "@/features/organization/organization.slice";
 import organizationMemberSlice from "@/features/organization-member/organization-member.slice";
+import organizationInviteSlice from "@/features/organization-invite/organization-invite.slice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     [authSlice.reducerPath]: authSlice.reducer,
     [organizationSlice.reducerPath]: organizationSlice.reducer,
     [organizationMemberSlice.reducerPath]: organizationMemberSlice.reducer,
+    [organizationInviteSlice.reducerPath]: organizationInviteSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

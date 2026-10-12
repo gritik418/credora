@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  OrganizationInvite,
+  OrganizationInviteStatus,
+} from "@/features/organization-invite/organization-invite.interface";
+import { selectOrganizationInvites } from "@/features/organization-invite/organization-invite.selectors";
+import { useAppSelector } from "@/store/hooks";
+import {
   CalendarClock,
   CheckCircle2,
   Clock3,
@@ -10,14 +16,8 @@ import {
   XCircle,
 } from "lucide-react";
 
-interface Props {
-  invites: any[];
-  onResend?: (invite: any) => void;
-  onRevoke?: (invite: any) => void;
-}
-
 const statusStyles: Record<
-  any["status"],
+  OrganizationInviteStatus,
   { label: string; className: string; icon: typeof Clock3 }
 > = {
   PENDING: {
@@ -40,20 +40,31 @@ const statusStyles: Record<
     className: "border-white/10 bg-white/5 text-white/45",
     icon: CalendarClock,
   },
+  REJECTED: {
+    label: "Rejected",
+    className: "border-red-400/15 bg-red-400/10 text-red-300",
+    icon: XCircle,
+  },
 };
 
 const formatDate = (date: string | Date) =>
-  new Intl.DateTimeFormat("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(date));
+  date
+    ? new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(new Date(date))
+    : "";
 
 const isExpired = (invite: any) =>
   invite.status === "PENDING" &&
   new Date(invite.expiresAt).getTime() < Date.now();
 
-const InvitesTable = ({ invites, onResend, onRevoke }: Props) => {
+const InvitesTable = () => {
+  const invites = useAppSelector(selectOrganizationInvites);
+
+  console.log(invites);
+
   if (!invites.length) {
     return (
       <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
@@ -95,11 +106,8 @@ const InvitesTable = ({ invites, onResend, onRevoke }: Props) => {
         </thead>
 
         <tbody className="divide-y divide-(--org-border)">
-          {invites.map((invite) => {
-            const expired = isExpired(invite);
-            const status = expired
-              ? statusStyles.EXPIRED
-              : statusStyles[invite.status];
+          {invites.map((invite: OrganizationInvite) => {
+            const status = statusStyles[invite.status];
             const StatusIcon = status.icon;
             const canManage = invite.status === "PENDING";
 
@@ -150,7 +158,7 @@ const InvitesTable = ({ invites, onResend, onRevoke }: Props) => {
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => onResend?.(invite)}
+                        // onClick={() => onResend?.(invite)}
                         title="Resend invitation"
                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/8 text-white/45 transition hover:border-indigo-400/25 hover:bg-indigo-500/10 hover:text-indigo-300"
                       >
@@ -158,7 +166,7 @@ const InvitesTable = ({ invites, onResend, onRevoke }: Props) => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => onRevoke?.(invite)}
+                        // onClick={() => onRevoke?.(invite)}
                         className="rounded-lg border border-rose-400/10 px-2.5 py-2 text-[11px] font-medium text-rose-300/80 transition hover:bg-rose-400/10 hover:text-rose-200"
                       >
                         Revoke
