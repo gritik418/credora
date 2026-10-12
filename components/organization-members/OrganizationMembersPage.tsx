@@ -45,7 +45,7 @@ const OrganizationMembersPage = () => {
   );
 
   return (
-    <div className="org-shell org-background min-h-screen">
+    <div className="min-h-screen">
       <main className="mx-auto w-full max-w-[1600px]">
         <div className="space-y-7">
           <MembersHeader onInvite={() => setInviteOpen(true)} />
