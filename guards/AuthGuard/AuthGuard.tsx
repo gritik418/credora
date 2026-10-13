@@ -7,6 +7,7 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
 } from "@/features/auth/auth.selectors";
+import { useGetSelectedOrganizationQuery } from "@/features/user/user.api";
 import { useAppSelector } from "@/store/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -31,6 +32,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const { isLoading, isError } = useGetMeQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
+  });
+
+  useGetSelectedOrganizationQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
   });
 
   const getOnboardingRoute = (step: OnboardingStep) => {

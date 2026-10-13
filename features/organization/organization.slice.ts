@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Organization } from "./organization.interface";
 import organizationApi from "./organization.api";
+import userApi from "../user/user.api";
 
 interface OrganizationState {
   organizations: Organization[];
@@ -36,7 +37,7 @@ const organizationSlice = createSlice({
         },
       )
       .addMatcher(
-        organizationApi.endpoints.getOrganizationBySlug.matchFulfilled,
+        userApi.endpoints.getSelectedOrganization.matchFulfilled,
         (state, action) => {
           if (action.payload.data) {
             state.selectedOrganization = action.payload.data.organization;
@@ -46,7 +47,7 @@ const organizationSlice = createSlice({
         },
       )
       .addMatcher(
-        organizationApi.endpoints.getOrganizationBySlug.matchRejected,
+        userApi.endpoints.getSelectedOrganization.matchRejected,
         (state) => {
           state.selectedOrganization = null;
         },

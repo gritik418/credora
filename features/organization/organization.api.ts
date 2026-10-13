@@ -19,7 +19,7 @@ const organizationApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Organization"],
+      invalidatesTags: ["Organization", "SwitchOrg"],
     }),
     getOrganizations: build.query<GetOrganizationsResponseDto, void>({
       query: () => ({
