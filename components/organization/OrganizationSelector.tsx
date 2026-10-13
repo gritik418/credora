@@ -10,12 +10,15 @@ import {
   selectSelectedOrganization,
 } from "@/features/organization/organization.selectors";
 import OrganizationSwitchLoader from "../loaders/OrganizationSwitchLoader";
+import { useSwitchOrganizationMutation } from "@/features/organization/organization.api";
+import { toast } from "react-toastify";
 
 const OrganizationSelector = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [isSwitching, setIsSwitching] = useState<boolean>(false);
+
+  const [switchOrganization, { isLoading }] = useSwitchOrganizationMutation();
 
   const organization = useAppSelector(selectSelectedOrganization);
 
@@ -44,14 +47,25 @@ const OrganizationSelector = () => {
     };
   }, []);
 
-  const handleSwitchOrganization = (slug: string) => {
-    setIsSwitching(true);
+  const handleSwitchOrganization = async (organizationId: string) => {
+    try {
+      const result = await switchOrganization({ organizationId }).unwrap();
 
-    setTimeout(() => {
+      if (result.success && result.data?.organization.slug) {
+        router.replace(`/org/${result.data?.organization.slug}`);
+      } else {
+        toast.error(result.message || "Failed to switch organization.");
+      }
+
       setIsOpen(false);
-      router.push(`/org/${slug}`);
-      setIsSwitching(false);
-    }, 3000);
+    } catch (error: any) {
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
   };
 
   const handleNavigate = (path: string) => {
@@ -63,7 +77,7 @@ const OrganizationSelector = () => {
     return null;
   }
 
-  if (isSwitching) {
+  if (isLoading) {
     return <OrganizationSwitchLoader />;
   }
 
@@ -126,7 +140,7 @@ const OrganizationSelector = () => {
               <button
                 type="button"
                 role="menuitem"
-                onClick={() => handleSwitchOrganization(organization.slug)}
+                onClick={() => handleSwitchOrganization(organization.id)}
                 className="flex w-full min-w-0 items-center gap-3 rounded-lg bg-indigo-500/10 p-2.5 text-left transition hover:bg-indigo-500/15"
               >
                 {organization.logo ? (
@@ -160,7 +174,7 @@ const OrganizationSelector = () => {
                     key={org.slug}
                     type="button"
                     role="menuitem"
-                    onClick={() => handleSwitchOrganization(org.slug)}
+                    onClick={() => handleSwitchOrganization(org.id)}
                     className="flex w-full cursor-pointer min-w-0 items-center gap-3 rounded-lg p-2.5 text-left transition hover:bg-white/5"
                   >
                     {org.logo ? (

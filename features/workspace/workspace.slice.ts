@@ -4,10 +4,12 @@ import { Workspace } from "./workspace.interface";
 
 interface WorkspaceState {
   workspaces: Workspace[];
+  selectedWorkspace: Workspace | null;
 }
 
 const initialState: WorkspaceState = {
   workspaces: [],
+  selectedWorkspace: null,
 };
 
 const workspaceSlice = createSlice({
@@ -31,6 +33,22 @@ const workspaceSlice = createSlice({
         workspaceApi.endpoints.getWorkspaces.matchRejected,
         (state, action) => {
           state.workspaces = [];
+        },
+      )
+      .addMatcher(
+        workspaceApi.endpoints.getWorkspaceBySlug.matchFulfilled,
+        (state, action) => {
+          if (action.payload.success && action.payload?.data?.workspace) {
+            state.selectedWorkspace = action.payload.data.workspace;
+          } else {
+            state.selectedWorkspace = null;
+          }
+        },
+      )
+      .addMatcher(
+        workspaceApi.endpoints.getWorkspaceBySlug.matchRejected,
+        (state, action) => {
+          state.selectedWorkspace = null;
         },
       );
   },

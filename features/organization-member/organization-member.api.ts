@@ -12,6 +12,7 @@ const organizationMemberApi = baseApi.injectEndpoints({
       query: ({ orgId }) => ({
         url: `/organizations/${orgId}/members`,
       }),
+      providesTags: ["SwitchOrg"],
     }),
   }),
 });

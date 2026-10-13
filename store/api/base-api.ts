@@ -8,7 +8,7 @@ const baseApi = createApi({
   }),
 
   endpoints: () => ({}),
-  tagTypes: ["Auth", "Onboarding", "Organization", "OrgInvite"],
+  tagTypes: ["Auth", "Onboarding", "Organization", "OrgInvite", "SwitchOrg"],
 });
 
 export default baseApi;

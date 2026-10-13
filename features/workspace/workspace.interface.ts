@@ -33,6 +33,19 @@ export interface GetWorkspacesResponseDto {
   };
 }
 
+export interface GetWorkspaceBySlugResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    workspace: Workspace;
+  };
+}
+
+export interface GetWorkspaceBySlugRequestDto {
+  organizationId: string;
+  workspaceSlug: string;
+}
+
 export enum WorkspaceStatus {
   ACTIVE = "ACTIVE",
   ARCHIVED = "ARCHIVED",

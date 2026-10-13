@@ -25,6 +25,18 @@ export interface GetOrganizationBySlugResponseDto {
   };
 }
 
+export interface SwitchOrganizationResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    organization: Organization;
+  };
+}
+
+export interface SwitchOrganizationRequestDto {
+  organizationId: string;
+}
+
 export interface Organization {
   id: string;
   name: string;

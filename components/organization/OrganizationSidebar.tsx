@@ -58,8 +58,6 @@ const OrganizationSidebar = () => {
     return pathname.startsWith(href);
   };
 
-  console.log(organizationMembers);
-
   return (
     <aside className="hidden w-64 shrink-0 border-r border-white/6 lg:block">
       <div className="flex h-screen flex-col">

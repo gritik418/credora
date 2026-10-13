@@ -102,7 +102,7 @@ const OrganizationWorkspacesPage = () => {
   };
 
   const handleOpenWorkspace = (workspace: Workspace) => {
-    router.push(`/workspaces/${workspace.slug}`);
+    router.push(`/workspace/${workspace.slug}`);
   };
 
   return (

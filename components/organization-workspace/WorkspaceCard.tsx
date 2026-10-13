@@ -199,7 +199,7 @@ const WorkspaceCard = ({ workspace, view, onOpen }: Props) => {
           <button
             type="button"
             onClick={() => onOpen(workspace)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/8 text-white/45 transition hover:border-indigo-400/25 hover:bg-indigo-500/10 hover:text-indigo-300"
+            className="flex cursor-pointer h-8 w-8 items-center justify-center rounded-lg border border-white/8 text-white/45 transition hover:border-indigo-400/25 hover:bg-indigo-500/10 hover:text-indigo-300"
             aria-label={`Open ${workspace.name}`}
           >
             <ArrowUpRight size={15} />

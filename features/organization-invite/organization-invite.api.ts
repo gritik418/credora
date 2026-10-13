@@ -30,7 +30,7 @@ const organizationInviteApi = baseApi.injectEndpoints({
         url: `/organizations/${orgId}/invites`,
         method: "GET",
       }),
-      providesTags: ["OrgInvite"],
+      providesTags: ["OrgInvite", "SwitchOrg"],
     }),
   }),
 });

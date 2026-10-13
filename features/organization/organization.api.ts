@@ -4,6 +4,8 @@ import {
   CreateOrganizationResponseDto,
   GetOrganizationBySlugResponseDto,
   GetOrganizationsResponseDto,
+  SwitchOrganizationRequestDto,
+  SwitchOrganizationResponseDto,
 } from "./organization.interface";
 
 const organizationApi = baseApi.injectEndpoints({
@@ -34,6 +36,17 @@ const organizationApi = baseApi.injectEndpoints({
         url: `/organizations/${slug}`,
         method: "GET",
       }),
+      providesTags: ["SwitchOrg"],
+    }),
+    switchOrganization: build.mutation<
+      SwitchOrganizationResponseDto,
+      SwitchOrganizationRequestDto
+    >({
+      query: ({ organizationId }) => ({
+        url: `/organizations/${organizationId}/switch`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["SwitchOrg"],
     }),
   }),
 });
@@ -42,6 +55,7 @@ export const {
   useGetOrganizationsQuery,
   useCreateOrganizationMutation,
   useGetOrganizationBySlugQuery,
+  useSwitchOrganizationMutation,
 } = organizationApi;
 
 export default organizationApi;
