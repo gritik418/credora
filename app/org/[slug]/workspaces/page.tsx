@@ -1,4 +1,4 @@
-import OrganizationWorkspacesPage from "@/components/workspace/OrganizationWorkspacesPage";
+import OrganizationWorkspacesPage from "@/components/organization-workspace/OrganizationWorkspacesPage";
 
 const WorkspacePage = () => {
   return <OrganizationWorkspacesPage />;
