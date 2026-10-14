@@ -1,5 +1,8 @@
 import baseApi from "@/store/api/base-api";
-import { GetSelectedOrganizationResponseDto } from "./user.interface";
+import {
+  GetSelectedOrganizationResponseDto,
+  GetSelectedWorkspaceResponseDto,
+} from "./user.interface";
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -13,9 +16,17 @@ const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["SwitchOrg"],
     }),
+    getSelectedWorkspace: build.query<GetSelectedWorkspaceResponseDto, void>({
+      query: () => ({
+        url: "/users/me/selected-workspace",
+        method: "GET",
+      }),
+      providesTags: ["SwitchWorkspace"],
+    }),
   }),
 });
 
-export const { useGetSelectedOrganizationQuery } = userApi;
+export const { useGetSelectedOrganizationQuery, useGetSelectedWorkspaceQuery } =
+  userApi;
 
 export default userApi;

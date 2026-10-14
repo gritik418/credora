@@ -39,6 +39,7 @@ const workspaceApi = baseApi.injectEndpoints({
         url: `/organizations/${organizationId}/workspaces/${workspaceSlug}`,
         method: "GET",
       }),
+      providesTags: ["SwitchWorkspace"],
     }),
     switchWorkspace: build.mutation<
       SwitchWorkspaceResponseDto,

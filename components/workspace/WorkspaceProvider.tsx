@@ -4,12 +4,15 @@ import { selectSelectedOrganization } from "@/features/organization/organization
 import {
   useGetWorkspaceBySlugQuery,
   useGetWorkspacesQuery,
+  useSwitchWorkspaceMutation,
 } from "@/features/workspace/workspace.api";
 import { useAppSelector } from "@/store/hooks";
 import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
 import { ArrowLeft, Building2, FolderKanban, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
+import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import Link from "next/link";
 
 interface Props {
   slug: string;
@@ -17,10 +20,16 @@ interface Props {
 }
 
 const WorkspaceProvider = ({ children, slug }: Props) => {
-  const router = useRouter();
+  const [switchWorkspace, { isLoading: isSwitching }] =
+    useSwitchWorkspaceMutation();
+
+  const selectedWorkspace = useAppSelector(selectSelectedWorkspace);
+
+  console.log("selectedWorkspace ->", selectedWorkspace);
+
   const organization = useAppSelector(selectSelectedOrganization);
 
-  const { data, isError, isFetching, refetch } = useGetWorkspaceBySlugQuery(
+  const { data, isError, isLoading, refetch } = useGetWorkspaceBySlugQuery(
     {
       workspaceSlug: slug,
       organizationId: organization?.id || "",
@@ -39,6 +48,22 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
       refetchOnMountOrArgChange: true,
     },
   );
+
+  useEffect(() => {
+    if (isLoading || isSwitching || !organization) return;
+
+    if (
+      data &&
+      data.data?.workspace &&
+      selectedWorkspace &&
+      selectedWorkspace?.id !== data.data.workspace.id
+    ) {
+      switchWorkspace({
+        workspaceId: data.data.workspace.id,
+        organizationId: organization.id,
+      });
+    }
+  }, [data, isLoading, isSwitching, selectedWorkspace?.id]);
 
   if (!organization?.id) {
     return (
@@ -59,19 +84,19 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
             and team discussions.
           </p>
 
-          <button
-            onClick={() => router.push("/organizations")}
+          <Link
+            href={"/org"}
             className="mt-7 inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-400"
           >
             <Building2 className="h-4 w-4" />
             Go to organizations
-          </button>
+          </Link>
         </div>
       </div>
     );
   }
 
-  if (isFetching && !data) {
+  if (isLoading && !data) {
     return <WorkspaceLoader />;
   }
 
@@ -95,14 +120,6 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
           </p>
 
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/4 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/8 hover:text-white"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Go back
-            </button>
-
             <button
               onClick={() => refetch()}
               className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-medium text-white transition hover:bg-indigo-400"

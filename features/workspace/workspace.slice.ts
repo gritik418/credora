@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import workspaceApi from "./workspace.api";
 import { Workspace } from "./workspace.interface";
+import userApi from "../user/user.api";
 
 interface WorkspaceState {
   workspaces: Workspace[];
@@ -36,7 +37,7 @@ const workspaceSlice = createSlice({
         },
       )
       .addMatcher(
-        workspaceApi.endpoints.getWorkspaceBySlug.matchFulfilled,
+        userApi.endpoints.getSelectedWorkspace.matchFulfilled,
         (state, action) => {
           if (action.payload.success && action.payload?.data?.workspace) {
             state.selectedWorkspace = action.payload.data.workspace;
@@ -46,7 +47,7 @@ const workspaceSlice = createSlice({
         },
       )
       .addMatcher(
-        workspaceApi.endpoints.getWorkspaceBySlug.matchRejected,
+        userApi.endpoints.getSelectedWorkspace.matchRejected,
         (state, action) => {
           state.selectedWorkspace = null;
         },

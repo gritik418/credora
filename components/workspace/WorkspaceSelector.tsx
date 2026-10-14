@@ -1,6 +1,5 @@
 "use client";
 
-import organizationApi from "@/features/organization/organization.api";
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 import { useSwitchWorkspaceMutation } from "@/features/workspace/workspace.api";
 import {
@@ -24,10 +23,6 @@ const WorkspaceSelector = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-
-  const currentWorkspace = workspaces.find(
-    (workspace) => workspace.slug === selectedWorkspace?.slug,
-  );
 
   const filteredWorkspaces = workspaces.filter((workspace) =>
     workspace.name.toLowerCase().includes(search.toLowerCase()),
@@ -60,7 +55,7 @@ const WorkspaceSelector = () => {
     }
   };
 
-  if (!organization || !selectedWorkspace) {
+  if (!organization) {
     return null;
   }
 
@@ -76,11 +71,11 @@ const WorkspaceSelector = () => {
         aria-expanded={isOpen}
         className="group/selector cursor-pointer flex h-12 w-full items-center gap-3 rounded-xl border border-white/6 bg-white/2.5 px-3 text-left transition hover:border-indigo-400/20 hover:bg-indigo-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50"
       >
-        {currentWorkspace?.logo ? (
+        {selectedWorkspace?.logo ? (
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg">
             <img
-              src={currentWorkspace.logo}
-              alt={currentWorkspace.name}
+              src={selectedWorkspace.logo}
+              alt={selectedWorkspace.name}
               className="h-full w-full object-cover rounded-lg"
             />
           </div>
@@ -92,7 +87,7 @@ const WorkspaceSelector = () => {
 
         <div className="min-w-0 flex-1 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
           <p className="truncate whitespace-nowrap text-xs font-medium text-zinc-200">
-            {currentWorkspace?.name ?? "Select workspace"}
+            {selectedWorkspace?.name ?? "Select workspace"}
           </p>
           <p className="truncate text-[10px] text-zinc-500">
             Workspace environment
@@ -138,47 +133,58 @@ const WorkspaceSelector = () => {
               Your workspaces
             </p>
 
+            {selectedWorkspace ? (
+              <button
+                key={selectedWorkspace?.id}
+                type="button"
+                onClick={() =>
+                  handleSwitchWorkspace(organization.id, selectedWorkspace.id)
+                }
+                className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 text-left transition bg-indigo-500/10 text-indigo-200
+              }`}
+              >
+                <div
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg border border-indigo-400/20 bg-indigo-500/10
+                }`}
+                >
+                  <FolderKanban size={15} />
+                </div>
+
+                <span className="min-w-0 flex-1 truncate text-xs font-medium">
+                  {selectedWorkspace?.name}
+                </span>
+
+                <Check size={15} className="shrink-0 text-indigo-300" />
+              </button>
+            ) : null}
+
             {filteredWorkspaces.length === 0 ? (
               <p className="px-3 py-5 text-center text-xs text-zinc-500">
                 No workspaces found.
               </p>
             ) : (
-              filteredWorkspaces.map((workspace) => {
-                const isSelected = workspace.slug === selectedWorkspace?.slug;
-
-                return (
-                  <button
-                    key={workspace.id}
-                    type="button"
-                    onClick={() =>
-                      handleSwitchWorkspace(organization.id, workspace.id)
-                    }
-                    className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 text-left transition ${
-                      isSelected
-                        ? "bg-indigo-500/10 text-indigo-200"
-                        : "text-zinc-300 hover:bg-white/4 hover:text-white"
-                    }`}
-                  >
-                    <div
-                      className={`flex size-8 shrink-0 items-center justify-center rounded-lg border ${
-                        isSelected
-                          ? "border-indigo-400/20 bg-indigo-500/10"
-                          : "border-white/6 bg-white/3"
-                      }`}
+              filteredWorkspaces
+                .filter((w) => w.id !== selectedWorkspace?.id)
+                .map((workspace) => {
+                  return (
+                    <button
+                      key={workspace.id}
+                      type="button"
+                      onClick={() =>
+                        handleSwitchWorkspace(organization.id, workspace.id)
+                      }
+                      className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2.5 text-left transition text-zinc-300 hover:bg-white/4 hover:text-white`}
                     >
-                      <FolderKanban size={15} />
-                    </div>
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/6 bg-white/3">
+                        <FolderKanban size={15} />
+                      </div>
 
-                    <span className="min-w-0 flex-1 truncate text-xs font-medium">
-                      {workspace.name}
-                    </span>
-
-                    {isSelected && (
-                      <Check size={15} className="shrink-0 text-indigo-300" />
-                    )}
-                  </button>
-                );
-              })
+                      <span className="min-w-0 flex-1 truncate text-xs font-medium">
+                        {workspace.name}
+                      </span>
+                    </button>
+                  );
+                })
             )}
           </div>
         </div>

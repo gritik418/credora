@@ -7,7 +7,10 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
 } from "@/features/auth/auth.selectors";
-import { useGetSelectedOrganizationQuery } from "@/features/user/user.api";
+import {
+  useGetSelectedOrganizationQuery,
+  useGetSelectedWorkspaceQuery,
+} from "@/features/user/user.api";
 import { useAppSelector } from "@/store/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -35,6 +38,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   });
 
   useGetSelectedOrganizationQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
+  });
+
+  useGetSelectedWorkspaceQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     skip: !isAuthenticated,
