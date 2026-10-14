@@ -10,13 +10,11 @@ interface Props {
 }
 
 const WorkspaceLayout = ({ children }: Props) => {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#080a10] text-white">
       <WorkspaceSidebar
-        workspaceId={workspaceId}
         mobileOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}
       />

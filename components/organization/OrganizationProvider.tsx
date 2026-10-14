@@ -6,9 +6,12 @@ import { useGetOrganizationMembersQuery } from "@/features/organization-member/o
 import {
   useGetOrganizationBySlugQuery,
   useGetOrganizationsQuery,
+  useSwitchOrganizationMutation,
 } from "@/features/organization/organization.api";
+import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 import { useGetWorkspacesQuery } from "@/features/workspace/workspace.api";
-import type { ReactNode } from "react";
+import { useAppSelector } from "@/store/hooks";
+import { useEffect, type ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -16,6 +19,11 @@ interface Props {
 }
 
 const OrganizationProvider = ({ slug, children }: Props) => {
+  const [switchOrganization, { isLoading: isSwitching }] =
+    useSwitchOrganizationMutation();
+
+  const selectedOrganization = useAppSelector(selectSelectedOrganization);
+
   const { data, isLoading, isError } = useGetOrganizationBySlugQuery(slug, {
     refetchOnMountOrArgChange: true,
     skip: !slug,
@@ -55,7 +63,19 @@ const OrganizationProvider = ({ slug, children }: Props) => {
     },
   );
 
-  if (isLoading || organizationsLoading) {
+  useEffect(() => {
+    if (isLoading || isSwitching) return;
+
+    if (
+      data &&
+      data.data?.organization &&
+      selectedOrganization?.id !== data.data.organization.id
+    ) {
+      switchOrganization({ organizationId: data.data.organization.id });
+    }
+  }, [data, isLoading, isSwitching, selectedOrganization?.id]);
+
+  if (isLoading || organizationsLoading || isSwitching) {
     return <OrganizationLoader />;
   }
 

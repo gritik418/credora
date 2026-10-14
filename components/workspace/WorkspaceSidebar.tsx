@@ -9,7 +9,6 @@ import {
   LayoutDashboard,
   MessageSquare,
   Settings2,
-  ShieldCheck,
   Users,
   X,
 } from "lucide-react";
@@ -17,14 +16,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface Props {
-  workspaceId: string;
   mobileOpen: boolean;
   onClose: () => void;
 }
 
-const WorkspaceSidebar = ({ workspaceId, mobileOpen, onClose }: Props) => {
+const WorkspaceSidebar = ({ mobileOpen, onClose }: Props) => {
   const pathname = usePathname();
-  const basePath = `/workspace/${workspaceId}`;
+  const selectedWorkspace = "";
+  const basePath = `/workspace/${selectedWorkspace}`;
 
   const navigation = [
     {
