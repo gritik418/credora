@@ -8,7 +8,14 @@ const baseApi = createApi({
   }),
 
   endpoints: () => ({}),
-  tagTypes: ["Auth", "Onboarding", "Organization", "OrgInvite", "SwitchOrg"],
+  tagTypes: [
+    "Auth",
+    "Onboarding",
+    "Organization",
+    "OrgInvite",
+    "SwitchOrg",
+    "SwitchWorkspace",
+  ],
 });
 
 export default baseApi;

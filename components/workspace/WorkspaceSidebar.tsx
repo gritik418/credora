@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import WorkspaceSelector from "./WorkspaceSelector";
 
 interface Props {
   mobileOpen: boolean;
@@ -104,27 +105,7 @@ const WorkspaceSidebar = ({ mobileOpen, onClose }: Props) => {
           </button>
         </div>
 
-        <div className="border-b border-white/6 p-3">
-          <div className="flex h-12 items-center gap-3 rounded-xl border border-white/6 bg-white/2.5 px-3 lg:group-hover/sidebar:border-indigo-400/15 lg:group-hover/sidebar:bg-indigo-500/5 lg:group-focus-within/sidebar:border-indigo-400/15">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-300">
-              <FolderKanban size={16} />
-            </div>
-
-            <div className="min-w-0 flex-1 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
-              <p className="truncate whitespace-nowrap text-xs font-medium text-zinc-200">
-                Current workspace
-              </p>
-              <p className="truncate text-[10px] text-zinc-500">
-                Workspace environment
-              </p>
-            </div>
-
-            <ChevronDown
-              size={15}
-              className="shrink-0 text-zinc-500 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100"
-            />
-          </div>
-        </div>
+        <WorkspaceSelector />
 
         <div className="flex-1 overflow-x-hidden overflow-y-auto px-3 py-5">
           <p className="mb-3 whitespace-nowrap px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">

@@ -46,6 +46,19 @@ export interface GetWorkspaceBySlugRequestDto {
   workspaceSlug: string;
 }
 
+export interface SwitchWorkspaceRequestDto {
+  organizationId: string;
+  workspaceId: string;
+}
+
+export interface SwitchWorkspaceResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    workspace: Workspace;
+  };
+}
+
 export enum WorkspaceStatus {
   ACTIVE = "ACTIVE",
   ARCHIVED = "ARCHIVED",

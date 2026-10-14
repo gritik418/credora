@@ -4,6 +4,8 @@ import {
   GetWorkspaceBySlugRequestDto,
   GetWorkspaceBySlugResponseDto,
   GetWorkspacesResponseDto,
+  SwitchWorkspaceRequestDto,
+  SwitchWorkspaceResponseDto,
 } from "./workspace.interface";
 import CreateWorkspaceDto from "./dto/create-workspace.dto";
 
@@ -27,7 +29,7 @@ const workspaceApi = baseApi.injectEndpoints({
         url: `/organizations/${orgId}/workspaces`,
         method: "GET",
       }),
-      providesTags: ["SwitchOrg"],
+      providesTags: ["SwitchOrg", "Organization"],
     }),
     getWorkspaceBySlug: build.query<
       GetWorkspaceBySlugResponseDto,
@@ -38,6 +40,16 @@ const workspaceApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    switchWorkspace: build.mutation<
+      SwitchWorkspaceResponseDto,
+      SwitchWorkspaceRequestDto
+    >({
+      query: ({ organizationId, workspaceId }) => ({
+        url: `/organizations/${organizationId}/workspaces/${workspaceId}/switch`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["SwitchWorkspace"],
+    }),
   }),
 });
 
@@ -45,6 +57,7 @@ export const {
   useGetWorkspacesQuery,
   useCreateWorkspaceMutation,
   useGetWorkspaceBySlugQuery,
+  useSwitchWorkspaceMutation,
 } = workspaceApi;
 
 export default workspaceApi;

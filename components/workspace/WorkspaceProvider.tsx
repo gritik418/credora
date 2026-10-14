@@ -1,7 +1,10 @@
 "use client";
 
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
-import { useGetWorkspaceBySlugQuery } from "@/features/workspace/workspace.api";
+import {
+  useGetWorkspaceBySlugQuery,
+  useGetWorkspacesQuery,
+} from "@/features/workspace/workspace.api";
 import { useAppSelector } from "@/store/hooks";
 import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
 import { ArrowLeft, Building2, FolderKanban, RefreshCw } from "lucide-react";
@@ -23,7 +26,17 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
       organizationId: organization?.id || "",
     },
     {
+      skip: !organization?.id || !slug,
+    },
+  );
+
+  useGetWorkspacesQuery(
+    {
+      orgId: organization?.id || "",
+    },
+    {
       skip: !organization?.id,
+      refetchOnMountOrArgChange: true,
     },
   );
 
