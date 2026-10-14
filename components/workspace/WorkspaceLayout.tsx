@@ -4,18 +4,23 @@ import { ReactNode, useState } from "react";
 import { useParams } from "next/navigation";
 import WorkspaceSidebar from "./WorkspaceSidebar";
 import WorkspaceHeader from "./WorkspaceHeader";
+import WorkspaceSwitchLoader from "../loaders/WorkspaceSwitchLoader";
 
 interface Props {
   children: ReactNode;
 }
 
 const WorkspaceLayout = ({ children }: Props) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [isSwitching, setIsSwitching] = useState<boolean>(false);
+
+  if (isSwitching) return <WorkspaceSwitchLoader />;
 
   return (
     <div className="min-h-screen bg-[#080a10] text-white">
       <WorkspaceSidebar
         mobileOpen={mobileOpen}
+        setIsSwitching={setIsSwitching}
         onClose={() => setMobileOpen(false)}
       />
 

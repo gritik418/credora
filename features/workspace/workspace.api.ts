@@ -23,13 +23,14 @@ const workspaceApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Workspace"],
     }),
     getWorkspaces: build.query<GetWorkspacesResponseDto, { orgId: string }>({
       query: ({ orgId }) => ({
         url: `/organizations/${orgId}/workspaces`,
         method: "GET",
       }),
-      providesTags: ["SwitchOrg", "Organization"],
+      providesTags: ["SwitchOrg", "Organization", "Workspace"],
     }),
     getWorkspaceBySlug: build.query<
       GetWorkspaceBySlugResponseDto,

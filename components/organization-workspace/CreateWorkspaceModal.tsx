@@ -56,7 +56,6 @@ const CreateWorkspaceModal = ({ open, onClose }: Props) => {
 
   if (!open || !selectedOrganization) return null;
 
-  console.log("selectedOrganization", selectedOrganization);
   const handleCreateWorkspace = async (data: CreateWorkspaceDto) => {
     try {
       const result = await createWorkspace({

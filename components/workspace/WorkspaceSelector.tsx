@@ -9,13 +9,16 @@ import {
 import { useAppSelector } from "@/store/hooks";
 import { Check, ChevronDown, FolderKanban, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { toast } from "react-toastify";
-import WorkspaceSwitchLoader from "../loaders/WorkspaceSwitchLoader";
 
-const WorkspaceSelector = () => {
+interface Props {
+  setIsSwitching: Dispatch<SetStateAction<boolean>>;
+}
+
+const WorkspaceSelector = ({ setIsSwitching }: Props) => {
   const router = useRouter();
-  const [switchWorkspace, { isLoading }] = useSwitchWorkspaceMutation();
+  const [switchWorkspace] = useSwitchWorkspaceMutation();
 
   const workspaces = useAppSelector(selectWorkspaces);
   const organization = useAppSelector(selectSelectedOrganization);
@@ -33,6 +36,8 @@ const WorkspaceSelector = () => {
     workspaceId: string,
   ) => {
     try {
+      setIsSwitching(true);
+
       const result = await switchWorkspace({
         organizationId,
         workspaceId,
@@ -52,15 +57,13 @@ const WorkspaceSelector = () => {
       }
 
       toast.error(error?.data?.message || "Something went wrong.");
+    } finally {
+      setIsSwitching(false);
     }
   };
 
   if (!organization) {
     return null;
-  }
-
-  if (isLoading) {
-    return <WorkspaceSwitchLoader />;
   }
 
   return (

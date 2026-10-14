@@ -15,6 +15,7 @@ const baseApi = createApi({
     "OrgInvite",
     "SwitchOrg",
     "SwitchWorkspace",
+    "Workspace",
   ],
 });
 

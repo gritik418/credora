@@ -25,8 +25,6 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
 
   const selectedWorkspace = useAppSelector(selectSelectedWorkspace);
 
-  console.log("selectedWorkspace ->", selectedWorkspace);
-
   const organization = useAppSelector(selectSelectedOrganization);
 
   const { data, isError, isLoading, refetch } = useGetWorkspaceBySlugQuery(

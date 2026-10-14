@@ -15,16 +15,20 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import WorkspaceSelector from "./WorkspaceSelector";
+import { Dispatch, SetStateAction } from "react";
+import { useAppSelector } from "@/store/hooks";
+import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
 
 interface Props {
   mobileOpen: boolean;
   onClose: () => void;
+  setIsSwitching: Dispatch<SetStateAction<boolean>>;
 }
 
-const WorkspaceSidebar = ({ mobileOpen, onClose }: Props) => {
+const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
   const pathname = usePathname();
-  const selectedWorkspace = "";
-  const basePath = `/workspace/${selectedWorkspace}`;
+  const workspace = useAppSelector(selectSelectedWorkspace);
+  const basePath = `/workspace/${workspace?.slug}`;
 
   const navigation = [
     {
@@ -105,7 +109,7 @@ const WorkspaceSidebar = ({ mobileOpen, onClose }: Props) => {
           </button>
         </div>
 
-        <WorkspaceSelector />
+        <WorkspaceSelector setIsSwitching={setIsSwitching} />
 
         <div className="flex-1 overflow-x-hidden overflow-y-auto px-3 py-5">
           <p className="mb-3 whitespace-nowrap px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">

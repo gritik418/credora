@@ -56,14 +56,8 @@ const formatDate = (date: string | Date) =>
       }).format(new Date(date))
     : "";
 
-const isExpired = (invite: any) =>
-  invite.status === "PENDING" &&
-  new Date(invite.expiresAt).getTime() < Date.now();
-
 const InvitesTable = () => {
   const invites = useAppSelector(selectOrganizationInvites);
-
-  console.log(invites);
 
   if (!invites.length) {
     return (
