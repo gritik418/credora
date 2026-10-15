@@ -2,6 +2,8 @@ import baseApi from "@/store/api/base-api";
 import {
   CreateProjectRequestDto,
   CreateProjectResponseDto,
+  GetProjectsRequestDto,
+  GetProjectsResponseDto,
 } from "./project.interface";
 
 const projectApi = baseApi.injectEndpoints({
@@ -16,9 +18,15 @@ const projectApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getProjects: build.query<GetProjectsResponseDto, GetProjectsRequestDto>({
+      query: ({ workspaceId }) => ({
+        url: `/workspaces/${workspaceId}/projects`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateProjectMutation } = projectApi;
+export const { useGetProjectsQuery, useCreateProjectMutation } = projectApi;
 
 export default projectApi;

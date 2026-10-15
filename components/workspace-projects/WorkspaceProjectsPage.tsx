@@ -368,7 +368,6 @@ const WorkspaceProjectsPage = () => {
       <CreateProjectModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}
-        onCreate={handleCreateProject}
       />
     </div>
   );

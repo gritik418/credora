@@ -21,3 +21,13 @@ export interface CreateProjectResponseDto {
 }
 
 export interface Project {}
+
+export interface GetProjectsRequestDto {
+  workspaceId: string;
+}
+
+export interface GetProjectsResponseDto {
+  success: boolean;
+  message: string;
+  data?: { projects: Project[] };
+}
