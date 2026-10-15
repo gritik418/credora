@@ -20,7 +20,30 @@ export interface CreateProjectResponseDto {
   };
 }
 
-export interface Project {}
+export interface Project {
+  id: string;
+  workspaceId: string;
+  name: string;
+  slug: string;
+  description?: string;
+
+  status: ProjectStatus;
+
+  startDate?: string;
+  dueDate?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export enum ProjectStatus {
+  PLANNING = "PLANNING",
+  ACTIVE = "ACTIVE",
+  ON_HOLD = "ON_HOLD",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  ARCHIVED = "ARCHIVED",
+}
 
 export interface GetProjectsRequestDto {
   workspaceId: string;

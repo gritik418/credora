@@ -1,3 +1,4 @@
+import { Project, ProjectStatus } from "@/features/project/project.interface";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -8,47 +9,53 @@ import {
   Users,
 } from "lucide-react";
 
-export interface WorkspaceProject {
-  id: string;
-  name: string;
-  description: string;
-  code: string;
-  status: "Planning" | "In progress" | "On hold" | "Completed";
-  priority: "Low" | "Medium" | "High" | "Urgent";
-  progress: number;
-  completedTasks: number;
-  totalTasks: number;
-  members: {
-    initials: string;
-    color: string;
-  }[];
-  dueDate: string;
-  tags: string[];
-  updatedAt: string;
-  accent: string;
-}
-
 interface Props {
-  project: WorkspaceProject;
+  project: Project;
   view: "grid" | "list";
 }
 
-const statusStyles: Record<WorkspaceProject["status"], string> = {
-  Planning: "border-violet-400/20 bg-violet-400/8 text-violet-300",
-  "In progress": "border-blue-400/20 bg-blue-400/8 text-blue-300",
-  "On hold": "border-amber-400/20 bg-amber-400/8 text-amber-300",
-  Completed: "border-emerald-400/20 bg-emerald-400/8 text-emerald-300",
-};
-
-const priorityStyles: Record<WorkspaceProject["priority"], string> = {
-  Low: "bg-slate-500",
-  Medium: "bg-blue-400",
-  High: "bg-orange-400",
-  Urgent: "bg-rose-400",
+const statusStyles: Record<Project["status"], string> = {
+  [ProjectStatus.PLANNING]:
+    "border-violet-400/20 bg-violet-400/8 text-violet-300",
+  [ProjectStatus.ACTIVE]: "border-blue-400/20 bg-blue-400/8 text-blue-300",
+  [ProjectStatus.ON_HOLD]: "border-amber-400/20 bg-amber-400/8 text-amber-300",
+  [ProjectStatus.COMPLETED]:
+    "border-emerald-400/20 bg-emerald-400/8 text-emerald-300",
+  [ProjectStatus.CANCELLED]: "border-red-400/20 bg-red-400/8 text-red-300",
+  [ProjectStatus.ARCHIVED]: "border-gray-400/20 bg-gray-400/8 text-gray-300",
 };
 
 const ProjectCard = ({ project, view }: Props) => {
   const isList = view === "list";
+
+  const completedTasks = 80;
+  const totalTasks = 90;
+
+  const getAccentColor = (status: ProjectStatus) => {
+    switch (status) {
+      case ProjectStatus.PLANNING:
+        return "from-blue-500/35 via-cyan-500/[0.04] to-transparent";
+      case ProjectStatus.ACTIVE:
+        return "from-indigo-500/35 via-violet-500/[0.04] to-transparent";
+      case ProjectStatus.ON_HOLD:
+        return "from-amber-500/35 via-orange-500/[0.04] to-transparent";
+      case ProjectStatus.COMPLETED:
+        return "from-emerald-500/35 via-green-500/[0.04] to-transparent";
+      case ProjectStatus.CANCELLED:
+        return "from-red-500/35 via-rose-500/[0.04] to-transparent";
+      case ProjectStatus.ARCHIVED:
+        return "from-gray-500/35 via-gray-500/[0.04] to-transparent";
+    }
+  };
+
+  const formatDate = (date: string) => {
+    const d = new Date(date);
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <article
@@ -57,7 +64,7 @@ const ProjectCard = ({ project, view }: Props) => {
       }`}
     >
       <div
-        className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-linear-to-b ${project.accent} opacity-70`}
+        className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-linear-to-b ${getAccentColor(project.status)} opacity-70`}
       />
 
       <div className={`relative min-w-0 ${isList ? "flex-1" : ""}`}>
@@ -74,7 +81,7 @@ const ProjectCard = ({ project, view }: Props) => {
                 </h3>
               </div>
               <p className="mt-1 text-[10px] font-medium tracking-wide text-slate-500">
-                {project.code}
+                {project.slug}
               </p>
             </div>
           </div>
@@ -98,20 +105,13 @@ const ProjectCard = ({ project, view }: Props) => {
           >
             {project.status}
           </span>
-
-          <span className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.07] bg-white/2.5 px-2 py-1 text-[10px] text-slate-400">
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${priorityStyles[project.priority]}`}
-            />
-            {project.priority} priority
-          </span>
         </div>
 
         <div className="mt-5">
           <div className="flex items-center justify-between gap-3 text-xs">
             <span className="text-slate-400">Project progress</span>
             <span className="font-semibold tabular-nums text-slate-200">
-              {project.progress}%
+              {90}%
             </span>
           </div>
 
@@ -119,25 +119,25 @@ const ProjectCard = ({ project, view }: Props) => {
             className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/6"
             role="progressbar"
             aria-label={`${project.name} progress`}
-            aria-valuenow={project.progress}
+            aria-valuenow={89}
             aria-valuemin={0}
             aria-valuemax={100}
           >
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                project.status === "Completed"
+                project.status === ProjectStatus.COMPLETED
                   ? "bg-emerald-400"
                   : "bg-linear-to-r from-indigo-500 to-violet-400"
               }`}
-              style={{ width: `${project.progress}%` }}
+              style={{ width: `${89}%` }}
             />
           </div>
 
           <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-slate-500">
             <span>
-              {project.completedTasks} of {project.totalTasks} tasks
+              {completedTasks} of {totalTasks} tasks
             </span>
-            <span>{project.updatedAt}</span>
+            <span>Last update: {formatDate(project.updatedAt as string)}</span>
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@ const ProjectCard = ({ project, view }: Props) => {
             Due date
           </div>
           <p className="mt-1.5 text-xs font-medium text-slate-300">
-            {project.dueDate}
+            {formatDate(project.dueDate as string)}
           </p>
         </div>
 
@@ -166,7 +166,7 @@ const ProjectCard = ({ project, view }: Props) => {
           </div>
           <div className="mt-1.5 flex items-center">
             <div className="flex -space-x-2">
-              {project.members.slice(0, 4).map((member, index) => (
+              {/* {project.members.slice(0, 4).map((member, index) => (
                 <div
                   key={`${project.id}-${member.initials}-${index}`}
                   title={member.initials}
@@ -174,50 +174,34 @@ const ProjectCard = ({ project, view }: Props) => {
                 >
                   {member.initials}
                 </div>
-              ))}
+              ))} */}
             </div>
-            {project.members.length > 4 && (
+            {/* {project.members.length > 4 && (
               <span className="ml-2 text-[10px] text-slate-500">
                 +{project.members.length - 4}
               </span>
-            )}
+            )} */}
           </div>
         </div>
 
-        <div className="flex w-full items-center justify-between gap-2">
-          <div className="flex flex-wrap gap-1.5">
-            {project.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-white/[0.035] px-2 py-1 text-[10px] text-slate-500"
-              >
-                {tag}
-              </span>
-            ))}
-            {project.tags.length > 2 && (
-              <span className="rounded-md bg-white/[0.035] px-2 py-1 text-[10px] text-slate-500">
-                +{project.tags.length - 2}
-              </span>
-            )}
-          </div>
-
+        <div className="flex w-full items-center justify-end gap-2">
           <button
             type="button"
             aria-label={`Open ${project.name}`}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] text-slate-500 transition hover:border-indigo-400/25 hover:bg-indigo-400/10 hover:text-indigo-300"
+            className="inline-flex cursor-pointer h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] text-slate-500 transition hover:border-indigo-400/25 hover:bg-indigo-400/10 hover:text-indigo-300"
           >
             <ArrowUpRight size={15} />
           </button>
         </div>
 
-        {project.status === "Completed" && (
+        {project.status === ProjectStatus.COMPLETED && (
           <div className="flex w-full items-center gap-1.5 text-[10px] text-emerald-300">
             <CheckCircle2 size={12} />
             Project completed
           </div>
         )}
 
-        {project.status === "On hold" && (
+        {project.status === ProjectStatus.ON_HOLD && (
           <div className="flex w-full items-center gap-1.5 text-[10px] text-amber-300">
             <Clock3 size={12} />
             Temporarily on hold

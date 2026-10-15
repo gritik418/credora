@@ -1,18 +1,18 @@
 "use client";
 
+import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
+import { useGetProjectsQuery } from "@/features/project/project.api";
 import {
   useGetWorkspaceBySlugQuery,
   useGetWorkspacesQuery,
   useSwitchWorkspaceMutation,
 } from "@/features/workspace/workspace.api";
-import { useAppSelector } from "@/store/hooks";
-import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
-import { ArrowLeft, Building2, FolderKanban, RefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import { useAppSelector } from "@/store/hooks";
+import { Building2, FolderKanban, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import React, { useEffect } from "react";
 
 interface Props {
   slug: string;
@@ -43,6 +43,16 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     },
     {
       skip: !organization?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetProjectsQuery(
+    {
+      workspaceId: selectedWorkspace?.id || "",
+    },
+    {
+      skip: !selectedWorkspace?.id,
       refetchOnMountOrArgChange: true,
     },
   );
