@@ -6,6 +6,7 @@ import organizationMemberSlice from "@/features/organization-member/organization
 import organizationInviteSlice from "@/features/organization-invite/organization-invite.slice";
 import workspaceSlice from "@/features/workspace/workspace.slice";
 import projectSlice from "@/features/project/project.slice";
+import workspaceMemberSlice from "@/features/workspace-member/workspace-member.slice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     [organizationInviteSlice.reducerPath]: organizationInviteSlice.reducer,
     [workspaceSlice.reducerPath]: workspaceSlice.reducer,
     [projectSlice.reducerPath]: projectSlice.reducer,
+    [workspaceMemberSlice.reducerPath]: workspaceMemberSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

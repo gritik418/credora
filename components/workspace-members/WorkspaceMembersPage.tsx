@@ -11,128 +11,43 @@ import {
 } from "lucide-react";
 import MembersStats from "./MembersStats";
 import MembersToolbar from "./MembersToolbar";
-import MembersTable, { WorkspaceMember } from "./MembersTable";
+import MembersTable from "./MembersTable";
 import InviteWorkspaceMemberModal from "./InviteWorkspaceMemberModal";
-
-const initialMembers: WorkspaceMember[] = [
-  {
-    id: "1",
-    name: "Ritik Gupta",
-    email: "ritik@example.com",
-    initials: "RG",
-    color: "from-indigo-500 to-violet-500",
-    role: "Owner",
-    status: "Active",
-    joinedAt: "Oct 02, 2026",
-    lastActive: "Just now",
-  },
-  {
-    id: "2",
-    name: "Aarav Sharma",
-    email: "aarav@example.com",
-    initials: "AS",
-    color: "from-sky-500 to-cyan-500",
-    role: "Admin",
-    status: "Active",
-    joinedAt: "Oct 03, 2026",
-    lastActive: "12 min ago",
-  },
-  {
-    id: "3",
-    name: "Priya Verma",
-    email: "priya@example.com",
-    initials: "PV",
-    color: "from-pink-500 to-rose-500",
-    role: "Member",
-    status: "Active",
-    joinedAt: "Oct 04, 2026",
-    lastActive: "1 hour ago",
-  },
-  {
-    id: "4",
-    name: "Kabir Singh",
-    email: "kabir@example.com",
-    initials: "KS",
-    color: "from-amber-500 to-orange-500",
-    role: "Member",
-    status: "Inactive",
-    joinedAt: "Oct 05, 2026",
-    lastActive: "2 days ago",
-  },
-  {
-    id: "5",
-    name: "Ananya Mehta",
-    email: "ananya@example.com",
-    initials: "AM",
-    color: "from-emerald-500 to-teal-500",
-    role: "Admin",
-    status: "Pending",
-    joinedAt: "Oct 11, 2026",
-    lastActive: "Invitation sent",
-  },
-];
+import { useAppSelector } from "@/store/hooks";
+import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
+import {
+  WorkspaceMember,
+  WorkspaceMemberRole,
+} from "@/features/workspace-member/workspace-member.interface";
 
 const WorkspaceMembersPage = () => {
-  const [members, setMembers] = useState(initialMembers);
+  const members = useAppSelector(selectWorkspaceMembers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All roles");
   const [statusFilter, setStatusFilter] = useState("All statuses");
   const [inviteOpen, setInviteOpen] = useState(false);
 
   const filteredMembers = useMemo(() => {
-    return members.filter((member) => {
+    return members.filter((member: WorkspaceMember) => {
       const matchesSearch =
-        member.name.toLowerCase().includes(search.toLowerCase()) ||
-        member.email.toLowerCase().includes(search.toLowerCase());
+        member.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        member.user?.email?.toLowerCase().includes(search.toLowerCase());
 
       const matchesRole =
         roleFilter === "All roles" || member.role === roleFilter;
 
-      const matchesStatus =
-        statusFilter === "All statuses" || member.status === statusFilter;
-
-      return matchesSearch && matchesRole && matchesStatus;
+      return matchesSearch && matchesRole;
     });
   }, [members, search, roleFilter, statusFilter]);
 
   const handleInvite = (email: string, role: "Admin" | "Member") => {
-    const name = email.split("@")[0].replace(/[._-]/g, " ");
-    const initials = name
-      .split(" ")
-      .filter(Boolean)
-      .map((part) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-    setMembers((current) => [
-      ...current,
-      {
-        id: crypto.randomUUID(),
-        name: name.replace(/\b\w/g, (char) => char.toUpperCase()),
-        email,
-        initials,
-        color: "from-indigo-500 to-blue-500",
-        role,
-        status: "Pending",
-        joinedAt: "Oct 13, 2026",
-        lastActive: "Invitation sent",
-      },
-    ]);
-
     setInviteOpen(false);
   };
 
-  const activeCount = members.filter(
-    (member) => member.status === "Active",
-  ).length;
+  const activeCount = members.filter((member) => member.user.isActive).length;
 
   const adminCount = members.filter(
-    (member) => member.role === "Admin" || member.role === "Owner",
-  ).length;
-
-  const pendingCount = members.filter(
-    (member) => member.status === "Pending",
+    (member) => member.role === WorkspaceMemberRole.ADMIN,
   ).length;
 
   return (
@@ -182,7 +97,6 @@ const WorkspaceMembersPage = () => {
         <MembersStats
           total={members.length}
           admins={adminCount}
-          pending={pendingCount}
           active={activeCount}
         />
 
@@ -243,8 +157,7 @@ const WorkspaceMembersPage = () => {
               Keep your workspace secure
             </p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              Give admin access only to trusted teammates. Pending invitations
-              will appear here until the invited members join.
+              Give admin access only to trusted teammates.
             </p>
           </div>
         </div>

@@ -76,7 +76,7 @@ const WorkspaceProjectsPage = () => {
             <button
               type="button"
               onClick={() => setCreateOpen(true)}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:brightness-110"
+              className="inline-flex cursor-pointer shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:brightness-110"
             >
               <Plus size={17} />
               Create project

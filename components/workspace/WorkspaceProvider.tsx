@@ -3,6 +3,7 @@
 import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 import { useGetProjectsQuery } from "@/features/project/project.api";
+import { useGetWorkspaceMembersQuery } from "@/features/workspace-member/workspace-member.api";
 import {
   useGetWorkspaceBySlugQuery,
   useGetWorkspacesQuery,
@@ -43,6 +44,16 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     },
     {
       skip: !organization?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetWorkspaceMembersQuery(
+    {
+      workspaceId: selectedWorkspace?.id || "",
+    },
+    {
+      skip: !selectedWorkspace?.id,
       refetchOnMountOrArgChange: true,
     },
   );

@@ -3,11 +3,10 @@ import { Activity, Clock3, ShieldCheck, Users } from "lucide-react";
 interface Props {
   total: number;
   admins: number;
-  pending: number;
   active: number;
 }
 
-const MembersStats = ({ total, admins, pending, active }: Props) => {
+const MembersStats = ({ total, admins, active }: Props) => {
   const stats = [
     {
       label: "Total members",
@@ -26,14 +25,6 @@ const MembersStats = ({ total, admins, pending, active }: Props) => {
       iconBg: "bg-violet-400/10",
     },
     {
-      label: "Pending invites",
-      value: pending,
-      description: "Awaiting acceptance",
-      icon: Clock3,
-      color: "text-amber-300",
-      iconBg: "bg-amber-400/10",
-    },
-    {
       label: "Active members",
       value: active,
       description: "Currently active",
@@ -44,7 +35,7 @@ const MembersStats = ({ total, admins, pending, active }: Props) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-3">
       {stats.map((stat) => {
         const Icon = stat.icon;
 
