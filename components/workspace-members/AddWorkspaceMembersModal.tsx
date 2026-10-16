@@ -1,17 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Check,
-  ChevronDown,
-  Search,
-  ShieldCheck,
-  Users,
-  X,
-} from "lucide-react";
-import { useAppSelector } from "@/store/hooks";
 import { selectOrganizationMembers } from "@/features/organization-member/organization-member.selectors";
+import { useAddWorkspaceMembersMutation } from "@/features/workspace-member/workspace-member.api";
+import { AddWorkspaceMembersResponseDto } from "@/features/workspace-member/workspace-member.interface";
 import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
+import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import { useAppSelector } from "@/store/hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { Check, LoaderCircle, Search, Users, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 export interface OrganizationMember {
   id: string;
@@ -27,8 +25,11 @@ interface Props {
 }
 
 const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
-  const [search, setSearch] = useState("");
+  const [addMembers, { isLoading }] = useAddWorkspaceMembersMutation();
+  const [search, setSearch] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const workspace = useAppSelector(selectSelectedWorkspace);
 
   const organizationMembers = useAppSelector(selectOrganizationMembers);
   const workspaceMembers = useAppSelector(selectWorkspaceMembers);
@@ -59,8 +60,50 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
     );
   };
 
-  const onAddMembers = (members: string[]) => {
-    console.log(members);
+  const onAddMembers = async (members: string[]) => {
+    try {
+      if (!workspace?.id) {
+        toast.error("No workspace selected.");
+        return;
+      }
+
+      const result = await addMembers({
+        workspaceId: workspace?.id,
+        data: {
+          members,
+        },
+      }).unwrap();
+
+      if (result.success) {
+        const message = result.data?.addedCount
+          ? `Added ${result.data.addedCount} member(s) to the workspace.`
+          : "No members added to the workspace.";
+        toast.success(result.message || message);
+      } else {
+        toast.error(result.message || "Failed to add members.");
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddWorkspaceMembersResponseDto;
+
+        if (response.errors) {
+          if (response.errors.members) {
+            toast.error(response.errors.members);
+          }
+        } else {
+          toast.error(response.message || "Something went wrong.");
+        }
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
   };
 
   const handleClose = () => {
@@ -231,13 +274,21 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
 
             <button
               type="button"
-              disabled={!selectedIds.length}
+              disabled={!selectedIds.length || isLoading}
               onClick={handleSubmit}
-              className="inline-flex cursor-pointer h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+              className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <Users size={15} />
-              Add {selectedIds.length > 0 ? selectedIds.length : ""}{" "}
-              {selectedIds.length === 1 ? "member" : "members"}
+              {isLoading ? (
+                <LoaderCircle size={15} className="animate-spin" />
+              ) : (
+                <Users size={15} />
+              )}
+
+              {isLoading
+                ? "Adding members..."
+                : `Add ${selectedIds.length || ""} ${
+                    selectedIds.length === 1 ? "member" : "members"
+                  }`}
             </button>
           </div>
         </div>

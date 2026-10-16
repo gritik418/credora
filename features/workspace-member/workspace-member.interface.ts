@@ -1,3 +1,5 @@
+import AddWorkspaceMembersDto from "./dto/add-workspace-members.dto";
+
 export interface GetWorkspaceMembersRequestDto {
   workspaceId: string;
 }
@@ -32,4 +34,20 @@ export interface WorkspaceMember {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AddWorkspaceMembersRequestDto {
+  workspaceId: string;
+  data: AddWorkspaceMembersDto;
+}
+
+export interface AddWorkspaceMembersResponseDto {
+  success: boolean;
+  message: string;
+  errors?: {
+    members?: string;
+  };
+  data?: {
+    addedCount: number;
+  };
 }
