@@ -1,19 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
 import {
-  ArrowLeft,
   CheckCircle2,
   CircleDashed,
   Clock3,
   ListTodo,
   TrendingUp,
 } from "lucide-react";
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import TaskBoard from "./TaskBoard";
 import TaskDetailsDrawer from "./TaskDetailsDrawer";
 import TaskToolbar from "./TaskToolbar";
-import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
 
 interface Props {
   workspaceId: string;
@@ -81,27 +79,10 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
 
   return (
     <div className="min-h-screen bg-[#070912] text-slate-200">
-      <div className="mx-auto max-w-[1700px] space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="mx-auto max-w-[1700px] space-y-6">
         <div className="space-y-5">
-          <Link
-            href={`/workspace/${workspaceId}/projects/${projectId}`}
-            className="inline-flex items-center gap-2 text-xs text-slate-500 transition hover:text-slate-200"
-          >
-            <ArrowLeft size={14} />
-            Back to project overview
-          </Link>
-
           <div className="flex flex-col justify-between gap-5 xl:flex-row xl:items-end">
             <div>
-              <div className="mb-2 flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-300">
-                  Credora Platform
-                </span>
-                <span className="text-slate-700">/</span>
-                <span className="text-[10px] text-slate-500">PRJ-01</span>
-              </div>
-
               <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                 Tasks
               </h1>

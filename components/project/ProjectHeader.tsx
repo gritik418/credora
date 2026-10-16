@@ -12,6 +12,7 @@ import {
   Layers3,
   Plus,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 interface Props {
   workspaceId: string;
@@ -20,31 +21,43 @@ interface Props {
 
 const ProjectHeader = ({ workspaceId, projectId }: Props) => {
   const projectName = "Credora Platform";
+  const pathname = usePathname();
 
   const navigation = [
     {
       label: "Overview",
       href: `/workspace/${workspaceId}/projects/${projectId}`,
+      isActive: pathname === `/workspace/${workspaceId}/projects/${projectId}`,
     },
     {
       label: "Tasks",
       href: `/workspace/${workspaceId}/projects/${projectId}/tasks`,
+      isActive:
+        pathname === `/workspace/${workspaceId}/projects/${projectId}/tasks`,
     },
     {
       label: "Activity",
       href: `/workspace/${workspaceId}/projects/${projectId}/activity`,
+      isActive:
+        pathname === `/workspace/${workspaceId}/projects/${projectId}/activity`,
     },
     {
       label: "Members",
       href: `/workspace/${workspaceId}/projects/${projectId}/members`,
+      isActive:
+        pathname === `/workspace/${workspaceId}/projects/${projectId}/members`,
     },
     {
       label: "Files",
       href: `/workspace/${workspaceId}/projects/${projectId}/files`,
+      isActive:
+        pathname === `/workspace/${workspaceId}/projects/${projectId}/files`,
     },
     {
       label: "Settings",
       href: `/workspace/${workspaceId}/projects/${projectId}/settings`,
+      isActive:
+        pathname === `/workspace/${workspaceId}/projects/${projectId}/settings`,
     },
   ];
 
@@ -137,15 +150,15 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
               <Link
                 key={item.label}
                 href={item.href}
-                aria-current={index === 0 ? "page" : undefined}
+                aria-current={item.isActive ? "page" : undefined}
                 className={`relative shrink-0 px-3 py-3.5 text-xs font-medium transition sm:px-4 ${
-                  index === 0
+                  item.isActive
                     ? "text-indigo-300"
                     : "text-slate-500 hover:text-slate-200"
                 }`}
               >
                 {item.label}
-                {index === 0 && (
+                {item.isActive && (
                   <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-indigo-400 sm:inset-x-4" />
                 )}
               </Link>
