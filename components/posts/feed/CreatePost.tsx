@@ -18,7 +18,7 @@ const CreatePost = () => {
         borderColor: "var(--credora-border)",
       }}
     >
-      <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-credora-violet opacity-[0.08] blur-3xl" />
+      <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-credora-violet opacity-8 blur-3xl" />
 
       <div className="relative">
         <div className="flex gap-3">

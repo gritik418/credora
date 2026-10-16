@@ -24,9 +24,9 @@ const priorityStyles: Record<TaskPriority, string> = {
 };
 
 const labelStyles = [
-  "border-indigo-400/15 bg-indigo-400/[0.08] text-indigo-300",
-  "border-violet-400/15 bg-violet-400/[0.08] text-violet-300",
-  "border-cyan-400/15 bg-cyan-400/[0.08] text-cyan-300",
+  "border-indigo-400/15 bg-indigo-400/8 text-indigo-300",
+  "border-violet-400/15 bg-violet-400/8 text-violet-300",
+  "border-cyan-400/15 bg-cyan-400/8 text-cyan-300",
 ];
 
 const TaskCard = ({ task, onClick, onDragStart, compact = false }: Props) => {

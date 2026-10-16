@@ -22,8 +22,8 @@ const roleStyles: Record<OrganizationMemberRole, string> = {
   OWNER: "border-violet-400/20 bg-violet-500/10 text-violet-300",
   ADMIN: "border-indigo-400/20 bg-indigo-500/10 text-indigo-300",
   MANAGER: "border-blue-400/20 bg-blue-500/10 text-blue-300",
-  MEMBER: "border-white/[0.08] bg-white/4 text-white/60",
-  RECRUITER: "border-white/[0.08] bg-white/4 text-white/60",
+  MEMBER: "border-white/8 bg-white/4 text-white/60",
+  RECRUITER: "border-white/8 bg-white/4 text-white/60",
 };
 
 const MemberRow = ({ member }: Props) => {

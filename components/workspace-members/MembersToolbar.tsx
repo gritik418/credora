@@ -11,7 +11,7 @@ interface Props {
 }
 
 const selectClass =
-  "h-10 rounded-lg border border-white/[0.08] bg-[#10131d] px-3 text-xs text-slate-300 outline-none transition focus:border-indigo-400/40";
+  "h-10 rounded-lg border border-white/8 bg-[#10131d] px-3 text-xs text-slate-300 outline-none transition focus:border-indigo-400/40";
 
 const MembersToolbar = ({
   search,

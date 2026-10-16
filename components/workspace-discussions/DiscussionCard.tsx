@@ -22,10 +22,10 @@ interface Props {
 }
 
 const categoryStyles: Record<Discussion["category"], string> = {
-  Announcements: "border-amber-400/20 bg-amber-400/[0.08] text-amber-300",
-  Engineering: "border-blue-400/20 bg-blue-400/[0.08] text-blue-300",
-  Design: "border-pink-400/20 bg-pink-400/[0.08] text-pink-300",
-  General: "border-emerald-400/20 bg-emerald-400/[0.08] text-emerald-300",
+  Announcements: "border-amber-400/20 bg-amber-400/8 text-amber-300",
+  Engineering: "border-blue-400/20 bg-blue-400/8 text-blue-300",
+  Design: "border-pink-400/20 bg-pink-400/8 text-pink-300",
+  General: "border-emerald-400/20 bg-emerald-400/8 text-emerald-300",
 };
 
 const DiscussionCard = ({ discussion }: Props) => {

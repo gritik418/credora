@@ -146,7 +146,7 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
 
         <div className="relative border-t border-white/[0.07] px-3 sm:px-5">
           <nav className="flex gap-1 overflow-x-auto">
-            {navigation.map((item, index) => (
+            {navigation.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
