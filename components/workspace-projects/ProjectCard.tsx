@@ -59,7 +59,7 @@ const ProjectCard = ({ project, view }: Props) => {
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0c0f18] transition duration-200 hover:border-indigo-400/22 hover:bg-[#0e121d] ${
+      className={`group relative overflow-hidden rounded-2xl border border-white/7 bg-[#0c0f18] transition duration-200 hover:border-indigo-400/22 hover:bg-[#0e121d] ${
         isList ? "flex flex-col gap-5 p-5 lg:flex-row lg:items-center" : "p-5"
       }`}
     >
@@ -188,7 +188,7 @@ const ProjectCard = ({ project, view }: Props) => {
           <button
             type="button"
             aria-label={`Open ${project.name}`}
-            className="inline-flex cursor-pointer h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] text-slate-500 transition hover:border-indigo-400/25 hover:bg-indigo-400/10 hover:text-indigo-300"
+            className="inline-flex cursor-pointer h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/7 text-slate-500 transition hover:border-indigo-400/25 hover:bg-indigo-400/10 hover:text-indigo-300"
           >
             <ArrowUpRight size={15} />
           </button>

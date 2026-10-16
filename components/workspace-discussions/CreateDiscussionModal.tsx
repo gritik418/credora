@@ -100,7 +100,7 @@ const CreateDiscussionModal = ({ open, onClose, onCreate }: Props) => {
       <div className="relative my-auto w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 bg-[#0c0f18] shadow-[0_25px_100px_rgba(0,0,0,0.65)]">
         <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-indigo-500/12 blur-[75px]" />
 
-        <div className="relative flex items-start justify-between border-b border-white/[0.07] p-5 sm:p-6">
+        <div className="relative flex items-start justify-between border-b border-white/7 p-5 sm:p-6">
           <div className="flex items-start gap-3.5">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-400/10 text-indigo-300">
               <MessageSquareText size={20} />

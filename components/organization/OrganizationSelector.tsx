@@ -88,7 +88,7 @@ const OrganizationSelector = () => {
         aria-expanded={isOpen}
         aria-haspopup="menu"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-xl border border-white/[0.07] bg-white/2.5 p-3 text-left transition hover:border-white/12 hover:bg-white/4.5"
+        className="flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-xl border border-white/7 bg-white/2.5 p-3 text-left transition hover:border-white/12 hover:bg-white/4.5"
       >
         {organization.logo ? (
           <img
@@ -195,7 +195,7 @@ const OrganizationSelector = () => {
                 ))}
             </div>
 
-            <div className="my-1.5 border-t border-white/[0.07]" />
+            <div className="my-1.5 border-t border-white/7" />
 
             <button
               type="button"

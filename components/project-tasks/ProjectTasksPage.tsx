@@ -94,7 +94,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0c0f18] px-3.5 py-2.5">
+              <div className="flex items-center gap-2 rounded-xl border border-white/7 bg-[#0c0f18] px-3.5 py-2.5">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
                   <TrendingUp size={15} />
                 </div>
@@ -106,7 +106,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0c0f18] px-3.5 py-2.5">
+              <div className="flex items-center gap-2 rounded-xl border border-white/7 bg-[#0c0f18] px-3.5 py-2.5">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300">
                   <ListTodo size={15} />
                 </div>
@@ -122,7 +122,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
         </div>
 
         <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-          <div className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-4">
+          <div className="rounded-2xl border border-white/7 bg-[#0c0f18] p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-slate-500">All tasks</span>
               <ListTodo size={16} className="text-indigo-300" />
@@ -135,7 +135,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-4">
+          <div className="rounded-2xl border border-white/7 bg-[#0c0f18] p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-slate-500">In progress</span>
               <CircleDashed size={16} className="text-indigo-300" />
@@ -148,7 +148,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-4">
+          <div className="rounded-2xl border border-white/7 bg-[#0c0f18] p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-slate-500">In review</span>
               <Clock3 size={16} className="text-amber-300" />
@@ -161,7 +161,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-4">
+          <div className="rounded-2xl border border-white/7 bg-[#0c0f18] p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs text-slate-500">Completed</span>
               <CheckCircle2 size={16} className="text-emerald-300" />

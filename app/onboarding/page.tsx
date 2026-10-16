@@ -169,7 +169,7 @@ const BasicInfoPage = () => {
           </div>
         </div>
 
-        <div className="h-px bg-white/[0.07]" />
+        <div className="h-px bg-white/7" />
 
         <div className="space-y-6">
           <div>
@@ -193,7 +193,7 @@ const BasicInfoPage = () => {
             </label>
 
             <div className="flex h-12 overflow-hidden rounded-xl border border-white/10 transition-all">
-              <span className="flex items-center border-r border-white/[0.07] bg-white/2.5 px-4 text-sm text-white/30">
+              <span className="flex items-center border-r border-white/7 bg-white/2.5 px-4 text-sm text-white/30">
                 credora.me/
               </span>
 

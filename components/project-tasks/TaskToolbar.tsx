@@ -64,7 +64,7 @@ const TaskToolbar = ({
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-3 lg:flex-row lg:items-center">
+      <div className="flex flex-col gap-3 rounded-2xl border border-white/7 bg-[#0c0f18] p-3 lg:flex-row lg:items-center">
         <div className="relative min-w-0 flex-1">
           <Search
             size={15}
@@ -74,7 +74,7 @@ const TaskToolbar = ({
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search tasks, IDs, labels..."
-            className="h-10 w-full rounded-xl border border-white/[0.07] bg-[#080b13] pl-10 pr-9 text-xs text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-indigo-400/40"
+            className="h-10 w-full rounded-xl border border-white/7 bg-[#080b13] pl-10 pr-9 text-xs text-slate-200 outline-none transition placeholder:text-slate-600 focus:border-indigo-400/40"
           />
           {search && (
             <button
@@ -101,7 +101,7 @@ const TaskToolbar = ({
                   event.target.value as TaskStatus | "All statuses",
                 )
               }
-              className="h-10 w-full appearance-none rounded-xl border border-white/[0.07] bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
+              className="h-10 w-full appearance-none rounded-xl border border-white/7 bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
             >
               <option>All statuses</option>
               {Object.values(TaskStatus).map((status) => (
@@ -123,7 +123,7 @@ const TaskToolbar = ({
                   event.target.value as TaskPriority | "All priorities",
                 )
               }
-              className="h-10 w-full appearance-none rounded-xl border border-white/[0.07] bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
+              className="h-10 w-full appearance-none rounded-xl border border-white/7 bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
             >
               <option>All priorities</option>
               {Object.values(TaskPriority).map((priority) => (

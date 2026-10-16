@@ -88,7 +88,7 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
                     PRJ-01
                   </span>
                   <span className="h-1 w-1 rounded-full bg-slate-700" />
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/15 bg-emerald-400/[0.07] px-2.5 py-1 text-[11px] font-medium text-emerald-300">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/15 bg-emerald-400/7 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
                     <CircleDot size={11} />
                     In progress
                   </span>
@@ -125,7 +125,7 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
             <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
-                className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/3 px-3.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.07] hover:text-white"
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/3 px-3.5 text-sm font-medium text-slate-300 transition hover:bg-white/7 hover:text-white"
               >
                 <Ellipsis size={17} />
                 <span className="hidden sm:inline">More</span>
@@ -144,7 +144,7 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
           </div>
         </div>
 
-        <div className="relative border-t border-white/[0.07] px-3 sm:px-5">
+        <div className="relative border-t border-white/7 px-3 sm:px-5">
           <nav className="flex gap-1 overflow-x-auto">
             {navigation.map((item) => (
               <Link

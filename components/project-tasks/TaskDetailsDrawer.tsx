@@ -58,7 +58,7 @@ const TaskDetailsDrawer = ({ open, onClose }: Props) => {
       }}
     >
       <aside className="flex h-full w-full max-w-xl flex-col border-l border-white/8 bg-[#0c0f18] shadow-2xl shadow-black/40">
-        <div className="relative flex items-start justify-between gap-4 overflow-hidden border-b border-white/[0.07] p-5 sm:p-6">
+        <div className="relative flex items-start justify-between gap-4 overflow-hidden border-b border-white/7 p-5 sm:p-6">
           <div className="pointer-events-none absolute -right-16 -top-24 h-48 w-48 rounded-full bg-indigo-500/10 blur-[80px]" />
 
           <div className="relative flex items-start gap-3">
@@ -264,7 +264,7 @@ const TaskDetailsDrawer = ({ open, onClose }: Props) => {
               <button
                 type="button"
                 onClick={handleDelete}
-                className="inline-flex h-10 items-center gap-2 rounded-xl border border-rose-400/15 px-3 text-xs font-medium text-rose-300 transition hover:bg-rose-400/[0.07]"
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-rose-400/15 px-3 text-xs font-medium text-rose-300 transition hover:bg-rose-400/7"
               >
                 <Trash2 size={14} />
                 Delete task
@@ -272,7 +272,7 @@ const TaskDetailsDrawer = ({ open, onClose }: Props) => {
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-3 border-t border-white/[0.07] bg-[#0c0f18] p-5 sm:px-6">
+          <div className="flex items-center justify-end gap-3 border-t border-white/7 bg-[#0c0f18] p-5 sm:px-6">
             <button
               type="button"
               onClick={onClose}

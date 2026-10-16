@@ -72,7 +72,7 @@ const OrganizationCard = ({ organization }: Props) => {
       onClick={() => router.push(`/org/${organization.slug}`)}
       className={`group relative w-full cursor-pointer overflow-hidden rounded-3xl border text-left transition duration-300 ${
         organization.isActive
-          ? "border-indigo-400/25 bg-indigo-500/[0.07] shadow-[0_20px_70px_rgba(79,70,229,0.12)]"
+          ? "border-indigo-400/25 bg-indigo-500/7 shadow-[0_20px_70px_rgba(79,70,229,0.12)]"
           : "border-white/8 bg-white/2.5 hover:-translate-y-1 hover:border-white/15 hover:bg-white/4.5"
       }`}
     >

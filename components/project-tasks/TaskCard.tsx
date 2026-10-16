@@ -48,7 +48,7 @@ const TaskCard = ({ task, onClick, onDragStart, compact = false }: Props) => {
       }}
       role="button"
       tabIndex={0}
-      className={`group cursor-pointer rounded-xl border border-white/[0.07] bg-[#0c0f18] p-3.5 text-left transition hover:border-indigo-400/25 hover:bg-[#101421] hover:shadow-lg hover:shadow-black/10 ${
+      className={`group cursor-pointer rounded-xl border border-white/7 bg-[#0c0f18] p-3.5 text-left transition hover:border-indigo-400/25 hover:bg-[#101421] hover:shadow-lg hover:shadow-black/10 ${
         compact ? "flex items-center gap-4" : ""
       }`}
     >

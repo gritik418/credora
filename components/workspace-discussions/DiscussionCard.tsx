@@ -30,7 +30,7 @@ const categoryStyles: Record<Discussion["category"], string> = {
 
 const DiscussionCard = ({ discussion }: Props) => {
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-4 transition duration-200 hover:border-indigo-400/22 hover:bg-[#0e121d] sm:p-5">
+    <article className="group relative overflow-hidden rounded-2xl border border-white/7 bg-[#0c0f18] p-4 transition duration-200 hover:border-indigo-400/22 hover:bg-[#0e121d] sm:p-5">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-linear-to-b from-indigo-400/0 via-indigo-400/0 to-blue-400/0 transition group-hover:via-indigo-400/50" />
 
       <div className="flex items-start gap-3 sm:gap-4">
@@ -56,7 +56,7 @@ const DiscussionCard = ({ discussion }: Props) => {
             )}
 
             {discussion.status === "Resolved" && (
-              <span className="rounded-md border border-emerald-400/20 bg-emerald-400/[0.07] px-2 py-1 text-[10px] text-emerald-300">
+              <span className="rounded-md border border-emerald-400/20 bg-emerald-400/7 px-2 py-1 text-[10px] text-emerald-300">
                 Resolved
               </span>
             )}

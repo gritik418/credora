@@ -56,7 +56,7 @@ const ProjectMembersStats = ({
         return (
           <div
             key={stat.label}
-            className="rounded-2xl border border-white/[0.07] bg-[#0c0e14] p-5 transition hover:border-white/12"
+            className="rounded-2xl border border-white/7 bg-[#0c0e14] p-5 transition hover:border-white/12"
           >
             <div className="flex items-start justify-between gap-3">
               <div>

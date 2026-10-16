@@ -87,7 +87,7 @@ const AddProjectMembersModal = ({
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="flex items-start justify-between border-b border-white/[0.07] p-5 sm:p-6">
+            <div className="flex items-start justify-between border-b border-white/7 p-5 sm:p-6">
               <div className="flex items-start gap-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-indigo-400/15 bg-indigo-500/10 text-indigo-300">
                   <UserPlus size={20} />
@@ -155,7 +155,7 @@ const AddProjectMembersModal = ({
             <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4 sm:px-6">
               {filteredMembers.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/3 text-gray-500">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/7 bg-white/3 text-gray-500">
                     <Users size={21} />
                   </div>
                   <p className="mt-3 text-sm font-medium text-white">
@@ -217,7 +217,7 @@ const AddProjectMembersModal = ({
               )}
             </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0b0d13] p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="flex flex-col-reverse gap-3 border-t border-white/7 bg-[#0b0d13] p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <CheckCheck size={15} className="text-indigo-300" />
                 {selectedIds.length} selected

@@ -130,7 +130,7 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
       <div className="relative my-auto flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0c0f18] shadow-[0_25px_100px_rgba(0,0,0,0.65)]">
         <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full bg-indigo-500/10 blur-[75px]" />
 
-        <div className="relative flex items-start justify-between border-b border-white/[0.07] p-6">
+        <div className="relative flex items-start justify-between border-b border-white/7 p-6">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-400/10 text-indigo-300">
               <Users size={20} />
@@ -194,8 +194,8 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
                     onClick={() => toggleMember(member.id)}
                     className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
                       selected
-                        ? "border-indigo-400/25 bg-indigo-400/[0.07]"
-                        : "border-transparent hover:border-white/[0.07] hover:bg-white/3"
+                        ? "border-indigo-400/25 bg-indigo-400/7"
+                        : "border-transparent hover:border-white/7 hover:bg-white/3"
                     }`}
                   >
                     {member.user.avatar ? (
@@ -224,7 +224,7 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
                       </p>
                     </div>
 
-                    <span className="hidden rounded-md border border-white/[0.07] px-2 py-1 text-[10px] text-slate-400 sm:inline-flex">
+                    <span className="hidden rounded-md border border-white/7 px-2 py-1 text-[10px] text-slate-400 sm:inline-flex">
                       {member.role}
                     </span>
 
@@ -258,7 +258,7 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
           </div>
         </div>
 
-        <div className="relative flex flex-col gap-3 border-t border-white/[0.07] p-6">
+        <div className="relative flex flex-col gap-3 border-t border-white/7 p-6">
           <p className="text-xs text-slate-500">
             Only existing organization members can be added.
           </p>

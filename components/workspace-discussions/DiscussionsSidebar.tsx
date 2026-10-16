@@ -36,7 +36,7 @@ const DiscussionsSidebar = ({
 
   return (
     <aside className="space-y-4">
-      <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5">
+      <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-200">
             Pinned discussions
@@ -70,7 +70,7 @@ const DiscussionsSidebar = ({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5">
+      <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-200">
             Popular topics
@@ -106,7 +106,7 @@ const DiscussionsSidebar = ({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5">
+      <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-indigo-300" />
           <h2 className="text-sm font-semibold text-slate-200">

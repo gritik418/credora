@@ -112,7 +112,7 @@ const CreateWorkspaceModal = ({ open, onClose }: Props) => {
         aria-labelledby="workspace-modal-title"
         className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0d1018] shadow-2xl shadow-black/50"
       >
-        <div className="flex items-start justify-between border-b border-white/[0.07] p-5 sm:p-6">
+        <div className="flex items-start justify-between border-b border-white/7 p-5 sm:p-6">
           <div className="flex items-center gap-3">
             <div
               className="flex h-11 w-11 items-center justify-center rounded-xl border"
@@ -283,7 +283,7 @@ const CreateWorkspaceModal = ({ open, onClose }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.07] pt-5 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/7 pt-5 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}

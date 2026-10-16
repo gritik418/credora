@@ -189,7 +189,7 @@ const OrganizationMembersPage = () => {
           </section>
 
           <div className="flex items-start gap-3 rounded-xl border border-indigo-400/10 bg-indigo-500/3.5 p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-400/10 bg-indigo-500/[0.07] text-indigo-300">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-400/10 bg-indigo-500/7 text-indigo-300">
               <ShieldCheck size={16} />
             </div>
             <div>

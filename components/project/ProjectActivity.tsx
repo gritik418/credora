@@ -62,7 +62,7 @@ interface Props {
 
 const ProjectActivity = ({ workspaceId, projectId }: Props) => {
   return (
-    <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5 sm:p-6">
+    <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -78,7 +78,7 @@ const ProjectActivity = ({ workspaceId, projectId }: Props) => {
           </p>
         </div>
 
-        <span className="rounded-lg border border-white/[0.07] bg-white/2 px-2.5 py-1.5 text-[10px] text-slate-400">
+        <span className="rounded-lg border border-white/7 bg-white/2 px-2.5 py-1.5 text-[10px] text-slate-400">
           Today
         </span>
       </div>
@@ -94,7 +94,7 @@ const ProjectActivity = ({ workspaceId, projectId }: Props) => {
             >
               <div className="relative flex w-10 shrink-0 justify-center">
                 {index !== activities.length - 1 && (
-                  <span className="absolute bottom-0 top-10 w-px bg-white/[0.07]" />
+                  <span className="absolute bottom-0 top-10 w-px bg-white/7" />
                 )}
 
                 <div

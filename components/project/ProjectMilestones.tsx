@@ -34,7 +34,7 @@ const milestones = [
 
 const ProjectMilestones = () => {
   return (
-    <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5 sm:p-6">
+    <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">

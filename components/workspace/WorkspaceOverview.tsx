@@ -130,11 +130,11 @@ const WorkspaceOverview = ({ workspaceId }: Props) => {
     <div className="mx-auto w-full max-w-375 space-y-8 px-4 py-7 sm:px-7 sm:py-9 xl:px-10">
       <section className="relative overflow-hidden rounded-2xl border border-indigo-400/15 bg-[#0c0f19] p-6 sm:p-8">
         <div className="pointer-events-none absolute -right-20 -top-32 size-80 rounded-full bg-indigo-500/12 blur-[100px]" />
-        <div className="pointer-events-none absolute -bottom-36 right-1/3 size-64 rounded-full bg-violet-500/[0.07] blur-[90px]" />
+        <div className="pointer-events-none absolute -bottom-36 right-1/3 size-64 rounded-full bg-violet-500/7 blur-[90px]" />
 
         <div className="relative flex flex-col justify-between gap-7 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-400/15 bg-indigo-400/[0.07] px-3 py-1.5 text-[11px] font-medium text-indigo-200">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-400/15 bg-indigo-400/7 px-3 py-1.5 text-[11px] font-medium text-indigo-200">
               <span className="size-1.5 rounded-full bg-emerald-400" />
               Workspace is active
             </div>
@@ -153,7 +153,7 @@ const WorkspaceOverview = ({ workspaceId }: Props) => {
           <div className="flex shrink-0 flex-wrap gap-3">
             <Link
               href={`${basePath}/projects`}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-4 text-xs font-medium text-zinc-200 transition-colors hover:bg-white/[0.07]"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.035] px-4 text-xs font-medium text-zinc-200 transition-colors hover:bg-white/7"
             >
               View projects
               <ArrowRight size={14} />
@@ -183,7 +183,7 @@ const WorkspaceOverview = ({ workspaceId }: Props) => {
                 <p className="text-xs font-medium text-zinc-500">
                   {stat.label}
                 </p>
-                <div className="flex size-9 items-center justify-center rounded-xl border border-indigo-400/10 bg-indigo-500/[0.07] text-indigo-300">
+                <div className="flex size-9 items-center justify-center rounded-xl border border-indigo-400/10 bg-indigo-500/7 text-indigo-300">
                   <Icon size={17} />
                 </div>
               </div>
@@ -388,7 +388,7 @@ const WorkspaceOverview = ({ workspaceId }: Props) => {
 
             <Link
               href={`${basePath}/activity`}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.07] py-2.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/[0.035] hover:text-white"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/7 py-2.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/[0.035] hover:text-white"
             >
               View activity
               <ArrowRight size={14} />

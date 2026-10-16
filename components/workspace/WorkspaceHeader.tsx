@@ -23,7 +23,7 @@ const WorkspaceHeader = ({ onMenuClick }: Props) => {
           type="button"
           onClick={onMenuClick}
           aria-label="Open navigation"
-          className="flex cursor-pointer size-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-white/2.5 text-zinc-400 transition-colors hover:bg-white/6 hover:text-white lg:hidden"
+          className="flex cursor-pointer size-10 shrink-0 items-center justify-center rounded-xl border border-white/7 bg-white/2.5 text-zinc-400 transition-colors hover:bg-white/6 hover:text-white lg:hidden"
         >
           <Menu size={19} />
         </button>
@@ -45,13 +45,13 @@ const WorkspaceHeader = ({ onMenuClick }: Props) => {
         <button
           type="button"
           aria-label="Notifications"
-          className="relative flex size-10 items-center justify-center rounded-xl border border-white/[0.07] bg-white/2.5 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
+          className="relative flex size-10 items-center justify-center rounded-xl border border-white/7 bg-white/2.5 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
         >
           <Bell size={18} />
           <span className="absolute right-2.25 top-2 size-1.5 rounded-full bg-indigo-400 ring-2 ring-[#090b12]" />
         </button>
 
-        <div className="hidden h-8 w-px bg-white/[0.07] sm:block" />
+        <div className="hidden h-8 w-px bg-white/7 sm:block" />
 
         <ProfileMenu user={user} />
       </div>

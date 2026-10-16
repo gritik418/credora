@@ -76,10 +76,10 @@ const TaskBoard = ({
 
   if (view === "list") {
     return (
-      <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0c0f18]">
+      <div className="overflow-hidden rounded-2xl border border-white/7 bg-[#0c0f18]">
         <div className="overflow-x-auto">
           <div className="min-w-190">
-            <div className="grid grid-cols-[minmax(260px,2fr)_130px_120px_150px_100px] gap-4 border-b border-white/[0.07] px-5 py-3">
+            <div className="grid grid-cols-[minmax(260px,2fr)_130px_120px_150px_100px] gap-4 border-b border-white/7 px-5 py-3">
               {["Task", "Status", "Priority", "Assignee", "Due date"].map(
                 (label) => (
                   <span
@@ -209,7 +209,7 @@ const TaskBoard = ({
                   type="button"
                   onClick={() => onCreateTask(status)}
                   aria-label={`Add task to ${status}`}
-                  className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white/[0.07] hover:text-white"
+                  className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white/7 hover:text-white"
                 >
                   <Plus size={15} />
                 </button>
@@ -237,7 +237,7 @@ const TaskBoard = ({
                 ))}
 
                 {!columnTasks.length && (
-                  <div className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.07] px-3 text-center">
+                  <div className="flex min-h-24 flex-col items-center justify-center rounded-xl border border-dashed border-white/7 px-3 text-center">
                     <span className="text-[10px] text-slate-600">
                       Drop tasks here
                     </span>

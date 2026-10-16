@@ -78,7 +78,7 @@ const ProjectOverviewPage = ({ workspaceId, projectId }: Props) => {
                   <span className="font-medium text-slate-200">80%</span>
                 </div>
 
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.07]">
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/7">
                   <div className="h-full w-[68%] rounded-full bg-linear-to-r from-indigo-400 to-violet-400" />
                 </div>
 
@@ -101,7 +101,7 @@ const ProjectOverviewPage = ({ workspaceId, projectId }: Props) => {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-white/[0.07] bg-[#0c0f18] p-5">
+          <section className="rounded-2xl border border-white/7 bg-[#0c0f18] p-5">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
                 <CheckCircle2 size={17} />
