@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
+import { BiSolidDashboard } from "react-icons/bi";
 import { BsChatText } from "react-icons/bs";
 import ProfileMenu from "./ProfileMenu";
 
@@ -75,6 +76,11 @@ const Navbar = () => {
         label: "Developers",
         href: "/#developers",
         icon: <Code2 size={15} />,
+      },
+      {
+        label: "Dashboard",
+        href: "/org",
+        icon: <BiSolidDashboard size={15} />,
       },
     ];
   }, [pathname]);
