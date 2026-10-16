@@ -11,13 +11,12 @@ interface Props {
 const roleStyles: Record<WorkspaceMemberRole, string> = {
   [WorkspaceMemberRole.ADMIN]:
     "border-indigo-400/20 bg-indigo-400/10 text-indigo-300",
-  [WorkspaceMemberRole.MEMBER]:
-    "border-white/[0.09] bg-white/[0.04] text-slate-400",
+  [WorkspaceMemberRole.MEMBER]: "border-white/9 bg-white/4 text-slate-400",
 };
 
 const statusStyles: Record<string, string> = {
   Active: "border-green-400/20 bg-green-400/10 text-green-300",
-  Inactive: "border-white/[0.09] bg-white/[0.04] text-slate-400",
+  Inactive: "border-white/9 bg-white/4 text-slate-400",
 };
 
 const MembersTable = ({ members }: Props) => {

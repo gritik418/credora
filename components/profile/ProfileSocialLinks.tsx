@@ -22,7 +22,7 @@ const ProfileSocialLinks = ({ profile }: Props) => {
       iconClass: "text-white",
       iconBg: "bg-white/10",
       border: "border-white/8",
-      background: "bg-white/[0.025]",
+      background: "bg-white/2.5",
     },
     {
       label: "LinkedIn",
@@ -32,7 +32,7 @@ const ProfileSocialLinks = ({ profile }: Props) => {
       iconClass: "text-blue-400",
       iconBg: "bg-blue-500/10",
       border: "border-blue-500/10",
-      background: "bg-blue-500/[0.04]",
+      background: "bg-blue-500/4",
     },
     {
       label: "Website",
@@ -42,7 +42,7 @@ const ProfileSocialLinks = ({ profile }: Props) => {
       iconClass: "text-indigo-400",
       iconBg: "bg-indigo-500/10",
       border: "border-indigo-500/10",
-      background: "bg-indigo-500/[0.04]",
+      background: "bg-indigo-500/4",
     },
   ];
 

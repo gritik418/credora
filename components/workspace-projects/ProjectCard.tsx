@@ -34,17 +34,17 @@ const ProjectCard = ({ project, view }: Props) => {
   const getAccentColor = (status: ProjectStatus) => {
     switch (status) {
       case ProjectStatus.PLANNING:
-        return "from-blue-500/35 via-cyan-500/[0.04] to-transparent";
+        return "from-blue-500/35 via-cyan-500/4 to-transparent";
       case ProjectStatus.ACTIVE:
-        return "from-indigo-500/35 via-violet-500/[0.04] to-transparent";
+        return "from-indigo-500/35 via-violet-500/4 to-transparent";
       case ProjectStatus.ON_HOLD:
-        return "from-amber-500/35 via-orange-500/[0.04] to-transparent";
+        return "from-amber-500/35 via-orange-500/4 to-transparent";
       case ProjectStatus.COMPLETED:
-        return "from-emerald-500/35 via-green-500/[0.04] to-transparent";
+        return "from-emerald-500/35 via-green-500/4 to-transparent";
       case ProjectStatus.CANCELLED:
-        return "from-red-500/35 via-rose-500/[0.04] to-transparent";
+        return "from-red-500/35 via-rose-500/4 to-transparent";
       case ProjectStatus.ARCHIVED:
-        return "from-gray-500/35 via-gray-500/[0.04] to-transparent";
+        return "from-gray-500/35 via-gray-500/4 to-transparent";
     }
   };
 
