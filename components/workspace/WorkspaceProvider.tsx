@@ -1,6 +1,7 @@
 "use client";
 
 import WorkspaceLoader from "@/components/loaders/WorkspaceLoader";
+import { useGetOrganizationMembersQuery } from "@/features/organization-member/organization-member.api";
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 import { useGetProjectsQuery } from "@/features/project/project.api";
 import { useGetWorkspaceMembersQuery } from "@/features/workspace-member/workspace-member.api";
@@ -64,6 +65,16 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     },
     {
       skip: !selectedWorkspace?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetOrganizationMembersQuery(
+    {
+      orgId: organization?.id || "",
+    },
+    {
+      skip: !organization?.id,
       refetchOnMountOrArgChange: true,
     },
   );

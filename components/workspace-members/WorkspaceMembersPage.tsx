@@ -1,6 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  WorkspaceMember,
+  WorkspaceMemberRole,
+} from "@/features/workspace-member/workspace-member.interface";
+import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
+import { useAppSelector } from "@/store/hooks";
 import {
   ArrowDownToLine,
   ArrowUpRight,
@@ -9,23 +14,18 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
+import { useMemo, useState } from "react";
+import AddWorkspaceMembersModal from "./AddWorkspaceMembersModal";
 import MembersStats from "./MembersStats";
-import MembersToolbar from "./MembersToolbar";
 import MembersTable from "./MembersTable";
-import InviteWorkspaceMemberModal from "./InviteWorkspaceMemberModal";
-import { useAppSelector } from "@/store/hooks";
-import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
-import {
-  WorkspaceMember,
-  WorkspaceMemberRole,
-} from "@/features/workspace-member/workspace-member.interface";
+import MembersToolbar from "./MembersToolbar";
 
 const WorkspaceMembersPage = () => {
   const members = useAppSelector(selectWorkspaceMembers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("All roles");
   const [statusFilter, setStatusFilter] = useState("All statuses");
-  const [inviteOpen, setInviteOpen] = useState(false);
+  const [addMembersOpen, setAddMembersOpen] = useState(false);
 
   const filteredMembers = useMemo(() => {
     return members.filter((member: WorkspaceMember) => {
@@ -39,10 +39,6 @@ const WorkspaceMembersPage = () => {
       return matchesSearch && matchesRole;
     });
   }, [members, search, roleFilter, statusFilter]);
-
-  const handleInvite = (email: string, role: "Admin" | "Member") => {
-    setInviteOpen(false);
-  };
 
   const activeCount = members.filter((member) => member.user.isActive).length;
 
@@ -85,11 +81,11 @@ const WorkspaceMembersPage = () => {
             </div>
 
             <button
-              onClick={() => setInviteOpen(true)}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold shadow-lg shadow-indigo-500/20 transition hover:brightness-110"
+              onClick={() => setAddMembersOpen(true)}
+              className="inline-flex cursor-pointer shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold shadow-lg shadow-indigo-500/20 transition hover:brightness-110"
             >
               <Users size={16} />
-              Invite members
+              Add members
             </button>
           </div>
         </section>
@@ -163,10 +159,9 @@ const WorkspaceMembersPage = () => {
         </div>
       </div>
 
-      <InviteWorkspaceMemberModal
-        open={inviteOpen}
-        onClose={() => setInviteOpen(false)}
-        onInvite={handleInvite}
+      <AddWorkspaceMembersModal
+        open={addMembersOpen}
+        onClose={() => setAddMembersOpen(false)}
       />
     </div>
   );
