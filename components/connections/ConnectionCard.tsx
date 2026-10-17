@@ -1,159 +1,103 @@
 "use client";
 
+import { SuggestedPeople } from "@/features/connection/connection.interface";
+import { Skill } from "@/features/skills/skills.interface";
 import {
+  ArrowUpRight,
   BadgeCheck,
-  BriefcaseBusiness,
-  MapPin,
   MessageCircle,
   MoreHorizontal,
-  UserMinus,
-  UserPlus,
   Users,
 } from "lucide-react";
-import { useState } from "react";
 
-interface Props {
-  user: any;
-  mode: "connected" | "discover" | "pending";
+interface ConnectionCardProps {
+  user: SuggestedPeople;
 }
 
-const ConnectionCard = ({ user, mode }: Props) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
+const ConnectionCard = ({ user }: ConnectionCardProps) => {
   return (
-    <article className="group relative flex min-w-0 flex-col rounded-2xl border border-white/7 bg-[#0c0e14] p-4 transition duration-200 hover:-translate-y-0.5 hover:border-indigo-400/25 hover:bg-[#10121b] sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <a
-          href={`/identity/${user.username}`}
-          aria-label={`View ${user.name}'s identity`}
-          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br ${user.avatarColor} text-sm font-semibold text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition group-hover:scale-[1.03]`}
-        >
-          {user.initials}
-        </a>
+    <article className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-400/25 hover:bg-white/[0.04]">
+      <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-indigo-400/[0.06] blur-2xl transition-all duration-500 group-hover:bg-violet-400/[0.11]" />
 
-        {user.verified && (
-          <span
-            title="Verified professional"
-            className="flex h-7 w-7 items-center justify-center rounded-lg border border-indigo-400/15 bg-indigo-500/10 text-indigo-300"
-          >
-            <BadgeCheck size={16} />
-          </span>
-        )}
+      <div className="relative flex items-start justify-between">
+        <button
+          className="relative shrink-0"
+          aria-label={`View ${user.name}'s profile`}
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-400/20 to-violet-500/10 text-lg font-semibold text-violet-100">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="h-full w-full rounded-2xl object-cover"
+              />
+            ) : (
+              user.name
+            )}
+          </div>
+
+          {user.id && (
+            <span className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full border-[3px] border-[#11121a] bg-emerald-400" />
+          )}
+        </button>
+
+        <button
+          aria-label={`More options for ${user.name}`}
+          className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-white/[0.06] hover:text-gray-300"
+        >
+          <MoreHorizontal size={19} />
+        </button>
       </div>
 
-      <div className="mt-4 min-w-0">
-        <a
-          href={`/identity/${user.username}`}
-          className="inline-flex max-w-full items-center gap-1.5 text-[15px] font-semibold text-white transition hover:text-indigo-300"
-        >
-          <span className="truncate">{user.name}</span>
-        </a>
+      <button className="relative mt-4 block max-w-full text-left">
+        <span className="flex items-center gap-1.5">
+          <span className="truncate text-base font-semibold text-white transition-colors group-hover:text-violet-200">
+            {user.name}
+          </span>
+          {user.id && (
+            <BadgeCheck size={15} className="shrink-0 text-indigo-300" />
+          )}
+        </span>
 
-        <p className="mt-1.5 line-clamp-2 min-h-10 text-sm leading-5 text-gray-400">
-          {user.headline}
+        <p className="mt-1 truncate text-sm text-gray-400">
+          {user.profile.headline}
         </p>
 
-        <div className="mt-3 flex min-w-0 items-center gap-1.5 text-xs text-gray-500">
-          <MapPin size={13} className="shrink-0" />
-          <span className="truncate">{user.location}</span>
-        </div>
-
-        <div className="mt-2 flex min-w-0 items-center gap-1.5 text-xs text-gray-500">
-          <Users size={13} className="shrink-0" />
-          <span>
-            {user.mutualConnections} mutual connection
-            {user.mutualConnections === 1 ? "" : "s"}
-          </span>
-        </div>
-      </div>
+        <p className="mt-1 truncate text-xs text-gray-600">
+          {user?.profile?.industry} · {user?.profile.city}
+        </p>
+      </button>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
-        {user.skills.slice(0, 3).map((skill: any) => (
+        {user?.profile?.skills?.slice(0, 3).map((skill: Skill) => (
           <span
-            key={skill}
-            className="max-w-full truncate rounded-lg border border-white/6 bg-white/2.5 px-2 py-1 text-[10px] font-medium text-gray-400"
+            key={skill.id}
+            className="rounded-md border border-white/[0.07] bg-white/[0.025] px-2 py-1 text-[10px] text-gray-400"
           >
-            {skill}
+            {skill.name}
           </span>
         ))}
       </div>
 
-      <div className="mt-5 flex items-center gap-2 border-t border-white/6 pt-4">
-        {mode === "connected" && (
-          <>
-            <a
-              href={`/messages?user=${encodeURIComponent(user.username)}`}
-              className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-white/9 bg-white/2.5 px-3 text-sm font-medium text-gray-200 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white"
-            >
-              <MessageCircle size={15} />
-              Message
-            </a>
+      <div className="mt-5 flex items-center justify-between border-t border-white/[0.07] pt-4">
+        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <Users size={14} />
+          {101} mutual
+        </div>
 
-            <div className="relative">
-              <button
-                type="button"
-                aria-label={`More actions for ${user.name}`}
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((current) => !current)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/7 text-gray-500 transition hover:bg-white/5 hover:text-white"
-              >
-                <MoreHorizontal size={18} />
-              </button>
-
-              {menuOpen && (
-                <div className="absolute right-0 top-12 z-20 w-48 rounded-xl border border-white/10 bg-[#151821] p-1.5 shadow-2xl shadow-black/40">
-                  <a
-                    href={`/identity/${user.username}`}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-xs text-gray-300 transition hover:bg-white/5 hover:text-white"
-                  >
-                    <BriefcaseBusiness size={14} />
-                    View identity
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                    }}
-                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs text-rose-300 transition hover:bg-rose-500/10"
-                  >
-                    <UserMinus size={14} />
-                    Remove connection
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {mode === "discover" && (
-          <>
-            <button
-              type="button"
-              className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
-            >
-              <UserPlus size={15} />
-              Connect
-            </button>
-
-            <a
-              href={`/identity/${user.username}`}
-              aria-label={`View ${user.name}'s identity`}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/8 text-gray-400 transition hover:bg-white/5 hover:text-white"
-            >
-              <BriefcaseBusiness size={16} />
-            </a>
-          </>
-        )}
-
-        {mode === "pending" && (
+        <div className="flex gap-2">
           <button
-            type="button"
-            className="h-10 flex-1 rounded-xl border border-white/8 text-sm font-medium text-gray-300 transition hover:border-rose-400/25 hover:bg-rose-500/6 hover:text-rose-300"
+            aria-label={`Message ${user.name}`}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.09] text-gray-400 transition-colors hover:border-violet-400/30 hover:bg-violet-400/10 hover:text-violet-200"
           >
-            Cancel request
+            <MessageCircle size={16} />
           </button>
-        )}
+
+          <button className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.09] px-3 text-xs font-medium text-gray-300 transition-all hover:border-violet-400/30 hover:bg-violet-400/10 hover:text-white">
+            Profile
+            <ArrowUpRight size={13} />
+          </button>
+        </div>
       </div>
     </article>
   );

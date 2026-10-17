@@ -1,5 +1,7 @@
 import ConnectionsPage from "@/components/connections/ConnectionsPage";
 
-const Page = () => <ConnectionsPage />;
+const ConnectionsScreen = () => {
+  return <ConnectionsPage />;
+};
 
-export default Page;
+export default ConnectionsScreen;

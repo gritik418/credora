@@ -1,7 +1,13 @@
 "use client";
 
 import { ICurrentUser } from "@/features/auth/auth.interface";
-import { ChevronDown, LogOut, Settings, UserRound } from "lucide-react";
+import {
+  ChevronDown,
+  LogOut,
+  Network,
+  Settings,
+  UserRound,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -96,6 +102,15 @@ const ProfileMenu = ({ user }: Props) => {
             >
               <UserRound size={16} />
               Profile
+            </Link>
+
+            <Link
+              href="/connections"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
+            >
+              <Network size={16} />
+              Connections
             </Link>
 
             <Link

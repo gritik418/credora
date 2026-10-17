@@ -1,48 +1,73 @@
 "use client";
 
-import { Clock3, Compass, Users } from "lucide-react";
+import { Inbox, Network, Sparkles } from "lucide-react";
 
-export type ConnectionsTab = "connections" | "requests" | "discover";
-
-interface Props {
-  activeTab: ConnectionsTab;
+interface ConnectionsTabsProps {
+  activeTab: ConnectionTab;
+  onChange: (tab: ConnectionTab) => void;
+  connectionCount: number;
   requestCount: number;
-  onTabChange: (tab: ConnectionsTab) => void;
 }
 
-const ConnectionsTabs = ({ activeTab, requestCount, onTabChange }: Props) => {
+export type ConnectionTab = "connections" | "requests" | "discover";
+
+const ConnectionsTabs = ({
+  activeTab,
+  onChange,
+  connectionCount,
+  requestCount,
+}: ConnectionsTabsProps) => {
   const tabs = [
-    { id: "connections" as const, label: "My connections", icon: Users },
-    { id: "requests" as const, label: "Requests", icon: Clock3 },
-    { id: "discover" as const, label: "Discover people", icon: Compass },
+    {
+      id: "connections" as const,
+      label: "Connections",
+      count: connectionCount,
+      icon: Network,
+    },
+    {
+      id: "requests" as const,
+      label: "Requests",
+      count: requestCount,
+      icon: Inbox,
+    },
+    {
+      id: "discover" as const,
+      label: "Discover",
+      icon: Sparkles,
+    },
   ];
 
   return (
-    <div className="flex gap-1 overflow-x-auto border-b border-white/7">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
-        const active = activeTab === tab.id;
+    <div className="flex gap-1 overflow-x-auto border-b border-white/[0.08]">
+      {tabs.map(({ id, label, count, icon: Icon }) => {
+        const active = activeTab === id;
 
         return (
           <button
-            key={tab.id}
-            type="button"
-            onClick={() => onTabChange(tab.id)}
-            className={`relative flex shrink-0 items-center gap-2 px-3 py-3.5 text-sm transition sm:px-4 ${
+            key={id}
+            onClick={() => onChange(id)}
+            className={`relative flex shrink-0 items-center gap-2.5 px-4 py-3.5 text-sm transition-colors ${
               active ? "text-white" : "text-gray-500 hover:text-gray-300"
             }`}
           >
-            <Icon size={16} />
-            <span>{tab.label}</span>
+            <Icon size={16} className={active ? "text-violet-300" : ""} />
 
-            {tab.id === "requests" && requestCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-500/15 px-1.5 text-[10px] font-semibold text-indigo-300">
-                {requestCount}
+            <span className="font-medium">{label}</span>
+
+            {count !== undefined && (
+              <span
+                className={`rounded-md px-1.5 py-0.5 text-[10px] ${
+                  active
+                    ? "bg-violet-400/15 text-violet-200"
+                    : "bg-white/[0.05] text-gray-500"
+                }`}
+              >
+                {count}
               </span>
             )}
 
             {active && (
-              <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-indigo-400 sm:inset-x-4" />
+              <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-violet-400 to-blue-400" />
             )}
           </button>
         );
