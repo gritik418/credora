@@ -1,16 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Organization } from "./organization.interface";
-import organizationApi from "./organization.api";
 import userApi from "../user/user.api";
+import organizationApi from "./organization.api";
+import { Organization, ProjectWithWorkspace } from "./organization.interface";
 
 interface OrganizationState {
   organizations: Organization[];
   selectedOrganization: Organization | null;
+  organizationProjects: ProjectWithWorkspace[];
 }
 
 const initialState: OrganizationState = {
   organizations: [],
   selectedOrganization: null,
+  organizationProjects: [],
 };
 
 const organizationSlice = createSlice({
@@ -50,6 +52,22 @@ const organizationSlice = createSlice({
         userApi.endpoints.getSelectedOrganization.matchRejected,
         (state) => {
           state.selectedOrganization = null;
+        },
+      )
+      .addMatcher(
+        organizationApi.endpoints.getOrganizationProjects.matchFulfilled,
+        (state, action) => {
+          if (action.payload.data) {
+            state.organizationProjects = action.payload.data.projects;
+          } else {
+            state.organizationProjects = [];
+          }
+        },
+      )
+      .addMatcher(
+        organizationApi.endpoints.getOrganizationProjects.matchRejected,
+        (state) => {
+          state.organizationProjects = [];
         },
       );
   },

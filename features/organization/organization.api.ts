@@ -3,6 +3,8 @@ import CreateOrganizationDto from "./dto/create-organization.dto";
 import {
   CreateOrganizationResponseDto,
   GetOrganizationBySlugResponseDto,
+  GetOrganizationProjectsRequestDto,
+  GetOrganizationProjectsResponseDto,
   GetOrganizationsResponseDto,
   SwitchOrganizationRequestDto,
   SwitchOrganizationResponseDto,
@@ -48,6 +50,16 @@ const organizationApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["SwitchOrg"],
     }),
+    getOrganizationProjects: build.query<
+      GetOrganizationProjectsResponseDto,
+      GetOrganizationProjectsRequestDto
+    >({
+      query: ({ organizationId }) => ({
+        url: `/organizations/${organizationId}/projects`,
+        method: "GET",
+      }),
+      providesTags: ["SwitchOrg"],
+    }),
   }),
 });
 
@@ -56,6 +68,7 @@ export const {
   useCreateOrganizationMutation,
   useGetOrganizationBySlugQuery,
   useSwitchOrganizationMutation,
+  useGetOrganizationProjectsQuery,
 } = organizationApi;
 
 export default organizationApi;

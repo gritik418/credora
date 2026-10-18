@@ -5,3 +5,6 @@ export const selectOrganizations = (state: RootState) =>
 
 export const selectSelectedOrganization = (state: RootState) =>
   state.organization.selectedOrganization;
+
+export const selectOrganizationProjects = (state: RootState) =>
+  state.organization.organizationProjects;

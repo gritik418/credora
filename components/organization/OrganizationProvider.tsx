@@ -5,6 +5,7 @@ import { useGetOrganizationInvitesQuery } from "@/features/organization-invite/o
 import { useGetOrganizationMembersQuery } from "@/features/organization-member/organization-member.api";
 import {
   useGetOrganizationBySlugQuery,
+  useGetOrganizationProjectsQuery,
   useGetOrganizationsQuery,
   useSwitchOrganizationMutation,
 } from "@/features/organization/organization.api";
@@ -56,6 +57,16 @@ const OrganizationProvider = ({ slug, children }: Props) => {
   useGetWorkspacesQuery(
     {
       orgId,
+    },
+    {
+      skip: !orgId,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetOrganizationProjectsQuery(
+    {
+      organizationId: orgId,
     },
     {
       skip: !orgId,

@@ -1,3 +1,5 @@
+import { ProjectStatus } from "../project/project.interface";
+import { WorkspaceStatus } from "../workspace/workspace.interface";
 import CreateOrganizationDto from "./dto/create-organization.dto";
 
 export interface CreateOrganizationResponseDto {
@@ -60,4 +62,42 @@ export enum OrganizationMemberRole {
   RECRUITER = "RECRUITER",
   MANAGER = "MANAGER",
   MEMBER = "MEMBER",
+}
+
+export interface GetOrganizationProjectsRequestDto {
+  organizationId: string;
+}
+
+export interface GetOrganizationProjectsResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    projects: ProjectWithWorkspace[];
+  };
+}
+
+export interface ProjectWithWorkspace {
+  id: string;
+  workspaceId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  status: ProjectStatus;
+
+  startDate?: string;
+  dueDate?: string;
+
+  createdAt: string;
+  updatedAt: string;
+
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    logo: string;
+    status: WorkspaceStatus;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
