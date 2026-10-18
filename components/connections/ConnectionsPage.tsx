@@ -2,7 +2,7 @@
 
 import { useGetSuggestedPeopleQuery } from "@/features/connection/connection.api";
 import { SuggestedPeople } from "@/features/connection/connection.interface";
-import { Inbox, Network, Sparkles, Users } from "lucide-react";
+import { Inbox, Network, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import ConnectionsGrid from "./ConnectionsGrid";
 import ConnectionsHeader from "./ConnectionsHeader";
@@ -19,7 +19,7 @@ const ConnectionsPage = () => {
   const [search, setSearch] = useState("");
 
   const { data } = useGetSuggestedPeopleQuery({
-    limit: 50,
+    limit: 150,
     page: 1,
   });
 
@@ -28,6 +28,7 @@ const ConnectionsPage = () => {
       setSuggestions(data.data.suggestedPeople);
     }
   }, [data]);
+
   return (
     <main className="min-h-screen px-4 py-6 text-white sm:px-6 sm:py-8 xl:px-8">
       <div className="mx-auto max-w-[1600px] space-y-7">

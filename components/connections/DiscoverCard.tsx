@@ -101,6 +101,13 @@ const DiscoverCard = ({ user }: DiscoverCardProps) => {
 
   const { label, Icon } = getSuggestionReason(user.matchReasons);
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("");
+  };
+
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-white/8 bg-white/2.5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/25 hover:bg-white/4">
       <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-400/5 blur-3xl transition-colors group-hover:bg-violet-400/1" />
@@ -113,15 +120,15 @@ const DiscoverCard = ({ user }: DiscoverCardProps) => {
 
       <button className="relative mt-5 flex w-full flex-col items-center text-center">
         <div className="relative mb-3">
-          <div className="flex h-19 w-19 items-center justify-center rounded-[26px] border border-white/10 bg-linear-to-br from-violet-400/20 via-indigo-400/10 to-blue-400/15 text-xl font-semibold text-white shadow-lg shadow-indigo-950/20">
+          <div className="flex h-19 w-19 items-center justify-center rounded-lg border border-white/10 bg-linear-to-br from-violet-400/20 via-indigo-400/10 to-blue-400/15 text-xl font-semibold text-white shadow-lg shadow-indigo-950/20">
             {user.avatar ? (
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="h-full w-full rounded-[26px] object-cover"
+                className="h-full w-full rounded-lg object-cover"
               />
             ) : (
-              user.name
+              getInitials(user.name)
             )}
           </div>
         </div>
@@ -133,9 +140,15 @@ const DiscoverCard = ({ user }: DiscoverCardProps) => {
           )}
         </h3>
 
-        <p className="mt-1 max-w-full truncate text-sm text-gray-400">
-          {user.profile.headline}
-        </p>
+        {user.profile?.headline ? (
+          <p className="mt-1 h-11 max-w-full text-sm text-gray-400">
+            {user.profile.headline.length > 110
+              ? user.profile.headline.slice(0, 110) + "..."
+              : user.profile.headline}
+          </p>
+        ) : (
+          <p className="h-11"></p>
+        )}
 
         <p className="mt-1 text-xs text-gray-600">
           {user.profile.profession} · {user.profile.city}
