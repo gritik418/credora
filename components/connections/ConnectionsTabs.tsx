@@ -38,7 +38,7 @@ const ConnectionsTabs = ({
   ];
 
   return (
-    <div className="flex gap-1 overflow-x-auto border-b border-white/[0.08]">
+    <div className="flex gap-1 overflow-x-auto border-b border-white/8">
       {tabs.map(({ id, label, count, icon: Icon }) => {
         const active = activeTab === id;
 
@@ -59,7 +59,7 @@ const ConnectionsTabs = ({
                 className={`rounded-md px-1.5 py-0.5 text-[10px] ${
                   active
                     ? "bg-violet-400/15 text-violet-200"
-                    : "bg-white/[0.05] text-gray-500"
+                    : "bg-white/5 text-gray-500"
                 }`}
               >
                 {count}
@@ -67,7 +67,7 @@ const ConnectionsTabs = ({
             )}
 
             {active && (
-              <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-violet-400 to-blue-400" />
+              <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-linear-to-r from-violet-400 to-blue-400" />
             )}
           </button>
         );

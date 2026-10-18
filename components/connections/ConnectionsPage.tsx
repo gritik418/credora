@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Inbox, Network, Search, Sparkles, Users } from "lucide-react";
-import ConnectionsHeader from "./ConnectionsHeader";
-import ConnectionsOverview from "./ConnectionsOverview";
-import ConnectionsTabs, { ConnectionTab } from "./ConnectionsTabs";
-import ConnectionsToolbar from "./ConnectionsToolbar";
-import ConnectionsGrid from "./ConnectionsGrid";
-import DiscoverGrid from "./DiscoverGrid";
-import RequestsList from "./RequestsList";
-import { Skill } from "@/features/skills/skills.interface";
 import { useGetSuggestedPeopleQuery } from "@/features/connection/connection.api";
 import { SuggestedPeople } from "@/features/connection/connection.interface";
+import { Inbox, Network, Sparkles, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import ConnectionsGrid from "./ConnectionsGrid";
+import ConnectionsHeader from "./ConnectionsHeader";
+import ConnectionsTabs, { ConnectionTab } from "./ConnectionsTabs";
+import ConnectionsToolbar from "./ConnectionsToolbar";
+import DiscoverGrid from "./DiscoverGrid";
+import RequestsList from "./RequestsList";
 
 const ConnectionsPage = () => {
   const [activeTab, setActiveTab] = useState<ConnectionTab>("connections");
@@ -19,61 +17,11 @@ const ConnectionsPage = () => {
   const [suggestions, setSuggestions] = useState<SuggestedPeople[]>([]);
   const [requests, setRequests] = useState<any>([]);
   const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("all");
 
   const { data } = useGetSuggestedPeopleQuery({
     limit: 50,
     page: 1,
   });
-
-  const incomingRequests = requests.filter(
-    (request: any) => request?.direction === "incoming",
-  );
-
-  const outgoingRequests = requests.filter(
-    (request: any) => request?.direction === "outgoing",
-  );
-
-  //   const filterPeople = <T extends Person>(people: T[]): T[] => {
-  //     const query = search.trim().toLowerCase();
-  //     const selectedLocation = location.toLowerCase();
-
-  //     return people.filter((user) => {
-  //       const matchesSearch =
-  //         !query ||
-  //         user.name.toLowerCase().includes(query) ||
-  //         user.username.toLowerCase().includes(query) ||
-  //         user.headline.toLowerCase().includes(query) ||
-  //         user.company.toLowerCase().includes(query) ||
-  //         user.skills.some((skill:Skill) => skill.toLowerCase().includes(query));
-
-  //       const matchesLocation =
-  //         selectedLocation === "all" ||
-  //         user.location.toLowerCase().includes(selectedLocation);
-
-  //       return matchesSearch && matchesLocation;
-  //     });
-  //   };
-
-  //   const filteredConnections = useMemo(
-  //     () => filterPeople(connections),
-  //     [connections, search, location],
-  //   );
-
-  //   const filteredSuggestions = useMemo(
-  //     () => filterPeople(suggestions),
-  //     [suggestions, search, location],
-  //   );
-
-  //   const filteredIncoming = useMemo(
-  //     () => filterPeople(incomingRequests),
-  //     [requests, search, location],
-  //   );
-
-  //   const filteredOutgoing = useMemo(
-  //     () => filterPeople(outgoingRequests),
-  //     [requests, search, location],
-  //   );
 
   useEffect(() => {
     if (data) {
@@ -85,26 +33,15 @@ const ConnectionsPage = () => {
       <div className="mx-auto max-w-[1600px] space-y-7">
         <ConnectionsHeader />
 
-        <ConnectionsOverview
-          connections={connections.length}
-          requests={incomingRequests.length}
-          suggestions={suggestions.length}
-        />
-
         <section className="space-y-5">
           <ConnectionsTabs
             activeTab={activeTab}
             onChange={setActiveTab}
             connectionCount={connections.length}
-            requestCount={incomingRequests.length}
+            requestCount={requests.length}
           />
 
-          <ConnectionsToolbar
-            search={search}
-            location={location}
-            onSearchChange={setSearch}
-            onLocationChange={setLocation}
-          />
+          <ConnectionsToolbar search={search} onSearchChange={setSearch} />
 
           {activeTab === "connections" && (
             <div className="space-y-5">
@@ -144,11 +81,6 @@ const ConnectionsPage = () => {
                     Keep your professional relationships moving forward.
                   </p>
                 </div>
-
-                <span className="text-xs text-gray-500">
-                  {incomingRequests.length} incoming · {outgoingRequests.length}{" "}
-                  outgoing
-                </span>
               </div>
 
               <div className="space-y-3">
@@ -164,24 +96,8 @@ const ConnectionsPage = () => {
                   <EmptyState
                     icon={<Inbox size={22} />}
                     title="You're all caught up"
-                    description="New incoming connection requests will appear here."
+                    description="New connection requests will appear here."
                   />
-                )}
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm font-medium text-gray-300">
-                  <Users size={15} className="text-blue-300" />
-                  Sent
-                  <span className="text-xs text-gray-600">({[].length})</span>
-                </div>
-
-                {[].length ? (
-                  <RequestsList requests={[]} />
-                ) : (
-                  <p className="rounded-xl border border-dashed border-white/[0.08] px-4 py-7 text-center text-sm text-gray-500">
-                    You haven't sent any pending requests.
-                  </p>
                 )}
               </div>
             </div>
@@ -232,8 +148,8 @@ interface EmptyStateProps {
 }
 
 const EmptyState = ({ icon, title, description }: EmptyStateProps) => (
-  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] px-6 py-14 text-center">
-    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.025] text-violet-300">
+  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/1 px-6 py-14 text-center">
+    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/8 bg-white/2.5 text-violet-300">
       {icon}
     </div>
     <h3 className="text-base font-semibold text-white">{title}</h3>
