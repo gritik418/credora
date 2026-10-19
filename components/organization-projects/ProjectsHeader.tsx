@@ -29,7 +29,7 @@ const ProjectsHeader = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/2.5 px-4 py-3">
+        <div className="flex items-center gap-3 rounded-xl border border-white/7 bg-white/2.5 px-4 py-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-indigo-400/15 bg-indigo-500/10 text-indigo-300">
             <BriefcaseBusiness size={17} />
           </div>
