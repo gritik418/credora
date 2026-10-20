@@ -56,6 +56,19 @@ export interface GetProjectsResponseDto {
   data?: { projects: ProjectWithWorkspaceAndMembers[] };
 }
 
+export interface GetProjectBySlugRequestDto {
+  workspaceId: string;
+  projectSlug: string;
+}
+
+export interface GetProjectBySlugResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    project: ProjectWithWorkspaceAndMembers;
+  };
+}
+
 export interface ProjectWithWorkspace {
   id: string;
   workspaceId: string;

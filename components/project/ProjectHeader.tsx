@@ -1,70 +1,86 @@
 "use client";
 
-import Link from "next/link";
+import { selectSelectedProject } from "@/features/project/project.selectors";
+import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import { useAppSelector } from "@/store/hooks";
 import {
   ArrowLeft,
   ArrowUpRight,
   CalendarDays,
   ChevronDown,
-  CircleDot,
+  Clock,
   Ellipsis,
-  Flag,
   Layers3,
   Plus,
 } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ProjectStatusLabelAndIcon from "./ProjectStatusLabelAndIcon";
 
-interface Props {
-  workspaceId: string;
-  projectId: string;
-}
-
-const ProjectHeader = ({ workspaceId, projectId }: Props) => {
-  const projectName = "Credora Platform";
+const ProjectHeader = () => {
+  const project = useAppSelector(selectSelectedProject);
   const pathname = usePathname();
+  const workspace = useAppSelector(selectSelectedWorkspace);
 
   const navigation = [
     {
       label: "Overview",
-      href: `/workspace/${workspaceId}/projects/${projectId}`,
-      isActive: pathname === `/workspace/${workspaceId}/projects/${projectId}`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}`,
+      isActive:
+        pathname === `/workspace/${workspace?.slug}/projects/${project?.slug}`,
     },
     {
       label: "Tasks",
-      href: `/workspace/${workspaceId}/projects/${projectId}/tasks`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}/tasks`,
       isActive:
-        pathname === `/workspace/${workspaceId}/projects/${projectId}/tasks`,
+        pathname ===
+        `/workspace/${workspace?.slug}/projects/${project?.slug}/tasks`,
     },
     {
       label: "Activity",
-      href: `/workspace/${workspaceId}/projects/${projectId}/activity`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}/activity`,
       isActive:
-        pathname === `/workspace/${workspaceId}/projects/${projectId}/activity`,
+        pathname ===
+        `/workspace/${workspace?.slug}/projects/${project?.slug}/activity`,
     },
     {
       label: "Members",
-      href: `/workspace/${workspaceId}/projects/${projectId}/members`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}/members`,
       isActive:
-        pathname === `/workspace/${workspaceId}/projects/${projectId}/members`,
+        pathname ===
+        `/workspace/${workspace?.slug}/projects/${project?.slug}/members`,
     },
     {
       label: "Files",
-      href: `/workspace/${workspaceId}/projects/${projectId}/files`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}/files`,
       isActive:
-        pathname === `/workspace/${workspaceId}/projects/${projectId}/files`,
+        pathname ===
+        `/workspace/${workspace?.slug}/projects/${project?.slug}/files`,
     },
     {
       label: "Settings",
-      href: `/workspace/${workspaceId}/projects/${projectId}/settings`,
+      href: `/workspace/${workspace?.slug}/projects/${project?.slug}/settings`,
       isActive:
-        pathname === `/workspace/${workspaceId}/projects/${projectId}/settings`,
+        pathname ===
+        `/workspace/${workspace?.slug}/projects/${project?.slug}/settings`,
     },
   ];
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  if (!workspace || !project) return null;
 
   return (
     <div className="space-y-6">
       <Link
-        href={`/workspace/${workspaceId}/projects`}
+        href={`/workspace/${workspace.id}/projects`}
         className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-slate-200"
       >
         <ArrowLeft size={15} />
@@ -85,39 +101,35 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
               <div className="min-w-0 flex-1">
                 <div className="mb-2 flex flex-wrap items-center gap-2">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-300">
-                    PRJ-01
+                    PRJ-{project?.id?.slice(0, 6)}
                   </span>
                   <span className="h-1 w-1 rounded-full bg-slate-700" />
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/15 bg-emerald-400/7 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
-                    <CircleDot size={11} />
-                    In progress
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/15 bg-rose-400/6 px-2.5 py-1 text-[11px] font-medium text-rose-300">
-                    <Flag size={11} />
-                    High priority
-                  </span>
+
+                  <ProjectStatusLabelAndIcon status={project?.status} />
                 </div>
 
                 <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                  {projectName}
+                  {project?.name}
                 </h1>
 
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-                  Building Credora&apos;s professional identity and verifiable
-                  work-history platform, designed to make career achievements
-                  transparent and meaningful.
+                  {project?.description}
                 </p>
 
                 <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
                   <span className="inline-flex items-center gap-1.5">
                     <CalendarDays size={14} />
-                    Created Sep 24, 2026
+                    Created {formatDate(project?.createdAt)}
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <CalendarDays size={14} />
-                    Due Nov 20, 2026
+                    Due {formatDate(project?.dueDate || "")}
                   </span>
-                  <span>Updated 2 hours ago</span>
+
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock size={14} />
+                    Last Updated {formatDate(project?.updatedAt)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -133,7 +145,7 @@ const ProjectHeader = ({ workspaceId, projectId }: Props) => {
               </button>
 
               <Link
-                href={`/workspace/${workspaceId}/projects/${projectId}/tasks`}
+                href={`/workspace/${workspace.id}/projects/${project?.slug}/tasks`}
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110"
               >
                 <Plus size={16} />
