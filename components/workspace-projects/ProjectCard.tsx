@@ -1,20 +1,24 @@
-import { Project, ProjectStatus } from "@/features/project/project.interface";
+import {
+  ProjectStatus,
+  ProjectWithWorkspaceAndMembers,
+} from "@/features/project/project.interface";
 import {
   ArrowUpRight,
   CalendarDays,
   CheckCircle2,
-  Circle,
   Clock3,
+  FolderKanban,
   MoreHorizontal,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
-  project: Project;
+  project: ProjectWithWorkspaceAndMembers;
   view: "grid" | "list";
 }
 
-const statusStyles: Record<Project["status"], string> = {
+const statusStyles: Record<ProjectWithWorkspaceAndMembers["status"], string> = {
   [ProjectStatus.PLANNING]:
     "border-violet-400/20 bg-violet-400/8 text-violet-300",
   [ProjectStatus.ACTIVE]: "border-blue-400/20 bg-blue-400/8 text-blue-300",
@@ -57,6 +61,34 @@ const ProjectCard = ({ project, view }: Props) => {
     });
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getMemberColors = (name: string) => {
+    const colors = [
+      "from-blue-500/55 via-cyan-500/24 to-transparent",
+      "from-indigo-500/55 via-violet-500/24 to-transparent",
+      "from-amber-500/55 via-orange-500/24 to-transparent",
+      "from-emerald-500/55 via-green-500/24 to-transparent",
+      "from-red-500/55 via-rose-500/24 to-transparent",
+      "from-pink-500/55 via-pink-500/24 to-transparent",
+      "from-lime-500/55 via-lime-500/24 to-transparent",
+      "from-violet-500/55 via-violet-500/24 to-transparent",
+      "from-purple-500/55 via-purple-500/24 to-transparent",
+      "from-slate-500/55 via-slate-500/24 to-transparent",
+    ];
+
+    const index = name.length % colors.length;
+
+    return colors[index];
+  };
+
   return (
     <article
       className={`group relative overflow-hidden rounded-2xl border border-white/7 bg-[#0c0f18] transition duration-200 hover:border-indigo-400/22 hover:bg-[#0e121d] ${
@@ -71,7 +103,7 @@ const ProjectCard = ({ project, view }: Props) => {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-indigo-400/15 bg-indigo-400/8 text-indigo-300">
-              <Circle size={20} strokeWidth={1.7} />
+              <FolderKanban size={20} strokeWidth={1.7} />
             </div>
 
             <div className="min-w-0">
@@ -166,32 +198,51 @@ const ProjectCard = ({ project, view }: Props) => {
           </div>
           <div className="mt-1.5 flex items-center">
             <div className="flex -space-x-2">
-              {/* {project.members.slice(0, 4).map((member, index) => (
-                <div
-                  key={`${project.id}-${member.initials}-${index}`}
-                  title={member.initials}
-                  className={`flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#0c0f18] bg-linear-to-br ${member.color} text-[9px] font-semibold text-white`}
-                >
-                  {member.initials}
-                </div>
-              ))} */}
+              {project.members.slice(0, 4).map((member, index) => {
+                if (!member.user.avatar) {
+                  return (
+                    <div
+                      key={`${project.id}-${member.user.name}-${index}`}
+                      title={member.user.name}
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-[#0c0f18] bg-linear-to-br text-[9px] font-semibold text-white`}
+                    >
+                      <img
+                        src={member.user.avatar}
+                        alt={member.user.name}
+                        className="h-full w-full rounded-full object-cover"
+                      />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      key={`${project.id}-${member.user.name}-${index}`}
+                      title={member.user.name}
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-[#0c0f18] bg-linear-to-br ${getMemberColors(member.user.name)} text-[9px] font-semibold text-white`}
+                    >
+                      {getInitials(member.user.name)}
+                    </div>
+                  );
+                }
+              })}
             </div>
-            {/* {project.members.length > 4 && (
+
+            {project.members.length > 4 && (
               <span className="ml-2 text-[10px] text-slate-500">
                 +{project.members.length - 4}
               </span>
-            )} */}
+            )}
           </div>
         </div>
 
         <div className="flex w-full items-center justify-end gap-2">
-          <button
-            type="button"
+          <Link
+            href={`/workspace/${project.workspace.slug}/projects/${project.slug}`}
             aria-label={`Open ${project.name}`}
             className="inline-flex cursor-pointer h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/7 text-slate-500 transition hover:border-indigo-400/25 hover:bg-indigo-400/10 hover:text-indigo-300"
           >
             <ArrowUpRight size={15} />
-          </button>
+          </Link>
         </div>
 
         {project.status === ProjectStatus.COMPLETED && (

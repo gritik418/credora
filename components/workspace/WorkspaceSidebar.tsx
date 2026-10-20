@@ -1,9 +1,10 @@
 "use client";
 
+import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import { useAppSelector } from "@/store/hooks";
 import {
   Activity,
   ArrowLeft,
-  ChevronDown,
   CircleHelp,
   FolderKanban,
   LayoutDashboard,
@@ -14,10 +15,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import WorkspaceSelector from "./WorkspaceSelector";
 import { Dispatch, SetStateAction } from "react";
-import { useAppSelector } from "@/store/hooks";
-import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import WorkspaceSelector from "./WorkspaceSelector";
 
 interface Props {
   mobileOpen: boolean;

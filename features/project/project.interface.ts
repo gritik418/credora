@@ -1,3 +1,4 @@
+import { WorkspaceStatus } from "../workspace/workspace.interface";
 import CreateProjectDto from "./dto/create-project.dto";
 
 export interface CreateProjectRequestDto {
@@ -52,5 +53,81 @@ export interface GetProjectsRequestDto {
 export interface GetProjectsResponseDto {
   success: boolean;
   message: string;
-  data?: { projects: Project[] };
+  data?: { projects: ProjectWithWorkspaceAndMembers[] };
+}
+
+export interface ProjectWithWorkspace {
+  id: string;
+  workspaceId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  status: ProjectStatus;
+
+  startDate?: string;
+  dueDate?: string;
+
+  createdAt: string;
+  updatedAt: string;
+
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    logo: string;
+    status: WorkspaceStatus;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface ProjectWithWorkspaceAndMembers {
+  id: string;
+  workspaceId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  status: ProjectStatus;
+
+  startDate?: string;
+  dueDate?: string;
+
+  createdAt: string;
+  updatedAt: string;
+
+  workspace: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string;
+    logo: string;
+    status: WorkspaceStatus;
+    createdAt: string;
+    updatedAt: string;
+  };
+  members: ProjectMember[];
+}
+
+export interface ProjectMember {
+  id: string;
+  projectId: string;
+  role: ProjectMemberRole;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    avatar: string;
+  };
+  userId: string;
+
+  updatedAt: string;
+  createdAt: string;
+  joinedAt: string;
+}
+
+export enum ProjectMemberRole {
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
 }
