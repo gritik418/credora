@@ -12,10 +12,13 @@ interface Props {
 const MembersTable = ({ members }: Props) => {
   return (
     <div className="overflow-visible">
-      <div className="hidden grid-cols-[minmax(230px,1.6fr)_minmax(110px,0.8fr)_minmax(110px,0.8fr)_minmax(125px,0.9fr)_40px] gap-3 border-b border-(--org-border) bg-white/12 px-5 py-3 lg:grid">
-        {["MEMBER", "ROLE", "STATUS", "DEPARTMENT", ""].map(
+      <div className="grid grid-cols-[minmax(230px,1.6fr)_minmax(110px,0.8fr)_minmax(110px,0.8fr)_minmax(125px,0.9fr)_40px] gap-3 border-b border-(--org-border) bg-white/1.5 px-5 py-3.5">
+        {["MEMBER", "ROLE", "STATUS", "DEPARTMENT", "ACTIONS"].map(
           (heading, index) => (
-            <span key={`${heading}-${index}`} className="org-label">
+            <span
+              key={`${heading}-${index}`}
+              className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35"
+            >
               {heading}
             </span>
           ),

@@ -13,12 +13,16 @@ import { useParams, usePathname } from "next/navigation";
 import OrganizationSelector from "./OrganizationSelector";
 import { useAppSelector } from "@/store/hooks";
 import { selectOrganizationMembers } from "@/features/organization-member/organization-member.selectors";
+import { selectWorkspaces } from "@/features/workspace/workspace.selectors";
+import { selectOrganizationProjects } from "@/features/organization/organization.selectors";
 
 const OrganizationSidebar = () => {
   const params = useParams<{ slug: string }>();
   const pathname = usePathname();
 
   const organizationMembers = useAppSelector(selectOrganizationMembers);
+  const workspaces = useAppSelector(selectWorkspaces);
+  const projects = useAppSelector(selectOrganizationProjects);
 
   const basePath = `/org/${params.slug}`;
 
@@ -27,26 +31,36 @@ const OrganizationSidebar = () => {
       label: "Overview",
       href: basePath,
       icon: LayoutGrid,
+      showCounter: false,
+      count: 0,
     },
     {
       label: "Members",
       href: `${basePath}/members`,
       icon: Users,
+      showCounter: true,
+      count: organizationMembers.length,
     },
     {
       label: "Workspaces",
       href: `${basePath}/workspaces`,
       icon: Building2,
+      showCounter: true,
+      count: workspaces.length,
     },
     {
       label: "Projects",
       href: `${basePath}/projects`,
       icon: FolderKanban,
+      showCounter: true,
+      count: projects.length,
     },
     {
       label: "Activity",
       href: `${basePath}/activity`,
       icon: Activity,
+      showCounter: false,
+      count: 0,
     },
   ];
 
@@ -93,11 +107,11 @@ const OrganizationSidebar = () => {
 
                 <span>{item.label}</span>
 
-                {item.label === "Members" && (
+                {item.showCounter ? (
                   <span className="ml-auto rounded-md bg-white/5 px-1.5 py-0.5 text-[10px] text-white/30">
-                    {organizationMembers.length}
+                    {item.count}
                   </span>
-                )}
+                ) : null}
               </Link>
             );
           })}

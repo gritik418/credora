@@ -3,9 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
-  Building2,
-  GraduationCap,
-  MapPin,
   Network,
   Search,
   SlidersHorizontal,
