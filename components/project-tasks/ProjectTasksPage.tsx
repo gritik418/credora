@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import TaskBoard from "./TaskBoard";
-import TaskDetailsDrawer from "./TaskDetailsDrawer";
 import TaskToolbar from "./TaskToolbar";
+import CreateTask from "../tasks/CreateTask";
 
 interface Props {
   workspaceId: string;
@@ -206,7 +206,7 @@ const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
         </div>
       </div>
 
-      <TaskDetailsDrawer
+      <CreateTask
         open={drawerOpen}
         onClose={() => {
           setDrawerOpen(false);

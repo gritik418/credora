@@ -1,5 +1,6 @@
 "use client";
 
+import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
 import {
   CalendarDays,
   Ellipsis,
@@ -7,7 +8,6 @@ import {
   MessageSquare,
   UserRound,
 } from "lucide-react";
-import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
 
 interface Props {
   task: Task;
