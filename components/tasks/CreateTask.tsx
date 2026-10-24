@@ -1,5 +1,12 @@
 "use client";
 
+import { selectAvailableAssignees } from "@/features/project/project.selectors";
+import {
+  TaskAssignee,
+  TaskPriority,
+  TaskStatus,
+} from "@/features/task/task.interface";
+import { useAppSelector } from "@/store/hooks";
 import {
   CalendarDays,
   Check,
@@ -15,7 +22,6 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TaskPriority, TaskStatus } from "@/features/task/task.interface";
 
 interface CreateTaskProps {
   open: boolean;
@@ -30,37 +36,19 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
   const [startDate, setStartDate] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<string[]>([]);
+  const [selectedAssignees, setSelectedAssignees] = useState<TaskAssignee[]>(
+    [],
+  );
   const [labels, setLabels] = useState("");
   const [assigneeSearch, setAssigneeSearch] = useState("");
   const [assigneeOpen, setAssigneeOpen] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const availableAssignees = useAppSelector(selectAvailableAssignees);
+
   const modalRef = useRef<HTMLDivElement>(null);
   const assigneeRef = useRef<HTMLDivElement>(null);
-
-  const selectedAssignees: any = [];
-
-  //   const selectedAssignees = useMemo(
-  //     () =>
-  //       assignees.filter((assignee) => selectedAssigneeIds.includes(assignee.id)),
-  //     [assignees, selectedAssigneeIds],
-  //   );
-
-  //   const filteredAssignees = useMemo(() => {
-  //     const query = assigneeSearch.trim().toLowerCase();
-
-  //     return assignees.filter((assignee) => {
-  //       if (selectedAssigneeIds.includes(assignee.id)) return false;
-
-  //       return (
-  //         !query ||
-  //         assignee.name.toLowerCase().includes(query) ||
-  //         assignee.username.toLowerCase().includes(query) ||
-  //         assignee.email.toLowerCase().includes(query)
-  //       );
-  //     });
-  //   }, [assignees, assigneeSearch, selectedAssigneeIds]);
 
   useEffect(() => {
     if (!open) return;
@@ -97,31 +85,37 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [open]);
 
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setStatus(TaskStatus.TODO);
-    setPriority(TaskPriority.MEDIUM);
-    setStartDate("");
-    setDueDate("");
-    setSelectedAssigneeIds([]);
-    setLabels("");
-    setAssigneeSearch("");
-    setAssigneeOpen(false);
-    setError("");
-  };
-
   const handleClose = () => {
     if (isSubmitting) return;
-    resetForm();
     onClose();
   };
 
-  const toggleAssignee = (id: string) => {
+  const filteredAssignees = useMemo(() => {
+    return availableAssignees.filter(
+      (assignee) =>
+        assignee.user.name
+          .toLowerCase()
+          .includes(assigneeSearch.toLowerCase()) ||
+        assignee.user.username
+          .toLowerCase()
+          .includes(assigneeSearch.toLowerCase()) ||
+        assignee.user.email
+          .toLowerCase()
+          .includes(assigneeSearch.toLowerCase()),
+    );
+  }, [availableAssignees, assigneeSearch]);
+
+  const toggleAssignee = (assignee: TaskAssignee) => {
     setSelectedAssigneeIds((current) =>
-      current.includes(id)
-        ? current.filter((assigneeId) => assigneeId !== id)
-        : [...current, id],
+      current.includes(assignee.id)
+        ? current.filter((assigneeId) => assigneeId !== assignee.id)
+        : [...current, assignee.id],
+    );
+
+    setSelectedAssignees((current) =>
+      current.includes(assignee)
+        ? current.filter((a) => a.id !== assignee.id)
+        : [...current, assignee],
     );
   };
 
@@ -144,7 +138,6 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
     setIsSubmitting(true);
 
     try {
-      resetForm();
       onClose();
     } catch {
       setError("Couldn't create the task. Please try again.");
@@ -177,6 +170,15 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
   };
 
   const filteredReviewers: any = [];
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((part: any) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  };
 
   return (
     <div
@@ -402,6 +404,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 </div>
               </div>
             </div>
+
             {/* Assignees */}
             <div ref={assigneeRef} className="relative">
               <div className="mb-2 flex items-center justify-between">
@@ -430,49 +433,14 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 }`}
               >
                 <div className="flex min-w-0 flex-1 items-center gap-3">
-                  {[].length ? (
-                    <div className="flex shrink-0 -space-x-2">
-                      {[].slice(0, 4).map((assignee: any) => (
-                        <span
-                          key={assignee.id}
-                          className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border-2 border-[#0a0c13] bg-indigo-500/20 text-[10px] font-semibold text-indigo-200"
-                        >
-                          {assignee.avatar ? (
-                            <img
-                              src={assignee.avatar}
-                              alt={assignee.name}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            assignee.name
-                              .split(" ")
-                              .map((part: any) => part[0])
-                              .join("")
-                              .slice(0, 2)
-                              .toUpperCase()
-                          )}
-                        </span>
-                      ))}
-                      {[].length > 4 && (
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#0a0c13] bg-white/10 text-[10px] text-white">
-                          +{[].length - 4}
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-white/15 text-slate-500">
-                      <Plus size={15} />
-                    </div>
-                  )}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-white/15 text-slate-500">
+                    <Plus size={15} />
+                  </div>
 
                   <span className="truncate text-xs text-slate-300">
-                    {[].length
-                      ? []
-                          .map((assignee) => {
-                            return <></>;
-                          })
-                          .join(", ")
-                      : "Assign people to this task"}
+                    {!selectedAssigneeIds.length
+                      ? "Assign people to this task"
+                      : `${selectedAssigneeIds.length} people assigned. Click here to change.`}
                   </span>
                 </div>
 
@@ -498,6 +466,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                         placeholder="Search name, username or email..."
                         className="w-full bg-transparent text-xs text-white outline-none placeholder:text-slate-600"
                       />
+
                       {assigneeSearch && (
                         <button
                           type="button"
@@ -512,69 +481,98 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                   </div>
 
                   <div className="max-h-56 overflow-y-auto p-1.5">
-                    {[].length ? (
-                      [].map((assignee: any) => (
+                    {filteredAssignees.length ? (
+                      filteredAssignees.map((assignee: TaskAssignee) => (
                         <button
                           key={assignee.id}
                           type="button"
-                          onClick={() => toggleAssignee(assignee.id)}
+                          onClick={() => toggleAssignee(assignee)}
                           className="flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition hover:bg-white/[0.045]"
                         >
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-indigo-500/25 to-violet-500/10 text-[11px] font-semibold text-indigo-200">
-                            {assignee.avatar ? (
+                            {assignee.user.avatar ? (
                               <img
-                                src={assignee.avatar}
-                                alt={assignee.name}
+                                src={assignee.user.avatar}
+                                alt={assignee.user.name}
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              assignee.name
-                                .split(" ")
-                                .map((part: any) => part[0])
-                                .join("")
-                                .slice(0, 2)
-                                .toUpperCase()
+                              getInitials(assignee.user.name)
                             )}
                           </span>
 
                           <span className="min-w-0 flex-1">
                             <span className="block truncate text-xs font-medium text-slate-200">
-                              {assignee.name}
+                              {assignee.user.name}
                             </span>
                             <span className="mt-1 block truncate text-[10px] text-slate-500">
-                              @{assignee.username} · {assignee.email}
+                              @{assignee.user.username} · {assignee.user.email}
                             </span>
                           </span>
 
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/[0.12] text-transparent">
-                            <Check size={12} />
-                          </span>
+                          {selectedAssigneeIds.includes(assignee.id) ? (
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-indigo-400/40 text-indigo-300">
+                              <Check size={12} />
+                            </span>
+                          ) : (
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/[0.12] text-transparent">
+                              <Check size={12} />
+                            </span>
+                          )}
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-8 text-center">
-                        <UserRound
-                          size={20}
-                          className="mx-auto mb-2 text-slate-600"
-                        />
-                        <p className="text-xs text-slate-400">
-                          No team members found
-                        </p>
-                        <p className="mt-1 text-[10px] text-slate-600">
-                          Try a different search.
-                        </p>
-                      </div>
+                      <>
+                        {assigneeSearch ? (
+                          <div className="px-4 py-8 text-center">
+                            <UserRound
+                              size={20}
+                              className="mx-auto mb-2 text-slate-600"
+                            />
+                            <p className="text-xs text-slate-400">
+                              No team members found
+                            </p>
+                            <p className="mt-1 text-[10px] text-slate-600">
+                              Try a different search.
+                            </p>
+
+                            <button
+                              onClick={() => setAssigneeSearch("")}
+                              className="mt-4 cursor-pointer rounded-md border border-white/[0.07] bg-white/[0.02] px-3 py-2 text-sm text-slate-200 transition hover:bg-white/[0.045]"
+                            >
+                              Clear search
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="px-4 py-8 text-center">
+                            <UserRound
+                              size={20}
+                              className="mx-auto mb-2 text-slate-600"
+                            />
+                            <p className="text-xs text-slate-400">
+                              No team members found
+                            </p>
+                            <p className="mt-1 text-[10px] text-slate-600">
+                              Try a different search.
+                            </p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 
-                  {selectedAssignees.length > 0 && (
+                  {selectedAssigneeIds.length > 0 && (
                     <div className="flex items-center justify-between border-t border-white/[0.07] px-3.5 py-2.5">
                       <span className="text-[10px] text-slate-500">
-                        {selectedAssignees.length} people selected
+                        {selectedAssigneeIds.length} people selected
                       </span>
                       <button
                         type="button"
-                        onClick={() => setSelectedAssigneeIds([])}
+                        onClick={() => {
+                          setSelectedAssigneeIds([]);
+                          setSelectedAssignees([]);
+                          setAssigneeOpen(false);
+                        }}
                         className="text-[10px] font-medium text-indigo-300 transition hover:text-indigo-200"
                       >
                         Clear all
@@ -586,27 +584,30 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
 
               {selectedAssignees.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {selectedAssignees.map((assignee: any) => (
+                  {selectedAssignees.map((assignee: TaskAssignee) => (
                     <span
                       key={assignee.id}
                       className="inline-flex max-w-full items-center gap-2 rounded-lg border border-indigo-400/15 bg-indigo-400/[0.06] py-1.5 pl-1.5 pr-2 text-[10px] text-indigo-200"
                     >
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-500/20 text-[8px] font-semibold">
-                        {assignee.avatar ? (
+                        {assignee.user.avatar ? (
                           <img
-                            src={assignee.avatar}
-                            alt={assignee.name}
+                            src={assignee.user.avatar}
+                            alt={assignee.user.name}
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          assignee.name.charAt(0).toUpperCase()
+                          assignee.user.name.charAt(0).toUpperCase()
                         )}
                       </span>
-                      <span className="max-w-40 truncate">{assignee.name}</span>
+                      <span className="max-w-40 truncate">
+                        {assignee.user.name}
+                      </span>
+
                       <button
                         type="button"
-                        onClick={() => toggleAssignee(assignee.id)}
-                        aria-label={`Remove ${assignee.name}`}
+                        onClick={() => toggleAssignee(assignee)}
+                        aria-label={`Remove ${assignee.user.name}`}
                         className="ml-0.5 text-indigo-300/60 transition hover:text-white"
                       >
                         <X size={12} />
@@ -616,6 +617,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 </div>
               )}
             </div>
+
             {/* Reviewers */}
             <div>
               <div className="mb-2 flex items-center justify-between">
@@ -675,12 +677,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              user.name
-                                .split(" ")
-                                .map((part: any) => part[0])
-                                .join("")
-                                .slice(0, 2)
-                                .toUpperCase()
+                              getInitials(user.name)
                             )}
                           </div>
 

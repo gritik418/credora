@@ -1,3 +1,5 @@
+import { ProjectMemberRole } from "../project/project.interface";
+
 export interface Task {
   id: string;
   title: string;
@@ -30,4 +32,21 @@ export enum TaskPriority {
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
   URGENT = "URGENT",
+}
+
+export interface TaskAssignee {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  role: ProjectMemberRole;
+  projectId: string;
+  joinedAt: Date;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    avatar: string | null;
+  };
 }

@@ -1,3 +1,4 @@
+import { TaskAssignee } from "../task/task.interface";
 import { WorkspaceStatus } from "../workspace/workspace.interface";
 import CreateProjectDto from "./dto/create-project.dto";
 
@@ -66,6 +67,19 @@ export interface GetProjectBySlugResponseDto {
   message: string;
   data?: {
     project: ProjectWithWorkspaceAndMembers;
+  };
+}
+
+export interface GetAvailableTaskAssigneesRequestDto {
+  projectId: string;
+  workspaceId: string;
+}
+
+export interface GetAvailableTaskAssigneesResponseDto {
+  success: boolean;
+  message: string;
+  data: {
+    assignees: TaskAssignee[];
   };
 }
 

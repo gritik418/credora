@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Project, ProjectWithWorkspaceAndMembers } from "./project.interface";
+import { TaskAssignee } from "../task/task.interface";
 import projectApi from "./project.api";
+import { ProjectWithWorkspaceAndMembers } from "./project.interface";
 
 interface ProjectState {
   projects: ProjectWithWorkspaceAndMembers[];
   selectedProject: ProjectWithWorkspaceAndMembers | null;
+  availableAssignees: TaskAssignee[];
 }
 
 const initialState: ProjectState = {
   projects: [],
   selectedProject: null,
+  availableAssignees: [],
 };
 
 const projectSlice = createSlice({
@@ -45,6 +48,22 @@ const projectSlice = createSlice({
         projectApi.endpoints.getProjectBySlug.matchRejected,
         (state, action) => {
           state.selectedProject = null;
+        },
+      )
+      .addMatcher(
+        projectApi.endpoints.getTaskAssignees.matchFulfilled,
+        (state, action) => {
+          if (action.payload.data?.assignees.length) {
+            state.availableAssignees = action.payload.data.assignees;
+          } else {
+            state.availableAssignees = [];
+          }
+        },
+      )
+      .addMatcher(
+        projectApi.endpoints.getTaskAssignees.matchRejected,
+        (state, action) => {
+          state.availableAssignees = [];
         },
       );
   },

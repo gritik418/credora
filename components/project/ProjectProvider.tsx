@@ -1,5 +1,9 @@
 "use client";
-import { useGetProjectBySlugQuery } from "@/features/project/project.api";
+import {
+  useGetProjectBySlugQuery,
+  useGetTaskAssigneesQuery,
+} from "@/features/project/project.api";
+import { selectSelectedProject } from "@/features/project/project.selectors";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
 import { useAppSelector } from "@/store/hooks";
 import React from "react";
@@ -11,6 +15,7 @@ interface Props {
 
 const ProjectProvider = ({ children, projectSlug }: Props) => {
   const workspace = useAppSelector(selectSelectedWorkspace);
+  const project = useAppSelector(selectSelectedProject);
 
   useGetProjectBySlugQuery(
     {
@@ -19,6 +24,17 @@ const ProjectProvider = ({ children, projectSlug }: Props) => {
     },
     {
       skip: !workspace?.id || !projectSlug,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetTaskAssigneesQuery(
+    {
+      projectId: project?.id ?? "",
+      workspaceId: workspace?.id ?? "",
+    },
+    {
+      skip: !workspace?.id || !project?.id,
       refetchOnMountOrArgChange: true,
     },
   );

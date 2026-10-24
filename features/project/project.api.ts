@@ -2,6 +2,8 @@ import baseApi from "@/store/api/base-api";
 import {
   CreateProjectRequestDto,
   CreateProjectResponseDto,
+  GetAvailableTaskAssigneesRequestDto,
+  GetAvailableTaskAssigneesResponseDto,
   GetProjectBySlugRequestDto,
   GetProjectBySlugResponseDto,
   GetProjectsRequestDto,
@@ -35,6 +37,14 @@ const projectApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getTaskAssignees: build.query<
+      GetAvailableTaskAssigneesResponseDto,
+      GetAvailableTaskAssigneesRequestDto
+    >({
+      query: ({ workspaceId, projectId }) => ({
+        url: `workspaces/${workspaceId}/projects/${projectId}/all-assignees`,
+      }),
+    }),
   }),
 });
 
@@ -42,6 +52,7 @@ export const {
   useGetProjectsQuery,
   useCreateProjectMutation,
   useGetProjectBySlugQuery,
+  useGetTaskAssigneesQuery,
 } = projectApi;
 
 export default projectApi;
