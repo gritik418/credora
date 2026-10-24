@@ -7,3 +7,6 @@ export const selectSelectedProject = (state: RootState) =>
 
 export const selectAvailableAssignees = (state: RootState) =>
   state.project.availableAssignees;
+
+export const selectAvailableReviewers = (state: RootState) =>
+  state.project.availableReviewers;

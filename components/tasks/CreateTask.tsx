@@ -1,155 +1,279 @@
 "use client";
 
-import { selectAvailableAssignees } from "@/features/project/project.selectors";
+import { selectCurrentUser } from "@/features/auth/auth.selectors";
 import {
-  TaskAssignee,
+  selectAvailableAssignees,
+  selectAvailableReviewers,
+  selectSelectedProject,
+} from "@/features/project/project.selectors";
+import {
+  CreateTaskResponseDto,
   TaskPriority,
   TaskStatus,
 } from "@/features/task/task.interface";
+import CreateTaskDto from "@/features/task/dto/create-task.dto";
+import CreateTaskSchema from "@/features/task/schemas/create-task.schema";
 import { useAppSelector } from "@/store/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  AlertCircle,
   CalendarDays,
-  Check,
   CheckCheck,
   ChevronDown,
   CircleDot,
   Flag,
   Layers3,
-  Plus,
-  Search,
   Sparkles,
-  UserRound,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import MemberMultiSelect, { SelectableMember } from "./MemberMultiSelect";
+import { toast } from "react-toastify";
+import { useCreateTaskMutation } from "@/features/task/task.api";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface CreateTaskProps {
   open: boolean;
   onClose: () => void;
 }
 
+const formatDateInput = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 const CreateTask = ({ open, onClose }: CreateTaskProps) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<TaskStatus>(TaskStatus.TODO);
-  const [priority, setPriority] = useState<TaskPriority>(TaskPriority.MEDIUM);
-  const [startDate, setStartDate] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<string[]>([]);
-  const [selectedAssignees, setSelectedAssignees] = useState<TaskAssignee[]>(
-    [],
-  );
-  const [labels, setLabels] = useState("");
-  const [assigneeSearch, setAssigneeSearch] = useState("");
-  const [assigneeOpen, setAssigneeOpen] = useState(false);
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createTask, { isLoading }] = useCreateTaskMutation();
 
+  const user = useAppSelector(selectCurrentUser);
   const availableAssignees = useAppSelector(selectAvailableAssignees);
+  const availableReviewers = useAppSelector(selectAvailableReviewers);
+  const currentProject = useAppSelector(selectSelectedProject);
 
-  const modalRef = useRef<HTMLDivElement>(null);
-  const assigneeRef = useRef<HTMLDivElement>(null);
+  const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<string[]>([]);
+  const [selectedReviewerIds, setSelectedReviewerIds] = useState<string[]>([]);
+  const [labels, setLabels] = useState("");
+  const [submitError, setSubmitError] = useState("");
+
+  const {
+    register,
+    watch,
+    reset,
+    setValue,
+    setError,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+  } = useForm<any>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    resolver: zodResolver(CreateTaskSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      status: TaskStatus.TODO,
+      priority: TaskPriority.MEDIUM,
+      startDate: formatDateInput(new Date()),
+      dueDate: "",
+      assignees: [],
+      reviewers: [],
+      labels: [],
+    },
+  });
+
+  const title = watch("title") ?? "";
+  const startDate = watch("startDate");
+  const dueDate = watch("dueDate");
+  const priority = watch("priority");
+
+  const assigneeOptions: SelectableMember[] = useMemo(
+    () =>
+      availableAssignees.map((assignee) => ({
+        id: assignee.user.id,
+        name: assignee.user.name,
+        username: assignee.user.username,
+        email: assignee.user.email,
+        avatar: assignee.user.avatar ?? null,
+      })),
+    [availableAssignees],
+  );
+
+  const reviewerOptions: SelectableMember[] = useMemo(
+    () =>
+      availableReviewers.map((reviewer) => ({
+        id: reviewer.id,
+        name: reviewer.name,
+        username: reviewer.username,
+        email: reviewer.email,
+        avatar: reviewer.avatar ?? null,
+      })),
+    [availableReviewers],
+  );
+
+  const handleClose = useCallback(() => {
+    if (isSubmitting) return;
+    onClose();
+  }, [isSubmitting, onClose]);
 
   useEffect(() => {
     if (!open) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (assigneeOpen) {
-          setAssigneeOpen(false);
-        } else {
-          onClose();
-        }
-      }
+      if (event.key === "Escape") handleClose();
     };
 
     document.addEventListener("keydown", handleKeyDown);
 
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, assigneeOpen, onClose]);
+  }, [open, handleClose]);
 
   useEffect(() => {
     if (!open) return;
 
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        assigneeRef.current &&
-        !assigneeRef.current.contains(event.target as Node)
-      ) {
-        setAssigneeOpen(false);
-      }
-    };
+    reset({
+      title: "",
+      description: "",
+      status: TaskStatus.TODO,
+      priority: TaskPriority.MEDIUM,
+      startDate: formatDateInput(new Date()),
+      dueDate: "",
+      assignees: [],
+      reviewers: user?.id ? [user.id] : [],
+      labels: [],
+    });
 
-    document.addEventListener("mousedown", handleOutsideClick);
+    setSelectedAssigneeIds([]);
+    setSelectedReviewerIds(user?.id ? [user.id] : []);
+    setLabels("");
+    setSubmitError("");
+  }, [open, reset, user?.id]);
 
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [open]);
+  const handleAssigneeToggle = (member: SelectableMember) => {
+    setSelectedAssigneeIds((current) => {
+      const next = current.includes(member.id)
+        ? current.filter((id) => id !== member.id)
+        : [...current, member.id];
 
-  const handleClose = () => {
-    if (isSubmitting) return;
-    onClose();
+      setValue("assignees", next, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+
+      return next;
+    });
   };
 
-  const filteredAssignees = useMemo(() => {
-    return availableAssignees.filter(
-      (assignee) =>
-        assignee.user.name
-          .toLowerCase()
-          .includes(assigneeSearch.toLowerCase()) ||
-        assignee.user.username
-          .toLowerCase()
-          .includes(assigneeSearch.toLowerCase()) ||
-        assignee.user.email
-          .toLowerCase()
-          .includes(assigneeSearch.toLowerCase()),
-    );
-  }, [availableAssignees, assigneeSearch]);
+  const handleReviewerToggle = (member: SelectableMember) => {
+    setSelectedReviewerIds((current) => {
+      const next = current.includes(member.id)
+        ? current.filter((id) => id !== member.id)
+        : [...current, member.id];
 
-  const toggleAssignee = (assignee: TaskAssignee) => {
-    setSelectedAssigneeIds((current) =>
-      current.includes(assignee.id)
-        ? current.filter((assigneeId) => assigneeId !== assignee.id)
-        : [...current, assignee.id],
-    );
+      setValue("reviewers", next, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
 
-    setSelectedAssignees((current) =>
-      current.includes(assignee)
-        ? current.filter((a) => a.id !== assignee.id)
-        : [...current, assignee],
-    );
+      return next;
+    });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError("");
+  const handleClearAssignees = () => {
+    setSelectedAssigneeIds([]);
+    setValue("assignees", [], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
-    const trimmedTitle = title.trim();
+  const handleClearReviewers = () => {
+    setSelectedReviewerIds([]);
+    setValue("reviewers", [], {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
 
-    if (!trimmedTitle) {
-      setError("Give your task a title before creating it.");
+  const handleCreateTask = async (values: any) => {
+    setSubmitError("");
+
+    if (!currentProject) {
+      setSubmitError("No project selected. Please select a project.");
       return;
     }
 
-    if (startDate && dueDate && dueDate < startDate) {
-      setError("The due date cannot be earlier than the start date.");
-      return;
-    }
+    const parsedLabels = labels
+      .split(",")
+      .map((label) => label.trim())
+      .filter(Boolean);
 
-    setIsSubmitting(true);
+    const payload = {
+      title: values.title.trim(),
+      description: values.description?.trim() || undefined,
+      status: values.status,
+      priority: values.priority,
+      startDate:
+        values.startDate instanceof Date
+          ? values.startDate
+          : new Date(`${values.startDate}T00:00:00`),
+      dueDate: values.dueDate
+        ? values.dueDate instanceof Date
+          ? values.dueDate
+          : new Date(`${values.dueDate}T00:00:00`)
+        : undefined,
+      assignees: selectedAssigneeIds,
+      reviewers: selectedReviewerIds,
+      labels: parsedLabels,
+    } as unknown as CreateTaskDto;
 
     try {
-      onClose();
-    } catch {
-      setError("Couldn't create the task. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      const result = await createTask({
+        projectId: currentProject.id,
+        data: payload,
+      }).unwrap();
+
+      if (result.success) {
+        toast.success(result.message || "Location info added successfully.");
+        handleClose();
+      } else {
+        toast.error(result.message || "Failed to add location info.");
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as CreateTaskResponseDto;
+
+        if (response.errors) {
+          Object.entries(response.errors).forEach(([field, message]) => {
+            if (message) {
+              setError(field as keyof CreateTaskDto, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        } else {
+          toast.error(response.message || "Something went wrong.");
+        }
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
     }
   };
 
-  if (!open) return null;
+  if (!open || !currentProject) return null;
 
   const inputClass =
-    "h-11 w-full rounded-xl border border-white/[0.08] bg-[#0a0c13] px-3.5 text-[13px] text-slate-200 outline-none transition placeholder:text-slate-600 hover:border-white/[0.14] focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-500/10";
+    "h-11 w-full rounded-xl border border-white/8 bg-[#0a0c13] px-3.5 text-[13px] text-slate-200 outline-none transition placeholder:text-slate-600 hover:border-white/14 focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-500/10";
 
   const labelClass =
     "mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400";
@@ -169,20 +293,9 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
     URGENT: "text-rose-300",
   };
 
-  const filteredReviewers: any = [];
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((part: any) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  };
-
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSubmitting) {
           handleClose();
@@ -190,23 +303,22 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
       }}
     >
       <div
-        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="create-task-title"
-        className="relative flex max-h-[92dvh] w-full max-w-[680px] flex-col overflow-hidden rounded-2xl border border-white/[0.09] bg-[#0d0f17] shadow-[0_30px_120px_rgba(0,0,0,0.65)] sm:rounded-[24px]"
+        className="relative flex max-h-[92dvh] w-full max-w-170 flex-col overflow-hidden rounded-2xl border border-white/9 bg-[#0d0f17] shadow-[0_30px_120px_rgba(0,0,0,0.65)] sm:rounded-3xl"
       >
-        <div className="pointer-events-none absolute -right-24 -top-32 h-72 w-72 rounded-full bg-indigo-500/[0.12] blur-[100px]" />
-        <div className="pointer-events-none absolute -left-24 top-40 h-56 w-56 rounded-full bg-violet-500/[0.07] blur-[90px]" />
+        <div className="pointer-events-none absolute -right-24 -top-32 h-72 w-72 rounded-full bg-indigo-500/12 blur-[100px]" />
+        <div className="pointer-events-none absolute -left-24 top-40 h-56 w-56 rounded-full bg-violet-500/7 blur-[90px]" />
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(handleCreateTask)}
+          noValidate
           className="relative flex min-h-0 flex-1 flex-col"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4 sm:px-7 sm:py-5">
+          <div className="flex items-center justify-between border-b border-white/7 px-5 py-4 sm:px-7 sm:py-5">
             <div className="flex items-center gap-3.5">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-indigo-400/20 bg-gradient-to-br from-indigo-500/20 to-violet-500/10 text-indigo-300 shadow-inner shadow-indigo-400/5">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-indigo-400/20 bg-linear-to-br from-indigo-500/20 to-violet-500/10 text-indigo-300 shadow-inner shadow-indigo-400/5">
                 <Layers3 size={21} />
               </div>
 
@@ -218,10 +330,11 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                   >
                     Create a task
                   </h2>
-                  <span className="rounded-md border border-indigo-400/20 bg-indigo-400/[0.08] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-indigo-300">
+                  <span className="rounded-md border border-indigo-400/20 bg-indigo-400/8 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-indigo-300">
                     New
                   </span>
                 </div>
+
                 <p className="mt-1 text-[11px] text-slate-500 sm:text-xs">
                   Turn your next idea into action.
                 </p>
@@ -233,60 +346,108 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
               onClick={handleClose}
               disabled={isSubmitting}
               aria-label="Close create task modal"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] text-slate-500 transition hover:border-white/[0.14] hover:bg-white/[0.05] hover:text-white disabled:opacity-50"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/7 text-slate-500 transition hover:border-white/14 hover:bg-white/5 hover:text-white disabled:opacity-50"
             >
               <X size={17} />
             </button>
           </div>
 
-          {/* Form body */}
           <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
-            {/* Task title */}
+            {submitError && (
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-xl border border-rose-400/20 bg-rose-500/7 p-3.5 text-sm text-rose-200"
+              >
+                <AlertCircle
+                  size={17}
+                  className="mt-0.5 shrink-0 text-rose-300"
+                />
+
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">Couldn’t create task</p>
+                  <p className="mt-1 wrap-break-word text-xs leading-5 text-rose-200/80">
+                    {submitError}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setSubmitError("")}
+                  aria-label="Dismiss error"
+                  className="text-rose-200/60 hover:text-rose-100"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            )}
+
             <div>
               <label htmlFor="create-task-name" className={labelClass}>
                 Task title <span className="text-rose-400">*</span>
               </label>
 
               <input
+                {...register("title")}
                 id="create-task-name"
                 autoFocus
-                required
-                maxLength={160}
-                value={title}
-                onChange={(event) => {
-                  setTitle(event.target.value);
-                  setError("");
-                }}
+                maxLength={200}
+                aria-invalid={Boolean(errors.title)}
+                aria-describedby={
+                  errors.title ? "create-task-title-error" : undefined
+                }
                 placeholder="e.g. Build the authentication flow"
-                className="h-[50px] w-full rounded-xl border border-white/[0.09] bg-[#090b12] px-4 text-sm font-medium text-white outline-none transition placeholder:font-normal placeholder:text-slate-600 focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-500/10"
+                className={`${inputClass} h-12.5 text-sm font-medium text-white placeholder:font-normal ${
+                  errors.title
+                    ? "border-rose-400/60 focus:border-rose-400/60 focus:ring-rose-500/10"
+                    : ""
+                }`}
               />
 
-              <div className="mt-2 flex items-center justify-between">
-                <p className="text-[10px] text-slate-600">
-                  Make it clear and easy to understand.
-                </p>
-                <span className="text-[10px] tabular-nums text-slate-600">
-                  {title.length}/160
+              <div className="mt-2 flex items-start justify-between gap-3">
+                {errors.title ? (
+                  <p
+                    id="create-task-title-error"
+                    role="alert"
+                    className="text-xs text-rose-300"
+                  >
+                    {String(errors.title.message)}
+                  </p>
+                ) : (
+                  <p className="text-[10px] text-slate-600">
+                    Make it clear and easy to understand.
+                  </p>
+                )}
+
+                <span className="shrink-0 text-[10px] tabular-nums text-slate-600">
+                  {title.length}/200
                 </span>
               </div>
             </div>
-            {/* Description */}
+
             <div>
               <label htmlFor="create-task-description" className={labelClass}>
                 Description
               </label>
 
               <textarea
+                {...register("description")}
                 id="create-task-description"
                 rows={3}
                 maxLength={3000}
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
+                aria-invalid={Boolean(errors.description)}
                 placeholder="Add context, requirements, or acceptance criteria..."
-                className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0a0c13] px-3.5 py-3 text-[13px] leading-6 text-slate-200 outline-none transition placeholder:text-slate-600 hover:border-white/[0.14] focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-500/10"
+                className={`w-full resize-y rounded-xl border bg-[#0a0c13] px-3.5 py-3 text-[13px] leading-6 text-slate-200 outline-none transition placeholder:text-slate-600 hover:border-white/14 focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-500/10 ${
+                  errors.description ? "border-rose-400/60" : "border-white/8"
+                }`}
               />
+
+              {errors.description && (
+                <p role="alert" className="mt-2 text-xs text-rose-300">
+                  {String(errors.description.message)}
+                </p>
+              )}
             </div>
-            {/* Status + Priority */}
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="create-task-status" className={labelClass}>
@@ -298,11 +459,8 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
 
                 <div className="relative">
                   <select
+                    {...register("status")}
                     id="create-task-status"
-                    value={status}
-                    onChange={(event) =>
-                      setStatus(event.target.value as TaskStatus)
-                    }
                     className={`${inputClass} appearance-none pr-9`}
                   >
                     {Object.values(TaskStatus).map((item) => (
@@ -311,8 +469,15 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                       </option>
                     ))}
                   </select>
+
                   <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                 </div>
+
+                {errors.status && (
+                  <p role="alert" className="mt-2 text-xs text-rose-300">
+                    {String(errors.status.message)}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -325,11 +490,8 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
 
                 <div className="relative">
                   <select
+                    {...register("priority")}
                     id="create-task-priority"
-                    value={priority}
-                    onChange={(event) =>
-                      setPriority(event.target.value as TaskPriority)
-                    }
                     className={`${inputClass} appearance-none pr-9 ${
                       priorityColor[String(priority)] ?? ""
                     }`}
@@ -340,425 +502,137 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                       </option>
                     ))}
                   </select>
+
                   <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                 </div>
+
+                {errors.priority && (
+                  <p role="alert" className="mt-2 text-xs text-rose-300">
+                    {String(errors.priority.message)}
+                  </p>
+                )}
               </div>
             </div>
-            {/* Start date + Due date */}
+
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className={labelClass + " mb-0"}>
+                <label className={`${labelClass} mb-0`}>
                   <span className="inline-flex items-center gap-2">
                     <CalendarDays className={iconClass} />
                     Schedule
                   </span>
                 </label>
+
                 <span className="text-[10px] text-slate-600">Optional</span>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-white/[0.07] bg-white/[0.015] p-3.5">
+                <div className="rounded-xl border border-white/7 bg-white/15 p-3.5">
                   <label
                     htmlFor="create-task-start-date"
                     className="mb-2 block text-xs font-medium text-slate-300"
                   >
                     Start date
                   </label>
+
                   <input
                     id="create-task-start-date"
                     type="date"
-                    value={startDate}
+                    {...register("startDate")}
                     max={dueDate || undefined}
-                    onChange={(event) => {
-                      setStartDate(event.target.value);
-                      setError("");
-                    }}
-                    className={`${inputClass} scheme-dark px-2.5 text-xs`}
+                    aria-invalid={Boolean(errors.startDate)}
+                    className={`${inputClass} scheme-dark px-2.5 text-xs ${
+                      errors.startDate ? "border-rose-400/60" : ""
+                    }`}
                   />
-                  <p className="mt-2 text-[10px] leading-4 text-slate-600">
-                    When work should begin.
-                  </p>
+
+                  {errors.startDate && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-[11px] leading-4 text-rose-300"
+                    >
+                      {String(errors.startDate.message)}
+                    </p>
+                  )}
+
+                  {!errors.startDate && (
+                    <p className="mt-2 text-[10px] leading-4 text-slate-600">
+                      When work should begin.
+                    </p>
+                  )}
                 </div>
 
-                <div className="rounded-xl border border-white/[0.07] bg-white/[0.015] p-3.5">
+                <div className="rounded-xl border border-white/7 bg-white/15 p-3.5">
                   <label
                     htmlFor="create-task-due-date"
                     className="mb-2 block text-xs font-medium text-slate-300"
                   >
                     Due date
                   </label>
+
                   <input
                     id="create-task-due-date"
                     type="date"
+                    {...register("dueDate")}
                     min={startDate || undefined}
-                    value={dueDate}
-                    onChange={(event) => {
-                      setDueDate(event.target.value);
-                      setError("");
-                    }}
-                    className={`${inputClass} scheme-dark px-2.5 text-xs`}
+                    aria-invalid={Boolean(errors.dueDate)}
+                    className={`${inputClass} scheme-dark px-2.5 text-xs ${
+                      errors.dueDate ? "border-rose-400/60" : ""
+                    }`}
                   />
-                  <p className="mt-2 text-[10px] leading-4 text-slate-600">
-                    When the task should be completed.
-                  </p>
-                </div>
-              </div>
-            </div>
 
-            {/* Assignees */}
-            <div ref={assigneeRef} className="relative">
-              <div className="mb-2 flex items-center justify-between">
-                <label className={labelClass + " mb-0"}>
-                  <span className="inline-flex items-center gap-2">
-                    <UserRound className={iconClass} />
-                    Assignees
-                  </span>
-                </label>
-
-                <span className="text-[10px] text-slate-500">
-                  {selectedAssigneeIds.length
-                    ? `${selectedAssigneeIds.length} selected`
-                    : "Unassigned"}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setAssigneeOpen((current) => !current)}
-                aria-expanded={assigneeOpen}
-                className={`flex min-h-[52px] w-full items-center justify-between gap-3 rounded-xl border bg-[#0a0c13] px-3.5 py-2.5 text-left transition ${
-                  assigneeOpen
-                    ? "border-indigo-400/40 ring-2 ring-indigo-500/10"
-                    : "border-white/[0.08] hover:border-white/[0.14]"
-                }`}
-              >
-                <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-white/15 text-slate-500">
-                    <Plus size={15} />
-                  </div>
-
-                  <span className="truncate text-xs text-slate-300">
-                    {!selectedAssigneeIds.length
-                      ? "Assign people to this task"
-                      : `${selectedAssigneeIds.length} people assigned. Click here to change.`}
-                  </span>
-                </div>
-
-                <ChevronDown
-                  size={15}
-                  className={`shrink-0 text-slate-500 transition ${
-                    assigneeOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {assigneeOpen && (
-                <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-white/[0.1] bg-[#11141e] shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
-                  <div className="border-b border-white/[0.07] p-3">
-                    <div className="flex h-10 items-center gap-2.5 rounded-xl border border-white/[0.07] bg-black/20 px-3">
-                      <Search size={15} className="shrink-0 text-slate-500" />
-                      <input
-                        autoFocus
-                        value={assigneeSearch}
-                        onChange={(event) =>
-                          setAssigneeSearch(event.target.value)
-                        }
-                        placeholder="Search name, username or email..."
-                        className="w-full bg-transparent text-xs text-white outline-none placeholder:text-slate-600"
-                      />
-
-                      {assigneeSearch && (
-                        <button
-                          type="button"
-                          onClick={() => setAssigneeSearch("")}
-                          className="text-slate-500 hover:text-white"
-                          aria-label="Clear assignee search"
-                        >
-                          <X size={13} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="max-h-56 overflow-y-auto p-1.5">
-                    {filteredAssignees.length ? (
-                      filteredAssignees.map((assignee: TaskAssignee) => (
-                        <button
-                          key={assignee.id}
-                          type="button"
-                          onClick={() => toggleAssignee(assignee)}
-                          className="flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition hover:bg-white/[0.045]"
-                        >
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-indigo-500/25 to-violet-500/10 text-[11px] font-semibold text-indigo-200">
-                            {assignee.user.avatar ? (
-                              <img
-                                src={assignee.user.avatar}
-                                alt={assignee.user.name}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              getInitials(assignee.user.name)
-                            )}
-                          </span>
-
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-xs font-medium text-slate-200">
-                              {assignee.user.name}
-                            </span>
-                            <span className="mt-1 block truncate text-[10px] text-slate-500">
-                              @{assignee.user.username} · {assignee.user.email}
-                            </span>
-                          </span>
-
-                          {selectedAssigneeIds.includes(assignee.id) ? (
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-indigo-400/40 text-indigo-300">
-                              <Check size={12} />
-                            </span>
-                          ) : (
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/[0.12] text-transparent">
-                              <Check size={12} />
-                            </span>
-                          )}
-                        </button>
-                      ))
-                    ) : (
-                      <>
-                        {assigneeSearch ? (
-                          <div className="px-4 py-8 text-center">
-                            <UserRound
-                              size={20}
-                              className="mx-auto mb-2 text-slate-600"
-                            />
-                            <p className="text-xs text-slate-400">
-                              No team members found
-                            </p>
-                            <p className="mt-1 text-[10px] text-slate-600">
-                              Try a different search.
-                            </p>
-
-                            <button
-                              onClick={() => setAssigneeSearch("")}
-                              className="mt-4 cursor-pointer rounded-md border border-white/[0.07] bg-white/[0.02] px-3 py-2 text-sm text-slate-200 transition hover:bg-white/[0.045]"
-                            >
-                              Clear search
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="px-4 py-8 text-center">
-                            <UserRound
-                              size={20}
-                              className="mx-auto mb-2 text-slate-600"
-                            />
-                            <p className="text-xs text-slate-400">
-                              No team members found
-                            </p>
-                            <p className="mt-1 text-[10px] text-slate-600">
-                              Try a different search.
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {selectedAssigneeIds.length > 0 && (
-                    <div className="flex items-center justify-between border-t border-white/[0.07] px-3.5 py-2.5">
-                      <span className="text-[10px] text-slate-500">
-                        {selectedAssigneeIds.length} people selected
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedAssigneeIds([]);
-                          setSelectedAssignees([]);
-                          setAssigneeOpen(false);
-                        }}
-                        className="text-[10px] font-medium text-indigo-300 transition hover:text-indigo-200"
-                      >
-                        Clear all
-                      </button>
-                    </div>
+                  {errors.dueDate && (
+                    <p
+                      role="alert"
+                      className="mt-2 text-[11px] leading-4 text-rose-300"
+                    >
+                      {String(errors.dueDate.message)}
+                    </p>
                   )}
-                </div>
-              )}
 
-              {selectedAssignees.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {selectedAssignees.map((assignee: TaskAssignee) => (
-                    <span
-                      key={assignee.id}
-                      className="inline-flex max-w-full items-center gap-2 rounded-lg border border-indigo-400/15 bg-indigo-400/[0.06] py-1.5 pl-1.5 pr-2 text-[10px] text-indigo-200"
-                    >
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-indigo-500/20 text-[8px] font-semibold">
-                        {assignee.user.avatar ? (
-                          <img
-                            src={assignee.user.avatar}
-                            alt={assignee.user.name}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          assignee.user.name.charAt(0).toUpperCase()
-                        )}
-                      </span>
-                      <span className="max-w-40 truncate">
-                        {assignee.user.name}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() => toggleAssignee(assignee)}
-                        aria-label={`Remove ${assignee.user.name}`}
-                        className="ml-0.5 text-indigo-300/60 transition hover:text-white"
-                      >
-                        <X size={12} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Reviewers */}
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className={labelClass}>
-                  <span className="inline-flex items-center gap-2">
-                    <CheckCheck className={iconClass} />
-                    Reviewers
-                  </span>
-                </label>
-
-                <span className="text-[10px] text-slate-500">
-                  {["de"].length} selected
-                </span>
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0a0c13]">
-                <div className="flex items-center gap-2.5 border-b border-white/[0.07] px-3.5">
-                  <Search size={15} className="shrink-0 text-slate-500" />
-
-                  <input
-                    placeholder="Search reviewers by name, username or email..."
-                    className="h-11 min-w-0 flex-1 bg-transparent text-xs text-slate-200 outline-none placeholder:text-slate-600"
-                  />
-
-                  {
-                    <button
-                      type="button"
-                      className="text-slate-500 hover:text-white"
-                      aria-label="Clear reviewer search"
-                    >
-                      <X size={14} />
-                    </button>
-                  }
-                </div>
-
-                <div className="max-h-52 overflow-y-auto p-1.5">
-                  {filteredReviewers.length > 0 ? (
-                    filteredReviewers.map((user: any) => {
-                      const selected = [""].includes("ritik");
-
-                      return (
-                        <button
-                          key={user.id}
-                          type="button"
-                          onClick={() => {}}
-                          className={`flex w-full items-center gap-3 rounded-xl px-2.5 py-2.5 text-left transition ${
-                            selected
-                              ? "bg-indigo-500/[0.10]"
-                              : "hover:bg-white/[0.04]"
-                          }`}
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-gradient-to-br from-indigo-500/20 to-violet-500/10 text-[11px] font-semibold text-indigo-200">
-                            {user.avatar ? (
-                              <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              getInitials(user.name)
-                            )}
-                          </div>
-
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-medium text-slate-200">
-                              {user.name}
-                            </p>
-                            <p className="mt-1 truncate text-[10px] text-slate-500">
-                              @{user.username} · {user.email}
-                            </p>
-                          </div>
-
-                          <span
-                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${
-                              selected
-                                ? "border-indigo-400 bg-indigo-500 text-white"
-                                : "border-white/[0.15] text-transparent"
-                            }`}
-                          >
-                            <Check size={12} />
-                          </span>
-                        </button>
-                      );
-                    })
-                  ) : (
-                    <p className="px-3 py-8 text-center text-xs text-slate-500">
-                      No reviewers found.
+                  {!errors.dueDate && (
+                    <p className="mt-2 text-[10px] leading-4 text-slate-600">
+                      When the task should be completed.
                     </p>
                   )}
                 </div>
-
-                <div className="flex items-center justify-between border-t border-white/[0.07] px-3.5 py-2.5">
-                  <span className="text-[10px] text-slate-500">
-                    Select one or more team members
-                  </span>
-
-                  {["hey"].length > 0 && (
-                    <button
-                      type="button"
-                      className="text-[10px] font-medium text-indigo-300 hover:text-indigo-200"
-                    >
-                      Clear selection
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {[].map((user: any) => (
-                  <span
-                    key={user.id}
-                    className="inline-flex max-w-full items-center gap-2 rounded-lg border border-violet-400/15 bg-violet-400/[0.06] py-1.5 pl-1.5 pr-2 text-[10px] text-violet-200"
-                  >
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-500/20 text-[8px] font-semibold">
-                      {user.avatar ? (
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        user.name.charAt(0).toUpperCase()
-                      )}
-                    </span>
-
-                    <span className="max-w-36 truncate">{user.name}</span>
-
-                    <button
-                      type="button"
-                      onClick={() => {}}
-                      aria-label={`Remove ${user.name} as reviewer`}
-                      className="text-violet-300/60 transition hover:text-white"
-                    >
-                      <X size={12} />
-                    </button>
-                  </span>
-                ))}
               </div>
             </div>
 
-            {/* Labels */}
+            <div className="space-y-6">
+              <MemberMultiSelect
+                label="Assignees"
+                description="People responsible for completing this task."
+                members={assigneeOptions}
+                selectedIds={selectedAssigneeIds}
+                onToggle={handleAssigneeToggle}
+                onClear={handleClearAssignees}
+                accent="indigo"
+                error={
+                  errors.assignees?.message
+                    ? String(errors.assignees.message)
+                    : undefined
+                }
+              />
+
+              <div className="h-px bg-white/6" />
+
+              <MemberMultiSelect
+                label="Reviewers"
+                description="People who will review and approve the work."
+                members={reviewerOptions}
+                selectedIds={selectedReviewerIds}
+                onToggle={handleReviewerToggle}
+                onClear={handleClearReviewers}
+                accent="violet"
+                error={
+                  errors.reviewers?.message
+                    ? String(errors.reviewers.message)
+                    : undefined
+                }
+              />
+            </div>
+
             <div>
               <label htmlFor="create-task-labels" className={labelClass}>
                 Labels{" "}
@@ -774,22 +648,14 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 placeholder="Frontend, API, Bug..."
                 className={inputClass}
               />
+
               <p className="mt-2 text-[10px] text-slate-600">
                 Separate multiple labels with commas.
               </p>
             </div>
-            {error && (
-              <div
-                role="alert"
-                className="rounded-xl border border-rose-400/15 bg-rose-400/[0.06] px-3.5 py-3 text-xs leading-5 text-rose-300"
-              >
-                {error}
-              </div>
-            )}
           </div>
 
-          {/* Footer */}
-          <div className="flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0c0e16]/95 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+          <div className="flex flex-col-reverse gap-3 border-t border-white/7 bg-[#0c0e16]/95 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
             <div className="hidden items-center gap-2 text-[10px] text-slate-600 sm:flex">
               <Sparkles size={13} className="text-indigo-300/70" />
               <span>Small steps. Meaningful progress.</span>
@@ -800,17 +666,17 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 type="button"
                 onClick={handleClose}
                 disabled={isSubmitting}
-                className="h-10 rounded-xl border border-white/[0.09] px-4 text-xs font-medium text-slate-300 transition hover:bg-white/[0.04] hover:text-white disabled:opacity-50"
+                className="h-10 rounded-xl border border-white/9 px-4 text-xs font-medium text-slate-300 transition hover:bg-white/4 hover:text-white disabled:opacity-50"
               >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                disabled={isSubmitting || !title.trim()}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 text-xs font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isSubmitting || isLoading}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-xs font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSubmitting ? (
+                {isSubmitting || isLoading ? (
                   <>
                     <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     Creating...

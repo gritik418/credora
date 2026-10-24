@@ -168,7 +168,7 @@ const WorkspaceProjectsPage = () => {
               <button
                 type="button"
                 onClick={() => setCreateOpen(true)}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-indigo-400/20 bg-indigo-400/8 px-3 py-2 text-xs font-medium text-indigo-300 transition hover:bg-indigo-400/[0.14]"
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-indigo-400/20 bg-indigo-400/8 px-3 py-2 text-xs font-medium text-indigo-300 transition hover:bg-indigo-400/14"
               >
                 <Plus size={14} />
                 Create project

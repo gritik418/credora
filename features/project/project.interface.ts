@@ -83,6 +83,25 @@ export interface GetAvailableTaskAssigneesResponseDto {
   };
 }
 
+export interface GetAvailableTaskReviewersRequestDto {
+  projectId: string;
+  workspaceId: string;
+}
+
+export interface GetAvailableTaskReviewersResponseDto {
+  success: boolean;
+  message: string;
+  data: {
+    reviewers: {
+      id: string;
+      name: string;
+      email: string;
+      username: string;
+      avatar: string | null;
+    }[];
+  };
+}
+
 export interface ProjectWithWorkspace {
   id: string;
   workspaceId: string;

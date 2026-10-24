@@ -13,12 +13,7 @@ import TaskBoard from "./TaskBoard";
 import TaskToolbar from "./TaskToolbar";
 import CreateTask from "../tasks/CreateTask";
 
-interface Props {
-  workspaceId: string;
-  projectId: string;
-}
-
-const ProjectTasksPage = ({ workspaceId, projectId }: Props) => {
+const ProjectTasksPage = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "All statuses">(

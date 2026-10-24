@@ -4,7 +4,6 @@ import AddEducationForm, {
   EducationFormOutput,
 } from "@/components/onboarding/AddEducationForm";
 import OnboardingShell from "@/components/onboarding/OnboardingShell";
-import AddEducationInfoDto from "@/features/onboarding/dto/add-education-info.dto";
 import { useAddEducationInfoMutation } from "@/features/onboarding/onboarding.api";
 import { AddEducationOnboardingInfoResponseDto } from "@/features/onboarding/onboarding.interface";
 import AddEducationInfoSchema from "@/features/onboarding/schemas/add-education-info.schema";

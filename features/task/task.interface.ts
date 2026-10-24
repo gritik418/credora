@@ -1,4 +1,5 @@
 import { ProjectMemberRole } from "../project/project.interface";
+import CreateTaskDto from "./dto/create-task.dto";
 
 export interface Task {
   id: string;
@@ -49,4 +50,15 @@ export interface TaskAssignee {
     email: string;
     avatar: string | null;
   };
+}
+
+export interface CreateTaskResponseDto {
+  success: boolean;
+  message: string;
+  errors?: Record<keyof CreateTaskDto, string>;
+}
+
+export interface CreateTaskRequestDto {
+  projectId: string;
+  data: CreateTaskDto;
 }

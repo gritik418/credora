@@ -1,29 +1,54 @@
-import { TaskPriority, TaskStatus } from 'generated/prisma/enums';
-import { z } from 'zod';
+import { z } from "zod";
+import { TaskPriority, TaskStatus } from "../task.interface";
 
-const CreateTaskSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Task title is required.')
-    .max(200, 'Task title is too long.'),
+const optionalDate = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.date().optional(),
+);
 
-  description: z.string().optional(),
+const CreateTaskSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(1, "Task title is required.")
+      .max(200, "Task title is too long."),
 
-  status: z.enum(TaskStatus).default(TaskStatus.TODO),
+    description: z.string().optional(),
 
-  priority: z.enum(TaskPriority).default(TaskPriority.MEDIUM),
+    status: z.enum(TaskStatus).default(TaskStatus.TODO),
 
-  startDate: z.coerce.date().optional().default(new Date()),
+    priority: z.enum(TaskPriority).default(TaskPriority.MEDIUM),
 
-  dueDate: z.coerce.date().optional(),
+    startDate: z.preprocess(
+      (value) =>
+        value === "" || value === null || value === undefined
+          ? new Date()
+          : value,
+      z.coerce.date(),
+    ),
 
-  assignees: z
-    .array(z.string().min(1, 'Assignee ID is required'))
-    .min(1, 'At least one assignee is required.'),
+    dueDate: optionalDate,
 
-  reviewers: z.array(z.string().min(1, 'Reviewer ID is required')).optional(),
+    assignees: z
+      .array(z.string().min(1, "Assignee ID is required"))
+      .min(1, "At least one assignee is required."),
 
-  labels: z.array(z.string()).optional(),
-});
+    reviewers: z
+      .array(z.string().min(1, "Reviewer ID is required"))
+      .optional()
+      .default([]),
+
+    labels: z.array(z.string()).optional().default([]),
+  })
+  .superRefine((values, context) => {
+    if (values.dueDate && values.startDate > values.dueDate) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["dueDate"],
+        message: "Due date must be on or after the start date.",
+      });
+    }
+  });
 
 export default CreateTaskSchema;

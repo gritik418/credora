@@ -2,6 +2,7 @@
 import {
   useGetProjectBySlugQuery,
   useGetTaskAssigneesQuery,
+  useGetTaskReviewersQuery,
 } from "@/features/project/project.api";
 import { selectSelectedProject } from "@/features/project/project.selectors";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
@@ -29,6 +30,17 @@ const ProjectProvider = ({ children, projectSlug }: Props) => {
   );
 
   useGetTaskAssigneesQuery(
+    {
+      projectId: project?.id ?? "",
+      workspaceId: workspace?.id ?? "",
+    },
+    {
+      skip: !workspace?.id || !project?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetTaskReviewersQuery(
     {
       projectId: project?.id ?? "",
       workspaceId: workspace?.id ?? "",

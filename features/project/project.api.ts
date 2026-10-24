@@ -4,6 +4,8 @@ import {
   CreateProjectResponseDto,
   GetAvailableTaskAssigneesRequestDto,
   GetAvailableTaskAssigneesResponseDto,
+  GetAvailableTaskReviewersRequestDto,
+  GetAvailableTaskReviewersResponseDto,
   GetProjectBySlugRequestDto,
   GetProjectBySlugResponseDto,
   GetProjectsRequestDto,
@@ -45,6 +47,14 @@ const projectApi = baseApi.injectEndpoints({
         url: `workspaces/${workspaceId}/projects/${projectId}/all-assignees`,
       }),
     }),
+    getTaskReviewers: build.query<
+      GetAvailableTaskReviewersResponseDto,
+      GetAvailableTaskReviewersRequestDto
+    >({
+      query: ({ workspaceId, projectId }) => ({
+        url: `workspaces/${workspaceId}/projects/${projectId}/reviewers`,
+      }),
+    }),
   }),
 });
 
@@ -53,6 +63,7 @@ export const {
   useCreateProjectMutation,
   useGetProjectBySlugQuery,
   useGetTaskAssigneesQuery,
+  useGetTaskReviewersQuery,
 } = projectApi;
 
 export default projectApi;
