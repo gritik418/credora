@@ -5,10 +5,8 @@ import { ICurrentUser } from "@/features/auth/auth.interface";
 import { selectCurrentUser } from "@/features/auth/auth.selectors";
 import { useAppSelector } from "@/store/hooks";
 import {
-  Building2,
-  Code2,
   Home,
-  Layers3,
+  ImagesIcon,
   Menu,
   Sparkles,
   Stars,
@@ -36,51 +34,31 @@ const Navbar = () => {
   const navItems: NavItem[] = useMemo(() => {
     const isPostsPage = pathname.startsWith("/posts");
 
-    if (isPostsPage) {
-      return [
-        {
-          label: "Home",
-          href: "/posts/feed",
-          icon: <Home size={15} />,
-        },
-        {
-          label: "Discover",
-          href: "/posts/discover",
-          icon: <Stars size={15} />,
-        },
-        {
-          label: "Network",
-          href: "/network",
-          icon: <Users size={15} />,
-        },
-        {
-          label: "Messaging",
-          href: "/messaging",
-          icon: <BsChatText size={15} />,
-        },
-      ];
-    }
-
     return [
       {
-        label: "Features",
-        href: "/#features",
-        icon: <Layers3 size={15} />,
+        label: "Home",
+        href: "/",
+        icon: <Home size={15} />,
       },
       {
-        label: "Organizations",
-        href: "/#organizations",
-        icon: <Building2 size={15} />,
+        label: "Posts",
+        href: "/posts/feed",
+        icon: <ImagesIcon size={15} />,
       },
       {
-        label: "Developers",
-        href: "/#developers",
-        icon: <Code2 size={15} />,
+        label: "Discover",
+        href: "/discover",
+        icon: <Stars size={15} />,
       },
       {
-        label: "Dashboard",
-        href: "/org",
-        icon: <BiSolidDashboard size={15} />,
+        label: "Network",
+        href: "/connections",
+        icon: <Users size={15} />,
+      },
+      {
+        label: "Messaging",
+        href: "/messaging",
+        icon: <BsChatText size={15} />,
       },
     ];
   }, [pathname]);
@@ -157,7 +135,7 @@ const Navbar = () => {
 
               return (
                 <Link
-                  key={item.href}
+                  key={item.label}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
