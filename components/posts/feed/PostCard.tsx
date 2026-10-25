@@ -9,21 +9,46 @@ import {
   Share2,
   ThumbsUp,
 } from "lucide-react";
+import { Post } from "@/features/post/post.interface";
+import Image from "next/image";
 
-const PostCard = () => {
+interface Props {
+  post: Post;
+}
+
+const PostCard = ({ post }: Props) => {
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("");
+  };
+
+  const author = post.author;
+
   return (
-    <article className="overflow-hidden rounded-2xl border border-credora-border bg-credora-surface transition">
+    <article className="overflow-hidden rounded-2xl border border-credora-border">
       <div className="p-5">
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-credora-gradient-primary text-sm font-bold text-white">
-              RG
-            </div>
+            {author.avatar ? (
+              <Image
+                src={author.avatar}
+                alt={author.name}
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-full"
+              />
+            ) : (
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-credora-gradient-primary text-sm font-bold text-white">
+                {getInitials(author.name)}
+              </div>
+            )}
 
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-semibold text-credora-text">
-                  Ritik Gupta
+                <h3 className="text-sm capitalize font-semibold text-credora-text">
+                  {author.name}
                 </h3>
 
                 <BadgeCheck
@@ -33,7 +58,7 @@ const PostCard = () => {
               </div>
 
               <p className="text-xs text-credora-text-muted">
-                Full Stack Developer · 2h
+                @{author.username} · {new Date(post.createdAt).toDateString()}
               </p>
             </div>
           </div>
@@ -45,15 +70,7 @@ const PostCard = () => {
 
         <div className="mt-5">
           <p className="text-[15px] leading-7 text-credora-text-secondary">
-            Built real-time collaboration into{" "}
-            <span className="font-medium text-credora-text">Trackr</span>.
-          </p>
-
-          <p className="mt-2 text-sm leading-6 text-credora-text-muted">
-            Added live task updates, presence tracking and real-time
-            notifications using Socket.IO. The goal was to make team
-            collaboration feel instant without constantly refreshing the
-            workspace.
+            {post.content}
           </p>
         </div>
 
