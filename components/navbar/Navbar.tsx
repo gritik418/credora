@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { BiSolidDashboard } from "react-icons/bi";
 import { BsChatText } from "react-icons/bs";
 import ProfileMenu from "./ProfileMenu";
+import NotificationBell from "../notifications/NotificationBell";
 
 interface NavItem {
   label: string;
@@ -107,7 +108,15 @@ const Navbar = () => {
 
         <div className="flex items-center gap-3">
           {user ? (
-            <ProfileMenu user={user} />
+            <div className="flex items-center gap-2">
+              <NotificationBell
+                onOpenAll={() => {
+                  window.location.assign("/notifications");
+                }}
+              />
+
+              <ProfileMenu user={user} />
+            </div>
           ) : (
             <Link
               href="/login"

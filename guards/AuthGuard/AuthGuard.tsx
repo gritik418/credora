@@ -7,6 +7,7 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
 } from "@/features/auth/auth.selectors";
+import { useGetNotificationsQuery } from "@/features/notification/notification.api";
 import {
   useGetSelectedOrganizationQuery,
   useGetSelectedWorkspaceQuery,
@@ -35,6 +36,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const { isLoading, isError } = useGetMeQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
+  });
+
+  useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
   });
 
   useGetSelectedOrganizationQuery(undefined, {
