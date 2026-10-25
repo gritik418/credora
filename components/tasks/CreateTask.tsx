@@ -295,7 +295,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
+      className="fixed inset-0 h-screen z-100 flex items-center justify-center bg-black/75 p-3 backdrop-blur-md sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !isSubmitting) {
           handleClose();
@@ -346,7 +346,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
               onClick={handleClose}
               disabled={isSubmitting}
               aria-label="Close create task modal"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/7 text-slate-500 transition hover:border-white/14 hover:bg-white/5 hover:text-white disabled:opacity-50"
+              className="flex cursor-pointer h-9 w-9 items-center justify-center rounded-xl border border-white/7 text-slate-500 transition hover:border-white/14 hover:bg-white/5 hover:text-white disabled:opacity-50"
             >
               <X size={17} />
             </button>
@@ -666,7 +666,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
                 type="button"
                 onClick={handleClose}
                 disabled={isSubmitting}
-                className="h-10 rounded-xl border border-white/9 px-4 text-xs font-medium text-slate-300 transition hover:bg-white/4 hover:text-white disabled:opacity-50"
+                className="h-10 cursor-pointer rounded-xl border border-white/9 px-4 text-xs font-medium text-slate-300 transition hover:bg-white/4 hover:text-white disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -674,7 +674,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
               <button
                 type="submit"
                 disabled={isSubmitting || isLoading}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-xs font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex cursor-pointer h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-xs font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting || isLoading ? (
                   <>

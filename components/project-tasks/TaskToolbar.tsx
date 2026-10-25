@@ -57,7 +57,7 @@ const TaskToolbar = ({
         <button
           type="button"
           onClick={onCreateTask}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110"
+          className="inline-flex cursor-pointer h-10 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:brightness-110"
         >
           <Plus size={16} />
           Create task
