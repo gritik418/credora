@@ -1,9 +1,18 @@
 import baseApi from "@/store/api/base-api";
 import SendConnectionRequestDto from "./dto/send-connection-request.dto";
-import { SendConnectionRequestResponseDto } from "./connection-request.interface";
+import {
+  GetConnectionRequestsResponseDto,
+  SendConnectionRequestResponseDto,
+} from "./connection-request.interface";
 
 const connectionRequestApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    getConnectionRequests: build.query<GetConnectionRequestsResponseDto, void>({
+      query: () => ({
+        url: `/connection-requests`,
+        method: "GET",
+      }),
+    }),
     sendConnectionRequest: build.mutation<
       SendConnectionRequestResponseDto,
       SendConnectionRequestDto
@@ -17,4 +26,9 @@ const connectionRequestApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useSendConnectionRequestMutation } = connectionRequestApi;
+export const {
+  useGetConnectionRequestsQuery,
+  useSendConnectionRequestMutation,
+} = connectionRequestApi;
+
+export default connectionRequestApi;

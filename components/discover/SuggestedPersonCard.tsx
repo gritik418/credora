@@ -22,16 +22,11 @@ import { useConnectionActions } from "@/store/hooks/connections/useConnectionAct
 
 interface SuggestedPersonCardProps {
   person: SuggestedPeople;
-  onConnect?: (person: SuggestedPeople) => void;
-  onDismiss?: (person: SuggestedPeople) => void;
-  isConnecting?: boolean;
-  isConnected?: boolean;
   isPending?: boolean;
 }
 
 export default function SuggestedPersonCard({
   person,
-  onConnect,
   isPending = false,
 }: SuggestedPersonCardProps) {
   const [imageError, setImageError] = useState<boolean>(false);
@@ -58,17 +53,17 @@ export default function SuggestedPersonCard({
       <div className="flex items-center justify-between gap-2 px-4 pt-4">
         <div className="flex min-w-0 items-center gap-2">
           {person.is2ndDegree ? (
-            <span className="inline-flex items-center gap-1 rounded-md border border-sky-400/15 bg-sky-400/[0.08] px-2 py-1 text-[10px] font-semibold text-sky-300">
+            <span className="inline-flex items-center gap-1 rounded-md border border-sky-400/15 bg-sky-400/8 px-2 py-1 text-[10px] font-semibold text-sky-300">
               <Users size={11} />
               2nd
             </span>
           ) : person.is3rdDegree ? (
-            <span className="inline-flex items-center gap-1 rounded-md border border-violet-400/15 bg-violet-400/[0.08] px-2 py-1 text-[10px] font-semibold text-violet-300">
+            <span className="inline-flex items-center gap-1 rounded-md border border-violet-400/15 bg-violet-400/8 px-2 py-1 text-[10px] font-semibold text-violet-300">
               <Users size={11} />
               3rd
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 text-[10px] font-medium text-white/45">
+            <span className="inline-flex items-center gap-1 rounded-md border border-white/8 bg-white/4 px-2 py-1 text-[10px] font-medium text-white/45">
               <Sparkles size={11} />
               Suggested
             </span>
@@ -78,7 +73,7 @@ export default function SuggestedPersonCard({
         {matchReason && (
           <div
             title={matchReason}
-            className="flex max-w-[65%] items-center gap-1 rounded-full border border-indigo-400/15 bg-indigo-500/[0.08] px-2 py-1 text-[10px] font-medium text-indigo-200"
+            className="flex max-w-[65%] items-center gap-1 rounded-full border border-indigo-400/15 bg-indigo-500/8 px-2 py-1 text-[10px] font-medium text-indigo-200"
           >
             <Sparkles size={11} className="shrink-0" />
             <span className="truncate">{matchReason}</span>
@@ -91,7 +86,7 @@ export default function SuggestedPersonCard({
         <Link
           href={`/identity/${person.username}`}
           aria-label={`View ${person.name}'s identity`}
-          className="relative mb-3 flex size-19 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-indigo-500/25 via-violet-500/15 to-blue-500/10 text-lg font-semibold text-indigo-100 ring-4 ring-white/[0.02] transition-transform duration-300 group-hover:scale-[1.03]"
+          className="relative mb-3 flex size-19 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-indigo-500/25 via-violet-500/15 to-blue-500/10 text-lg font-semibold text-indigo-100 ring-4 ring-white/2 transition-transform duration-300 group-hover:scale-[1.03]"
         >
           {person.avatar && !imageError ? (
             <Image
@@ -126,7 +121,7 @@ export default function SuggestedPersonCard({
 
         <p className="mt-1 text-xs text-white/35">@{person.username}</p>
 
-        <p className="mt-3 line-clamp-2 min-h-9 max-w-[280px] text-[13px] leading-[18px] text-white/65">
+        <p className="mt-3 line-clamp-2 min-h-9 max-w-70 text-[13px] leading-4.5 text-white/65">
           {profile.headline ||
             profile.profession ||
             profile.industry ||
@@ -135,7 +130,7 @@ export default function SuggestedPersonCard({
       </div>
 
       {/* Professional details */}
-      <div className="mx-4 mt-4 space-y-2.5 rounded-xl border border-white/[0.05] bg-white/[0.02] p-3">
+      <div className="mx-4 mt-4 space-y-2.5 rounded-xl border border-white/5 bg-white/2 p-3">
         {profile.profession && (
           <div className="flex items-center gap-2.5">
             <BriefcaseBusiness size={14} className="shrink-0 text-white/30" />
@@ -223,7 +218,7 @@ export default function SuggestedPersonCard({
           <button
             type="button"
             disabled
-            className="flex cursor-pointer w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-xs font-medium text-white/45"
+            className="flex cursor-pointer w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/4 px-3 py-2.5 text-xs font-medium text-white/45"
           >
             Request pending
           </button>

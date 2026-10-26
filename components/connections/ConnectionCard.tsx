@@ -40,11 +40,11 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0f15] transition-all duration-300 hover:border-indigo-500/30 hover:bg-[#10121a]">
       {/* Accent */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
       <div className="flex items-start justify-between p-5 pb-0">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500/20 to-violet-500/10 text-sm font-semibold text-indigo-200">
+          <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-indigo-500/20 to-violet-500/10 text-sm font-semibold text-indigo-200">
             {person.avatar ? (
               <Image
                 src={person.avatar}
@@ -79,7 +79,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
             onClick={() => setMenuOpen((open) => !open)}
             aria-label="Connection options"
             aria-expanded={menuOpen}
-            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white/40 transition-colors hover:bg-white/6 hover:text-white"
           >
             <MoreHorizontal size={19} />
           </button>
@@ -97,7 +97,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                 <Link
                   href={`/identity/${person.username}`}
                   onClick={() => setMenuOpen(false)}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-white/70 transition-colors hover:bg-white/6 hover:text-white"
                 >
                   <UserRound size={15} />
                   View identity
@@ -120,7 +120,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <div className="min-h-[42px]">
+        <div className="min-h-10.5">
           <p className="line-clamp-2 text-sm leading-5 text-white/75">
             {profile.headline || profile.profession || "Credora member"}
           </p>
@@ -146,10 +146,10 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
           </p>
         )}
 
-        <div className="mt-auto flex items-center gap-2 border-t border-white/[0.06] pt-4">
+        <div className="mt-auto flex items-center gap-2 border-t border-white/6 pt-4">
           <button
             type="button"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-xs font-medium text-white/75 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-200"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-3 py-2.5 text-xs font-medium text-white/75 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-200"
           >
             <MessageCircle size={14} />
             Message

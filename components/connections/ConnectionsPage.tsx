@@ -213,7 +213,7 @@ const ConnectionsPage = () => {
               </p>
             </div>
 
-            <span className="inline-flex w-fit items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-zinc-400">
+            <span className="inline-flex w-fit items-center rounded-full border border-white/8 bg-white/3 px-3 py-1.5 text-xs text-zinc-400">
               {filteredSuggestions.length}{" "}
               {filteredSuggestions.length === 1 ? "person" : "people"}
             </span>
@@ -241,7 +241,7 @@ const ConnectionsPage = () => {
                       setSearch("");
                       setFilter("All people");
                     }}
-                    className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white"
+                    className="mt-4 rounded-xl border border-white/10 bg-white/3 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white"
                   >
                     Clear filters
                   </button>
