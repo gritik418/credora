@@ -46,3 +46,39 @@ export interface GetSuggestedPeopleResponseDto {
     suggestedPeople: SuggestedPeople[];
   };
 }
+
+export interface Connection {
+  id: string;
+  userId: string;
+
+  connection: {
+    id: string;
+    username: string;
+    email: string;
+    name: string;
+    avatar: string | null;
+
+    profile: {
+      bio?: string | null;
+      headline?: string | null;
+      profession?: string | null;
+      industry?: string | null;
+
+      city?: string | null;
+      state?: string | null;
+      country?: string | null;
+
+      isOpenToWork?: boolean;
+      isOpenToCollaborate?: boolean;
+    };
+  };
+  createdAt: Date;
+}
+
+export interface GetConnectionsResponseDto {
+  success: boolean;
+  message: string;
+  data?: {
+    connections: Connection[];
+  };
+}

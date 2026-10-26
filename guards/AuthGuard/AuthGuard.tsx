@@ -7,6 +7,7 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
 } from "@/features/auth/auth.selectors";
+import { useGetConnectionsQuery } from "@/features/connection/connection.api";
 import { useGetNotificationsQuery } from "@/features/notification/notification.api";
 import {
   useGetSelectedOrganizationQuery,
@@ -39,6 +40,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   });
 
   useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
+  });
+
+  useGetConnectionsQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     skip: !isAuthenticated,

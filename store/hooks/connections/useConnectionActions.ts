@@ -10,7 +10,7 @@ export const useConnectionActions = () => {
 
   const sendConnectionRequest = async (
     data: SendConnectionRequestDto,
-    setError: UseFormSetError<SendConnectionRequestDto>,
+    setError?: UseFormSetError<SendConnectionRequestDto>,
   ) => {
     try {
       const result = await sendRequest(data).unwrap();
@@ -21,7 +21,7 @@ export const useConnectionActions = () => {
         toast.error(result.message || "Failed to send request.");
       }
     } catch (error: any) {
-      if ("data" in (error as FetchBaseQueryError)) {
+      if ("data" in (error as FetchBaseQueryError) && setError) {
         const response = (error as FetchBaseQueryError)
           .data as SendConnectionRequestResponseDto;
 

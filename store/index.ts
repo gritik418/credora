@@ -9,6 +9,7 @@ import projectSlice from "@/features/project/project.slice";
 import workspaceMemberSlice from "@/features/workspace-member/workspace-member.slice";
 import postSlice from "@/features/post/post.slice";
 import notificationSlice from "@/features/notification/notification.slice";
+import connectionSlice from "@/features/connection/connection.slice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     [workspaceMemberSlice.reducerPath]: workspaceMemberSlice.reducer,
     [postSlice.reducerPath]: postSlice.reducer,
     [notificationSlice.reducerPath]: notificationSlice.reducer,
+    [connectionSlice.reducerPath]: connectionSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

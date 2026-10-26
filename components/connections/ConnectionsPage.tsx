@@ -1,25 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useGetSuggestedPeopleQuery } from "@/features/connection/connection.api";
+import { SuggestedPeople } from "@/features/connection/connection.interface";
 import {
   ArrowUpRight,
-  Network,
   Search,
   SlidersHorizontal,
   Sparkles,
   Users,
+  UsersRound,
   X,
 } from "lucide-react";
-import { useGetSuggestedPeopleQuery } from "@/features/connection/connection.api";
-import { SuggestedPeople } from "@/features/connection/connection.interface";
+import { useEffect, useMemo, useState } from "react";
 import ConnectionCard from "./ConnectionCard";
-import RequestsDrawer from "./RequestsDrawer";
-import StatCard from "./StatCard";
 import EmptyState from "./EmptyState";
+import RequestsDrawer from "./RequestsDrawer";
+import { useAppSelector } from "@/store/hooks";
+import { selectConnections } from "@/features/connection/connection.selectors";
+import SuggestedPersonCard from "../discover/SuggestedPersonCard";
 
 const ConnectionsPage = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All people");
+  const connections = useAppSelector(selectConnections);
   const [isRequestsOpen, setIsRequestsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<SuggestedPeople[]>([]);
   const [sentRequests, setSentRequests] = useState<string[]>([]);
@@ -35,7 +38,7 @@ const ConnectionsPage = () => {
     }
   }, [data]);
 
-  const filteredPeople = useMemo(() => {
+  const filteredSuggestions = useMemo(() => {
     return suggestions.filter((person) => {
       const item = person as any;
       const profile = item.profile ?? item.user?.profile ?? {};
@@ -82,12 +85,6 @@ const ConnectionsPage = () => {
     });
   }, [suggestions, search, filter]);
 
-  const handleRequestSent = (personId: string) => {
-    setSentRequests((previous) =>
-      previous.includes(personId) ? previous : [...previous, personId],
-    );
-  };
-
   const getPersonId = (person: SuggestedPeople) => {
     const item = person as any;
     return String(item.id ?? item.userId ?? item.user?.id ?? "");
@@ -128,30 +125,6 @@ const ConnectionsPage = () => {
           </button>
         </header>
 
-        <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <StatCard
-            icon={<Network size={18} />}
-            label="Your connections"
-            value="Your network"
-            detail="People you’re connected with"
-            accent="violet"
-          />
-          <StatCard
-            icon={<Users size={18} />}
-            label="Suggested people"
-            value={suggestions.length.toLocaleString()}
-            detail="Professionals to discover"
-            accent="blue"
-          />
-          <StatCard
-            icon={<Sparkles size={18} />}
-            label="Personalized discovery"
-            value="Made for you"
-            detail="Based on shared backgrounds"
-            accent="emerald"
-          />
-        </section>
-
         <section className="overflow-hidden rounded-2xl">
           <div className="flex flex-col gap-5 border-b border-white/7 py-4 sm:py-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 gap-3">
@@ -163,7 +136,7 @@ const ConnectionsPage = () => {
                 <input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search people, roles, companies..."
+                  placeholder="Search your connections"
                   className="h-11 w-full rounded-xl border border-white/8 bg-black/20 pl-10 pr-10 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-violet-400/40 focus:ring-2 focus:ring-violet-400/10"
                 />
                 {search && (
@@ -184,28 +157,21 @@ const ConnectionsPage = () => {
             </div>
           </div>
 
-          {filteredPeople.length > 0 ? (
+          {connections.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredPeople.map((person, index) => {
-                const id = getPersonId(person);
-
+              {connections.map((connection) => {
                 return (
-                  <ConnectionCard
-                    key={id || index}
-                    person={person}
-                    requestSent={sentRequests.includes(id)}
-                    onConnect={() => handleRequestSent(id)}
-                  />
+                  <ConnectionCard key={connection.id} connection={connection} />
                 );
               })}
             </div>
           ) : (
             <EmptyState
-              title="No people found"
+              title="No connections found"
               description={
                 search
                   ? "Try another name, role, company, or institution."
-                  : "There aren't any suggestions to show right now."
+                  : "There aren't any connections to show right now."
               }
               action={
                 search || filter !== "All people" ? (
@@ -224,9 +190,66 @@ const ConnectionsPage = () => {
           )}
         </section>
 
-        <p className="mt-5 text-center text-xs text-zinc-600">
-          Better connections start with shared experience.
-        </p>
+        <section className="mt-10 border-t border-white/[0.07] pt-8">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex size-8 items-center justify-center rounded-xl border border-indigo-400/15 bg-indigo-500/10">
+                  <UsersRound className="size-4 text-indigo-300" />
+                </div>
+
+                <span className="text-xs font-medium uppercase tracking-[0.14em] text-indigo-300/80">
+                  Expand your network
+                </span>
+              </div>
+
+              <h2 className="text-xl font-semibold tracking-tight text-white">
+                Discover people
+              </h2>
+
+              <p className="mt-1.5 max-w-lg text-sm leading-6 text-zinc-400">
+                Meet professionals with shared interests, skills, and
+                experiences.
+              </p>
+            </div>
+
+            <span className="inline-flex w-fit items-center rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-zinc-400">
+              {filteredSuggestions.length}{" "}
+              {filteredSuggestions.length === 1 ? "person" : "people"}
+            </span>
+          </div>
+
+          {filteredSuggestions.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {filteredSuggestions.map((suggestion) => (
+                <SuggestedPersonCard key={suggestion.id} person={suggestion} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No people found"
+              description={
+                search
+                  ? "Try another name, role, company, or institution."
+                  : "There aren't any suggestions to show right now. Check back later."
+              }
+              action={
+                search || filter !== "All people" ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch("");
+                      setFilter("All people");
+                    }}
+                    className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-white"
+                  >
+                    Clear filters
+                  </button>
+                ) : undefined
+              }
+            />
+          )}
+        </section>
       </div>
 
       <RequestsDrawer

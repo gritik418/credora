@@ -1,171 +1,169 @@
 "use client";
 
-import { useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
-  Check,
-  GraduationCap,
   MapPin,
+  MessageCircle,
   MoreHorizontal,
   UserRound,
-  UserRoundPlus,
+  UserRoundMinus,
 } from "lucide-react";
-import { SuggestedPeople } from "@/features/connection/connection.interface";
-import { getInitials } from "@/lib/string.utils";
+import { useState } from "react";
+import { Connection } from "@/features/connection/connection.interface";
 
-type Props = {
-  person: SuggestedPeople;
-  requestSent: boolean;
-  onConnect: () => void;
-};
+interface ConnectionCardProps {
+  connection: Connection;
+}
 
-const ConnectionCard = ({ person, requestSent, onConnect }: Props) => {
-  const item = person as any;
+export default function ConnectionCard({ connection }: ConnectionCardProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const profile = item.profile ?? item.user?.profile ?? {};
-  const name =
-    item.name ??
-    item.fullName ??
-    item.user?.name ??
-    [item.firstName, item.lastName].filter(Boolean).join(" ") ??
-    "Professional";
+  const person = connection.connection;
+  const profile = person.profile;
 
-  const headline =
-    item.headline ??
-    profile.headline ??
-    item.designation ??
-    item.title ??
-    item.user?.headline ??
-    "Professional";
+  const location = [profile.city, profile.state, profile.country]
+    .filter(Boolean)
+    .join(", ");
 
-  const company =
-    item.company ??
-    item.currentCompany ??
-    profile.experiences?.[0]?.company ??
-    item.user?.company ??
-    "";
-
-  const institution =
-    item.institution ?? profile.educations?.[0]?.institution ?? "";
-
-  const location = item.location ?? profile.location ?? item.city ?? "";
-
-  const avatar =
-    item.avatar ??
-    item.avatarUrl ??
-    item.profileImage ??
-    item.image ??
-    item.user?.avatar ??
-    item.user?.profileImage ??
-    profile.avatar ??
-    profile.avatarUrl ??
-    "";
-
-  const reason = company
-    ? "Shared professional interests"
-    : institution
-      ? "Shared education"
-      : "Suggested for you";
+  const initials =
+    person.name
+      ?.trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase() || "U";
 
   return (
-    <article className="group relative flex min-h-75 flex-col overflow-hidden rounded-2xl border border-white/8 bg-credora-card-bg transition duration-300 hover:-translate-y-0.5 hover:border-violet-400/25">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-linear-to-br from-violet-500/10 via-indigo-500/4 to-transparent opacity-70 transition group-hover:opacity-100" />
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0f15] transition-all duration-300 hover:border-indigo-500/30 hover:bg-[#10121a]">
+      {/* Accent */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
-      <div className="relative flex items-start justify-between p-5 pb-0">
+      <div className="flex items-start justify-between p-5 pb-0">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-violet-500/25 to-indigo-500/10 text-sm font-semibold text-violet-200">
-            {avatar ? (
-              <img
-                src={avatar}
-                alt={name}
-                className="h-full w-full object-cover"
+          <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500/20 to-violet-500/10 text-sm font-semibold text-indigo-200">
+            {person.avatar ? (
+              <Image
+                src={person.avatar}
+                alt={person.name}
+                fill
+                sizes="56px"
+                className="object-cover"
               />
             ) : (
-              getInitials(name) || <UserRound size={22} />
+              initials
             )}
           </div>
 
           <div className="min-w-0">
-            <h3 className="truncate text-sm font-semibold text-zinc-100 transition group-hover:text-white">
-              {name}
+            <h3 className="truncate text-sm font-semibold text-white">
+              {person.name}
             </h3>
-            <p className="mt-1 line-clamp-2 text-xs leading-5 text-zinc-500">
-              {headline}
-            </p>
+
+            <Link
+              href={`/identity/${person.username}`}
+              className="mt-1 inline-flex max-w-full items-center gap-1 truncate text-xs text-white/40 transition-colors hover:text-indigo-300"
+            >
+              <span className="truncate">@{person.username}</span>
+              <ArrowUpRight size={12} className="shrink-0" />
+            </Link>
           </div>
         </div>
 
-        <button
-          aria-label={`More options for ${name}`}
-          className="ml-2 rounded-lg p-1.5 text-zinc-600 transition hover:bg-white/6 hover:text-zinc-300"
-        >
-          <MoreHorizontal size={19} />
-        </button>
-      </div>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Connection options"
+            aria-expanded={menuOpen}
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+          >
+            <MoreHorizontal size={19} />
+          </button>
 
-      <div className="relative flex-1 px-5 pt-5">
-        <div className="space-y-2.5">
-          {company && (
-            <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-              <BriefcaseBusiness size={14} className="shrink-0 text-zinc-600" />
-              <span className="truncate">{company}</span>
-            </div>
-          )}
-
-          {institution && (
-            <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-              <GraduationCap size={14} className="shrink-0 text-zinc-600" />
-              <span className="truncate">{institution}</span>
-            </div>
-          )}
-
-          {location && (
-            <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-              <MapPin size={14} className="shrink-0 text-zinc-600" />
-              <span className="truncate">{location}</span>
-            </div>
-          )}
-
-          {!company && !institution && !location && (
-            <p className="text-xs leading-5 text-zinc-500">
-              Explore their professional identity and experience on Credora.
-            </p>
-          )}
-        </div>
-
-        <div className="mt-5 inline-flex max-w-full items-center gap-1.5 rounded-lg border border-white/6 bg-white/2.5 px-2.5 py-1.5 text-[11px] text-zinc-500">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
-          <span className="truncate">{reason}</span>
-        </div>
-      </div>
-
-      <div className="relative mt-5 border-t border-white/6 p-4">
-        <button
-          onClick={onConnect}
-          disabled={requestSent}
-          className={`flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-primary-btn-primary text-sm font-medium transition ${
-            requestSent
-              ? "cursor-default border border-emerald-400/15 bg-emerald-400/6 text-emerald-300"
-              : "bg-violet-500 text-white shadow-lg shadow-violet-950/20 hover:bg-violet-400 active:scale-[0.99]"
-          }`}
-        >
-          {requestSent ? (
+          {menuOpen && (
             <>
-              <Check size={16} />
-              Request sent
-            </>
-          ) : (
-            <>
-              <UserRoundPlus size={16} />
-              Connect
-              <ArrowUpRight size={14} className="opacity-60" />
+              <button
+                type="button"
+                aria-label="Close options menu"
+                className="fixed inset-0 z-10 cursor-default"
+                onClick={() => setMenuOpen(false)}
+              />
+
+              <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-white/10 bg-[#151720] p-1.5 shadow-2xl shadow-black/40">
+                <Link
+                  href={`/identity/${person.username}`}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+                >
+                  <UserRound size={15} />
+                  View identity
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                  }}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-red-400 transition-colors hover:bg-red-500/10"
+                >
+                  <UserRoundMinus size={15} />
+                  Remove connection
+                </button>
+              </div>
             </>
           )}
-        </button>
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
+        <div className="min-h-[42px]">
+          <p className="line-clamp-2 text-sm leading-5 text-white/75">
+            {profile.headline || profile.profession || "Credora member"}
+          </p>
+        </div>
+
+        {profile.profession && profile.headline && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-white/40">
+            <BriefcaseBusiness size={13} className="shrink-0" />
+            <span className="truncate">{profile.profession}</span>
+          </div>
+        )}
+
+        {location && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-white/40">
+            <MapPin size={13} className="shrink-0" />
+            <span className="truncate">{location}</span>
+          </div>
+        )}
+
+        {profile.bio && (
+          <p className="mt-4 line-clamp-2 text-xs leading-5 text-white/45">
+            {profile.bio}
+          </p>
+        )}
+
+        <div className="mt-auto flex items-center gap-2 border-t border-white/[0.06] pt-4">
+          <button
+            type="button"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-xs font-medium text-white/75 transition-colors hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-200"
+          >
+            <MessageCircle size={14} />
+            Message
+          </button>
+
+          <Link
+            href={`/identity/${person.username}`}
+            aria-label={`View ${person.name}'s identity`}
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500 text-white transition-colors hover:bg-indigo-400"
+          >
+            <ArrowUpRight size={17} />
+          </Link>
+        </div>
       </div>
     </article>
   );
-};
-
-export default ConnectionCard;
+}

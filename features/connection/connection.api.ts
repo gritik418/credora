@@ -1,11 +1,15 @@
 import baseApi from "@/store/api/base-api";
 import {
   GetSuggestedPeopleParams,
+  GetConnectionsResponseDto,
   GetSuggestedPeopleResponseDto,
 } from "./connection.interface";
 
 const connectionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getConnections: builder.query<GetConnectionsResponseDto, void>({
+      query: () => ({ url: "/connections" }),
+    }),
     getSuggestedPeople: builder.query<
       GetSuggestedPeopleResponseDto,
       GetSuggestedPeopleParams
@@ -18,4 +22,7 @@ const connectionApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetSuggestedPeopleQuery } = connectionApi;
+export const { useGetConnectionsQuery, useGetSuggestedPeopleQuery } =
+  connectionApi;
+
+export default connectionApi;
