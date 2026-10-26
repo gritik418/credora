@@ -2,6 +2,7 @@
 
 import countries from "@/constants/countries";
 import { ICurrentUser } from "@/features/auth/auth.interface";
+import { getInitials } from "@/lib/string.utils";
 import {
   BriefcaseBusiness,
   Check,
@@ -24,14 +25,6 @@ const ProfileHeader = ({ user }: Props) => {
   if (!user) {
     return null;
   }
-
-  const initials =
-    user.name
-      ?.split(" ")
-      .map((name) => name[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() || "U";
 
   const getCountryName = (countryCode: string) => {
     const country = countries.find(
@@ -156,7 +149,7 @@ const ProfileHeader = ({ user }: Props) => {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.35),transparent_50%)]" />
 
               <span className="relative bg-linear-to-br from-white via-indigo-100 to-blue-200 bg-clip-text font-semibold text-transparent">
-                {initials}
+                {getInitials(user.name)}
               </span>
             </div>
           )}

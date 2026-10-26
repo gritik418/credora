@@ -2,6 +2,7 @@
 
 import { OrganizationMember } from "@/features/organization-member/organization-member.interface";
 import { OrganizationMemberRole } from "@/features/organization/organization.interface";
+import { getInitials } from "@/lib/string.utils";
 import {
   Check,
   ChevronDown,
@@ -31,13 +32,6 @@ const MemberRow = ({ member }: Props) => {
   const [roleOpen, setRoleOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const initials = member.user.name
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(member.user.email);
@@ -60,7 +54,7 @@ const MemberRow = ({ member }: Props) => {
             />
           ) : (
             <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-indigo-400/15 bg-linear-to-br from-indigo-500/20 to-violet-500/10 text-sm font-semibold text-indigo-200">
-              {initials}
+              {getInitials(member.user.name)}
             </div>
           )}
 

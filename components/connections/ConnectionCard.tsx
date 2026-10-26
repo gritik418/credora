@@ -12,6 +12,7 @@ import {
   UserRoundPlus,
 } from "lucide-react";
 import { SuggestedPeople } from "@/features/connection/connection.interface";
+import { getInitials } from "@/lib/string.utils";
 
 type Props = {
   person: SuggestedPeople;
@@ -61,18 +62,6 @@ const ConnectionCard = ({ person, requestSent, onConnect }: Props) => {
     profile.avatarUrl ??
     "";
 
-  const initials = useMemo(
-    () =>
-      name
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part: string) => part[0])
-        .join("")
-        .toUpperCase(),
-    [name],
-  );
-
   const reason = company
     ? "Shared professional interests"
     : institution
@@ -93,7 +82,7 @@ const ConnectionCard = ({ person, requestSent, onConnect }: Props) => {
                 className="h-full w-full object-cover"
               />
             ) : (
-              initials || <UserRound size={22} />
+              getInitials(name) || <UserRound size={22} />
             )}
           </div>
 

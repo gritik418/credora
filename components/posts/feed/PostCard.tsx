@@ -11,19 +11,13 @@ import {
 } from "lucide-react";
 import { Post } from "@/features/post/post.interface";
 import Image from "next/image";
+import { getInitials } from "@/lib/string.utils";
 
 interface Props {
   post: Post;
 }
 
 const PostCard = ({ post }: Props) => {
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("");
-  };
-
   const author = post.author;
 
   return (

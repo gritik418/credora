@@ -5,6 +5,7 @@ import { useAddWorkspaceMembersMutation } from "@/features/workspace-member/work
 import { AddWorkspaceMembersResponseDto } from "@/features/workspace-member/workspace-member.interface";
 import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
+import { getInitials } from "@/lib/string.utils";
 import { useAppSelector } from "@/store/hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Check, LoaderCircle, Search, Users, X } from "lucide-react";
@@ -206,12 +207,7 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
                       />
                     ) : (
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-linear-to-br from-indigo-500/20 to-violet-500/20 text-xs font-semibold text-indigo-200">
-                        {member.user.name
-                          .split(" ")
-                          .map((part) => part[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase()}
+                        {getInitials(member.user.name)}
                       </div>
                     )}
 

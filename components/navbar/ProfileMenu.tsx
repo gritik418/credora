@@ -1,6 +1,7 @@
 "use client";
 
 import { ICurrentUser } from "@/features/auth/auth.interface";
+import { getInitials } from "@/lib/string.utils";
 import {
   ChevronDown,
   LogOut,
@@ -19,14 +20,6 @@ interface Props {
 const ProfileMenu = ({ user }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const initials =
-    user.name
-      ?.split(" ")
-      .map((name) => name[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() || "U";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,7 +54,7 @@ const ProfileMenu = ({ user }: Props) => {
               className="h-full rounded-sm w-full"
             />
           ) : (
-            initials
+            getInitials(user.name)
           )}
         </div>
 

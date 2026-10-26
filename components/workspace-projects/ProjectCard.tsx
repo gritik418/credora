@@ -2,6 +2,7 @@ import {
   ProjectStatus,
   ProjectWithWorkspaceAndMembers,
 } from "@/features/project/project.interface";
+import { getInitials } from "@/lib/string.utils";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -59,15 +60,6 @@ const ProjectCard = ({ project, view }: Props) => {
       month: "short",
       day: "numeric",
     });
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   const getMemberColors = (name: string) => {

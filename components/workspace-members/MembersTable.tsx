@@ -2,6 +2,7 @@ import {
   WorkspaceMember,
   WorkspaceMemberRole,
 } from "@/features/workspace-member/workspace-member.interface";
+import { getInitials } from "@/lib/string.utils";
 import { MoreHorizontal, ShieldCheck, UserRound } from "lucide-react";
 
 interface Props {
@@ -20,15 +21,6 @@ const statusStyles: Record<string, string> = {
 };
 
 const MembersTable = ({ members }: Props) => {
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
