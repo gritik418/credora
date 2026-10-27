@@ -242,7 +242,7 @@ export default function SuggestedPersonCard({
         )}
 
         <Link
-          href={`/identity/${person.username}`}
+          href={`/${person.username}`}
           className="mt-2 flex w-full items-center justify-center gap-1.5 py-1 text-[11px] text-white/35 transition-colors hover:text-white/75"
         >
           View identity

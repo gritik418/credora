@@ -79,7 +79,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
           <button
             onClick={onClose}
             aria-label="Close drawer"
-            className="rounded-xl border border-white/8 p-2 text-zinc-400 transition hover:bg-white/6 hover:text-white"
+            className="rounded-xl cursor-pointer border border-white/8 p-2 text-zinc-400 transition hover:bg-white/6 hover:text-white"
           >
             <X size={18} />
           </button>
@@ -88,7 +88,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
         <div className="grid grid-cols-2 gap-1 border-b border-white/7 p-3">
           <button
             onClick={() => setActiveTab("received")}
-            className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
+            className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
               activeTab === "received"
                 ? "bg-violet-500/15 text-violet-200"
                 : "text-zinc-500 hover:bg-white/4 hover:text-zinc-300"
@@ -105,7 +105,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
 
           <button
             onClick={() => setActiveTab("sent")}
-            className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
+            className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
               activeTab === "sent"
                 ? "bg-violet-500/15 text-violet-200"
                 : "text-zinc-500 hover:bg-white/4 hover:text-zinc-300"

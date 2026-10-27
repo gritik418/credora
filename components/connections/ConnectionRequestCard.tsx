@@ -50,7 +50,7 @@ export default function ConnectionRequestCard({
       <div className="p-4 sm:p-5">
         <div className="flex items-start gap-3">
           <Link
-            href={`/identity/${sender.username}`}
+            href={`/${sender.username}`}
             aria-label={`View ${sender.name}'s identity`}
             className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/4 sm:h-16 sm:w-16"
           >
@@ -72,7 +72,7 @@ export default function ConnectionRequestCard({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">
               <Link
-                href={`/identity/${sender.username}`}
+                href={`/${sender.username}`}
                 className="truncate text-sm font-semibold text-white transition-colors hover:text-indigo-300 sm:text-base"
               >
                 {sender.name}
@@ -118,7 +118,7 @@ export default function ConnectionRequestCard({
           </span>
 
           <Link
-            href={`/identity/${sender.username}`}
+            href={`/${sender.username}`}
             className="shrink-0 text-xs font-medium text-indigo-300 transition-colors hover:text-indigo-200"
           >
             View identity
