@@ -18,6 +18,8 @@ const baseApi = createApi({
     "Workspace",
     "ConnectionRequestSend",
     "ConnectionRequestAccept",
+    "AcceptOrgInvite",
+    "DeclineOrgInvite",
   ],
 });
 

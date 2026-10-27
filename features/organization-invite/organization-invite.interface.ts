@@ -18,12 +18,10 @@ export interface SendOrganizationInviteResponseDto {
 
 export interface AcceptOrgInviteRequestDto {
   inviteId: string;
-  token: string;
 }
 
 export interface DeclineOrgInviteRequestDto {
   inviteId: string;
-  token: string;
 }
 
 export interface BaseOrgInviteResponseDto {

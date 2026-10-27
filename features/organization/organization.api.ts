@@ -38,7 +38,7 @@ const organizationApi = baseApi.injectEndpoints({
         url: `/organizations/${slug}`,
         method: "GET",
       }),
-      providesTags: ["SwitchOrg"],
+      providesTags: ["SwitchOrg", "AcceptOrgInvite"],
     }),
     switchOrganization: build.mutation<
       SwitchOrganizationResponseDto,

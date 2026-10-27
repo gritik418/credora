@@ -33,27 +33,34 @@ const organizationInviteApi = baseApi.injectEndpoints({
         url: `/organizations/${orgId}/invites`,
         method: "GET",
       }),
-      providesTags: ["OrgInvite", "SwitchOrg"],
+      providesTags: [
+        "OrgInvite",
+        "SwitchOrg",
+        "AcceptOrgInvite",
+        "DeclineOrgInvite",
+      ],
     }),
 
     acceptOrgInvite: build.mutation<
       BaseOrgInviteResponseDto,
       AcceptOrgInviteRequestDto
     >({
-      query: ({ inviteId, token }) => ({
-        url: `/organization-invites/${inviteId}/${token}/accept`,
+      query: ({ inviteId }) => ({
+        url: `/organization-invites/${inviteId}/accept`,
         method: "PATCH",
       }),
+      invalidatesTags: ["AcceptOrgInvite"],
     }),
 
     declineOrgInvite: build.mutation<
       BaseOrgInviteResponseDto,
       DeclineOrgInviteRequestDto
     >({
-      query: ({ inviteId, token }) => ({
-        url: `/organization-invites/${inviteId}/${token}/decline`,
+      query: ({ inviteId }) => ({
+        url: `/organization-invites/${inviteId}/decline`,
         method: "PATCH",
       }),
+      invalidatesTags: ["DeclineOrgInvite"],
     }),
   }),
 });

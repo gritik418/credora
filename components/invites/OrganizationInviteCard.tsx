@@ -2,17 +2,17 @@
 
 import { ReceivedOrganizationInvite } from "@/features/user/user.interface";
 import { getInitials } from "@/lib/string.utils";
+import { useOrgInviteActions } from "@/store/hooks/connections/useOrgInviteActions";
 import {
   ArrowUpRight,
   CalendarDays,
+  Check,
   Clock3,
+  LoaderCircle,
   ShieldCheck,
   UserRound,
   X,
-  Check,
-  LoaderCircle,
 } from "lucide-react";
-import { useState } from "react";
 
 interface OrganizationInviteCardProps {
   invite: ReceivedOrganizationInvite;
@@ -45,28 +45,14 @@ const getRoleLabel = (role: string) =>
     .join(" ");
 
 const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
-  const [processing, setProcessing] = useState<"accept" | "decline" | null>(
-    null,
-  );
-
-  const onAccept = () => {};
-  const onDecline = () => {};
-
   const expired = new Date(invite.expiresAt).getTime() <= Date.now();
-  const disabled = expired || processing !== null;
 
-  const handleAction = async (action: "accept" | "decline") => {
-    const callback = action === "accept" ? onAccept : onDecline;
-
-    if (!callback || disabled) return;
-
-    setProcessing(action);
-
-    try {
-    } finally {
-      setProcessing(null);
-    }
-  };
+  const {
+    isAcceptingInvite,
+    isDecliningInvite,
+    acceptOrganizationInvite,
+    declineOrganizationInvite,
+  } = useOrgInviteActions();
 
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-white/[0.07] transition duration-200 hover:border-indigo-400/20">
@@ -192,35 +178,45 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
             {getExpiryLabel(invite.expiresAt)}
           </p>
 
-          <div className="flex gap-2">
-            <button
-              type="button"
-              disabled={disabled || !onDecline}
-              onClick={() => handleAction("decline")}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/9 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-red-400/25 hover:bg-red-400/6 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
-            >
-              {processing === "decline" ? (
-                <LoaderCircle size={15} className="animate-spin" />
-              ) : (
-                <X size={15} />
-              )}
-              Decline
-            </button>
+          {!expired ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={expired || isDecliningInvite}
+                onClick={() => {
+                  declineOrganizationInvite({
+                    inviteId: invite.id,
+                  });
+                }}
+                className="inline-flex cursor-pointer flex-1 items-center justify-center gap-2 rounded-xl border border-white/9 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-red-400/25 hover:bg-red-400/6 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
+              >
+                {isDecliningInvite ? (
+                  <LoaderCircle size={15} className="animate-spin" />
+                ) : (
+                  <X size={15} />
+                )}
+                Decline
+              </button>
 
-            <button
-              type="button"
-              disabled={disabled || !onAccept}
-              onClick={() => handleAction("accept")}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-950/20 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
-            >
-              {processing === "accept" ? (
-                <LoaderCircle size={15} className="animate-spin" />
-              ) : (
-                <Check size={15} />
-              )}
-              Accept invite
-            </button>
-          </div>
+              <button
+                type="button"
+                disabled={expired || isAcceptingInvite}
+                onClick={() => {
+                  acceptOrganizationInvite({
+                    inviteId: invite.id,
+                  });
+                }}
+                className="inline-flex cursor-pointer flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-indigo-950/20 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
+              >
+                {isAcceptingInvite ? (
+                  <LoaderCircle size={15} className="animate-spin" />
+                ) : (
+                  <Check size={15} />
+                )}
+                Accept invite
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </article>

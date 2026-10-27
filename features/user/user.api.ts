@@ -15,7 +15,7 @@ const userApi = baseApi.injectEndpoints({
         url: "/users/me/selected-organization",
         method: "GET",
       }),
-      providesTags: ["SwitchOrg"],
+      providesTags: ["SwitchOrg", "AcceptOrgInvite"],
     }),
     getSelectedWorkspace: build.query<GetSelectedWorkspaceResponseDto, void>({
       query: () => ({
@@ -32,6 +32,7 @@ const userApi = baseApi.injectEndpoints({
         url: "/users/me/organization-invites",
         method: "GET",
       }),
+      providesTags: ["AcceptOrgInvite", "DeclineOrgInvite"],
     }),
   }),
 });
