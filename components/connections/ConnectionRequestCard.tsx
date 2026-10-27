@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BadgeCheck, Check, MapPin, MessageSquareText, X } from "lucide-react";
 import { getInitials } from "@/lib/string.utils";
 import { ConnectionRequest } from "@/features/connection-request/connection-request.interface";
+import { useConnectionActions } from "@/store/hooks/connections/useConnectionActions";
 
 interface ConnectionRequestCardProps {
   request: ConnectionRequest;
@@ -30,6 +31,9 @@ const formatDate = (date: Date) => {
 export default function ConnectionRequestCard({
   request,
 }: ConnectionRequestCardProps) {
+  const { isAcceptingRequest, acceptConnectionRequest } =
+    useConnectionActions();
+
   const { sender } = request;
   const profile = sender.profile;
 
@@ -129,20 +133,21 @@ export default function ConnectionRequestCard({
       <div className="grid grid-cols-2 gap-2 border-t border-white/6 bg-white/15 p-3 sm:px-5 sm:py-4">
         <button
           type="button"
-          //   onClick={() => onAccept(request.id)}
-          //   disabled={isBusy}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() =>
+            acceptConnectionRequest({ connectionRequestId: request.id })
+          }
+          disabled={isAcceptingRequest}
+          className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-500 px-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Check size={16} />
-          {/* {isAccepting ? "Accepting..." : "Accept"} */}
-          Accept
+          {isAcceptingRequest ? "Accepting..." : "Accept"}
         </button>
 
         <button
           type="button"
           //   onClick={() => onIgnore(request.id)}
           //   disabled={}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/9 bg-white/2.5 px-3 text-sm font-medium text-white/65 transition-colors hover:border-red-400/20 hover:bg-red-400/[0.07] hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex cursor-pointer h-10 items-center justify-center gap-2 rounded-xl border border-white/9 bg-white/2.5 px-3 text-sm font-medium text-white/65 transition-colors hover:border-red-400/20 hover:bg-red-400/[0.07] hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <X size={16} />
           {/* {isIgnoring ? "Ignoring..." : "Ignore"} */}

@@ -1,5 +1,14 @@
 import SendConnectionRequestDto from "./dto/send-connection-request.dto";
 
+export interface BaseConnectionRequestResponseDto {
+  success: boolean;
+  message: string;
+}
+
+export interface AcceptConnectionRequestArgs {
+  connectionRequestId: string;
+}
+
 export interface SendConnectionRequestResponseDto {
   success: boolean;
   message: string;

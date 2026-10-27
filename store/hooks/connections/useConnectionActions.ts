@@ -1,5 +1,12 @@
-import { useSendConnectionRequestMutation } from "@/features/connection-request/connection-request.api";
-import { SendConnectionRequestResponseDto } from "@/features/connection-request/connection-request.interface";
+import {
+  useAcceptConnectionRequestMutation,
+  useSendConnectionRequestMutation,
+} from "@/features/connection-request/connection-request.api";
+import {
+  AcceptConnectionRequestArgs,
+  BaseConnectionRequestResponseDto,
+  SendConnectionRequestResponseDto,
+} from "@/features/connection-request/connection-request.interface";
 import SendConnectionRequestDto from "@/features/connection-request/dto/send-connection-request.dto";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { UseFormSetError } from "react-hook-form";
@@ -7,6 +14,7 @@ import { toast } from "react-toastify";
 
 export const useConnectionActions = () => {
   const [sendRequest, sendState] = useSendConnectionRequestMutation();
+  const [acceptRequest, acceptState] = useAcceptConnectionRequestMutation();
 
   const sendConnectionRequest = async (
     data: SendConnectionRequestDto,
@@ -49,9 +57,38 @@ export const useConnectionActions = () => {
     }
   };
 
+  const acceptConnectionRequest = async (data: AcceptConnectionRequestArgs) => {
+    try {
+      const result = await acceptRequest(data).unwrap();
+
+      if (result.success) {
+        toast.success(result.message || "Request accepted successfully.");
+      } else {
+        toast.error(result.message || "Failed to accept request.");
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as BaseConnectionRequestResponseDto;
+
+        toast.error(response.message || "Something went wrong.");
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
+  };
+
   return {
     isSendingRequest: sendState.isLoading,
+    isAcceptingRequest: acceptState.isLoading,
 
     sendConnectionRequest,
+    acceptConnectionRequest,
   };
 };

@@ -17,6 +17,7 @@ const baseApi = createApi({
     "SwitchWorkspace",
     "Workspace",
     "ConnectionRequestSend",
+    "ConnectionRequestAccept",
   ],
 });
 

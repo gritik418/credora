@@ -9,6 +9,7 @@ const connectionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getConnections: builder.query<GetConnectionsResponseDto, void>({
       query: () => ({ url: "/connections" }),
+      providesTags: ["ConnectionRequestAccept"],
     }),
     getSuggestedPeople: builder.query<
       GetSuggestedPeopleResponseDto,

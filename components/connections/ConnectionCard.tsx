@@ -38,7 +38,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
       .toUpperCase() || "U";
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0d0f15] transition-all duration-300 hover:border-indigo-500/30 hover:bg-[#10121a]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.07] transition-all duration-300 hover:border-indigo-500/30">
       {/* Accent */}
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
@@ -64,7 +64,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
             </h3>
 
             <Link
-              href={`/identity/${person.username}`}
+              href={`/${person.username}`}
               className="mt-1 inline-flex max-w-full items-center gap-1 truncate text-xs text-white/40 transition-colors hover:text-indigo-300"
             >
               <span className="truncate">@{person.username}</span>
@@ -95,7 +95,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
               <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-white/10 bg-[#151720] p-1.5 shadow-2xl shadow-black/40">
                 <Link
-                  href={`/identity/${person.username}`}
+                  href={`/${person.username}`}
                   onClick={() => setMenuOpen(false)}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-xs text-white/70 transition-colors hover:bg-white/6 hover:text-white"
                 >
@@ -156,7 +156,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
           </button>
 
           <Link
-            href={`/identity/${person.username}`}
+            href={`/${person.username}`}
             aria-label={`View ${person.name}'s identity`}
             className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500 text-white transition-colors hover:bg-indigo-400"
           >

@@ -120,7 +120,7 @@ const ConnectionsPage = () => {
         </header>
 
         <section className="overflow-hidden rounded-2xl">
-          <div className="flex flex-col gap-5 border-b border-white/7 py-4 sm:py-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-5 py-4 sm:py-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 gap-3">
               <div className="relative flex-1">
                 <Search
