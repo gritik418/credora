@@ -186,13 +186,13 @@ const AddWorkspaceMembersModal = ({ open, onClose }: Props) => {
           <div className="min-h-0 max-h-64 flex-1 space-y-1 overflow-y-auto">
             {availableMembers.length ? (
               availableMembers.map((member) => {
-                const selected = selectedIds.includes(member.id);
+                const selected = selectedIds.includes(member.userId);
 
                 return (
                   <button
                     key={member.id}
                     type="button"
-                    onClick={() => toggleMember(member.id)}
+                    onClick={() => toggleMember(member.userId)}
                     className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
                       selected
                         ? "border-indigo-400/25 bg-indigo-400/7"

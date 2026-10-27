@@ -23,12 +23,14 @@ const projectApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Project"],
     }),
     getProjects: build.query<GetProjectsResponseDto, GetProjectsRequestDto>({
       query: ({ workspaceId }) => ({
         url: `/workspaces/${workspaceId}/projects`,
         method: "GET",
       }),
+      providesTags: ["Project"],
     }),
     getProjectBySlug: build.query<
       GetProjectBySlugResponseDto,
@@ -38,6 +40,7 @@ const projectApi = baseApi.injectEndpoints({
         url: `/workspaces/${workspaceId}/projects/${projectSlug}`,
         method: "GET",
       }),
+      providesTags: ["Project"],
     }),
     getTaskAssignees: build.query<
       GetAvailableTaskAssigneesResponseDto,

@@ -5,6 +5,7 @@ import { useAppSelector } from "@/store/hooks";
 import {
   Activity,
   ArrowLeft,
+  Building,
   CircleHelp,
   FolderKanban,
   LayoutDashboard,
@@ -17,6 +18,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import WorkspaceSelector from "./WorkspaceSelector";
+import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 
 interface Props {
   mobileOpen: boolean;
@@ -27,6 +29,7 @@ interface Props {
 const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
   const pathname = usePathname();
   const workspace = useAppSelector(selectSelectedWorkspace);
+  const organization = useAppSelector(selectSelectedOrganization);
   const basePath = `/workspace/${workspace?.slug}`;
 
   const navigation = [
@@ -80,7 +83,7 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
       >
         <div className="flex h-19 shrink-0 items-center justify-between border-b border-white/6 px-5 lg:justify-start lg:gap-4 lg:px-5.5">
           <Link
-            href={basePath}
+            href={`/org/${organization?.slug}`}
             className="flex min-w-0 items-center gap-3"
             onClick={onClose}
           >
@@ -90,10 +93,10 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
 
             <div className="min-w-0 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
               <p className="whitespace-nowrap text-sm font-semibold tracking-tight text-white">
-                Credora
+                {organization?.name}
               </p>
-              <p className="whitespace-nowrap text-[11px] text-zinc-500">
-                Workspace
+              <p className="flex items-center whitespace-nowrap text-[11px] text-zinc-500">
+                <Building size={12} className="mr-1" /> Organization
               </p>
             </div>
           </Link>

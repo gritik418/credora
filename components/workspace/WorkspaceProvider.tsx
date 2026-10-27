@@ -36,6 +36,8 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     },
     {
       skip: !organization?.id || !slug,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
     },
   );
 
@@ -46,6 +48,7 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     {
       skip: !organization?.id,
       refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
     },
   );
 
@@ -56,6 +59,7 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     {
       skip: !selectedWorkspace?.id,
       refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
     },
   );
 
@@ -66,6 +70,7 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     {
       skip: !selectedWorkspace?.id,
       refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
     },
   );
 
@@ -76,6 +81,7 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
     {
       skip: !organization?.id,
       refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
     },
   );
 
