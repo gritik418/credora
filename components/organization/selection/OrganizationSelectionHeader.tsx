@@ -5,7 +5,7 @@ const OrganizationSelectionHeader = () => {
     <div className="max-w-2xl">
       <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-400/15 bg-indigo-500/8 px-3 py-1.5 text-[11px] font-medium text-indigo-300">
         <Sparkles size={13} />
-        Your workspaces
+        Your organizations
       </div>
 
       <h1 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">

@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import userApi from "../user/user.api";
 import organizationApi from "./organization.api";
-import { Organization, ProjectWithWorkspace } from "./organization.interface";
+import { Organization } from "./organization.interface";
+import { ProjectWithWorkspace } from "../project/project.interface";
 
 interface OrganizationState {
   organizations: Organization[];

@@ -14,6 +14,7 @@ import {
 import { useGetConnectionsQuery } from "@/features/connection/connection.api";
 import { useGetNotificationsQuery } from "@/features/notification/notification.api";
 import {
+  useGetReceivedOrganizationInvitesQuery,
   useGetSelectedOrganizationQuery,
   useGetSelectedWorkspaceQuery,
 } from "@/features/user/user.api";
@@ -62,6 +63,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   });
 
   useGetSentConnectionRequestsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
+  });
+
+  useGetReceivedOrganizationInvitesQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     skip: !isAuthenticated,

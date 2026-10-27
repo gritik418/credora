@@ -11,11 +11,13 @@ import postSlice from "@/features/post/post.slice";
 import notificationSlice from "@/features/notification/notification.slice";
 import connectionSlice from "@/features/connection/connection.slice";
 import connectionRequestSlice from "@/features/connection-request/connection-request.slice";
+import userSlice from "@/features/user/user.slice";
 
 const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     [authSlice.reducerPath]: authSlice.reducer,
+    [userSlice.reducerPath]: userSlice.reducer,
     [organizationSlice.reducerPath]: organizationSlice.reducer,
     [organizationMemberSlice.reducerPath]: organizationMemberSlice.reducer,
     [organizationInviteSlice.reducerPath]: organizationInviteSlice.reducer,

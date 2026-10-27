@@ -28,6 +28,7 @@ const InviteMemberModal = ({ open, onClose }: Props) => {
     setValue,
     setError,
     reset,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SendInviteDto>({
@@ -212,15 +213,24 @@ const InviteMemberModal = ({ open, onClose }: Props) => {
               />
 
               <select
+                value={watch("role")}
                 onChange={(e) => {
-                  setValue("role", e.target.value as OrganizationMemberRole);
+                  setValue("role", e.target.value as OrganizationMemberRole, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                    shouldValidate: true,
+                  });
                 }}
                 className="h-11 w-full appearance-none rounded-xl border border-white/9 bg-[#10131d] pl-10 pr-4 text-sm text-white outline-none focus:border-indigo-400/50"
               >
                 {Object.values(OrganizationMemberRole)
                   .filter((role) => role !== OrganizationMemberRole.OWNER)
                   .map((role) => (
-                    <option key={role} value={role}>
+                    <option
+                      key={role}
+                      value={role}
+                      className="bg-[#10131d] text-white"
+                    >
                       {getRoleLabel(role)}
                     </option>
                   ))}

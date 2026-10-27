@@ -7,6 +7,7 @@ import {
   Search,
   SlidersHorizontal,
   Sparkles,
+  Stars,
   Users,
   UsersRound,
   X,
@@ -151,6 +152,23 @@ const ConnectionsPage = () => {
             </div>
           </div>
 
+          <div className="mb-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="flex size-8 items-center justify-center rounded-lg border border-yellow-400/30 bg-yellow-500/10">
+                <Stars size={14} className="text-yellow-300" />
+              </div>
+
+              <p className="text-xs font-semibold tracking-wider text-zinc-300">
+                {connections.length}{" "}
+                {connections.length === 1 ? "connection" : "connections"}
+              </p>
+            </div>
+
+            <span className="text-xs text-zinc-400">
+              Connect with people you know to grow your network.
+            </span>
+          </div>
+
           {connections.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {connections.map((connection) => {
@@ -206,11 +224,6 @@ const ConnectionsPage = () => {
                 experiences.
               </p>
             </div>
-
-            <span className="inline-flex w-fit items-center rounded-full border border-white/8 bg-white/3 px-3 py-1.5 text-xs text-zinc-400">
-              {filteredSuggestions.length}{" "}
-              {filteredSuggestions.length === 1 ? "person" : "people"}
-            </span>
           </div>
 
           {filteredSuggestions.length > 0 ? (
