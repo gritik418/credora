@@ -5,3 +5,9 @@ export const selectConnectionRequests = (state: RootState) =>
 
 export const selectConnectionRequestIds = (state: RootState) =>
   state.connectionRequest.connectionRequestIds;
+
+export const selectSentConnectionRequests = (state: RootState) =>
+  state.connectionRequest.sentConnectionRequests;
+
+export const selectSentConnectionRequestIds = (state: RootState) =>
+  state.connectionRequest.sentConnectionRequestIds;

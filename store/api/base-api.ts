@@ -16,6 +16,7 @@ const baseApi = createApi({
     "SwitchOrg",
     "SwitchWorkspace",
     "Workspace",
+    "ConnectionRequestSend",
   ],
 });
 

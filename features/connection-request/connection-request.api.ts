@@ -2,6 +2,7 @@ import baseApi from "@/store/api/base-api";
 import SendConnectionRequestDto from "./dto/send-connection-request.dto";
 import {
   GetConnectionRequestsResponseDto,
+  GetSentConnectionRequestsResponseDto,
   SendConnectionRequestResponseDto,
 } from "./connection-request.interface";
 
@@ -13,6 +14,16 @@ const connectionRequestApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getSentConnectionRequests: build.query<
+      GetSentConnectionRequestsResponseDto,
+      void
+    >({
+      query: () => ({
+        url: `/connection-requests/sent`,
+        method: "GET",
+      }),
+      providesTags: ["ConnectionRequestSend"],
+    }),
     sendConnectionRequest: build.mutation<
       SendConnectionRequestResponseDto,
       SendConnectionRequestDto
@@ -22,6 +33,7 @@ const connectionRequestApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["ConnectionRequestSend"],
     }),
   }),
 });
@@ -29,6 +41,7 @@ const connectionRequestApi = baseApi.injectEndpoints({
 export const {
   useGetConnectionRequestsQuery,
   useSendConnectionRequestMutation,
+  useGetSentConnectionRequestsQuery,
 } = connectionRequestApi;
 
 export default connectionRequestApi;

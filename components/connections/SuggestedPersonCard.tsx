@@ -1,7 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { selectSentConnectionRequestIds } from "@/features/connection-request/connection-request.selectors";
+import { SuggestedPeople } from "@/features/connection/connection.interface";
+import { selectConnectedUserIds } from "@/features/connection/connection.selectors";
+import { getInitials } from "@/lib/string.utils";
+import { useAppSelector } from "@/store/hooks";
+import { useConnectionActions } from "@/store/hooks/connections/useConnectionActions";
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -13,24 +17,22 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { SuggestedPeople } from "@/features/connection/connection.interface";
-import { getInitials } from "@/lib/string.utils";
-import { useAppSelector } from "@/store/hooks";
-import { selectConnectedUserIds } from "@/features/connection/connection.selectors";
-import { useConnectionActions } from "@/store/hooks/connections/useConnectionActions";
 
 interface SuggestedPersonCardProps {
   person: SuggestedPeople;
-  isPending?: boolean;
 }
 
 export default function SuggestedPersonCard({
   person,
-  isPending = false,
 }: SuggestedPersonCardProps) {
   const [imageError, setImageError] = useState<boolean>(false);
   const connectedUserIds = useAppSelector(selectConnectedUserIds);
+  const sentConnectionRequestIds = useAppSelector(
+    selectSentConnectionRequestIds,
+  );
 
   const { isSendingRequest, sendConnectionRequest } = useConnectionActions();
 
@@ -84,7 +86,7 @@ export default function SuggestedPersonCard({
       {/* Person identity */}
       <div className="flex flex-col items-center px-5 pt-5 text-center">
         <Link
-          href={`/identity/${person.username}`}
+          href={`/${person.username}`}
           aria-label={`View ${person.name}'s identity`}
           className="relative mb-3 flex size-19 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-indigo-500/25 via-violet-500/15 to-blue-500/10 text-lg font-semibold text-indigo-100 ring-4 ring-white/2 transition-transform duration-300 group-hover:scale-[1.03]"
         >
@@ -214,7 +216,7 @@ export default function SuggestedPersonCard({
             <Check size={15} />
             Connected
           </button>
-        ) : isPending ? (
+        ) : sentConnectionRequestIds.includes(person.id) ? (
           <button
             type="button"
             disabled

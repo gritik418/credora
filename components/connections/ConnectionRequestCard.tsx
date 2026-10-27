@@ -44,7 +44,7 @@ export default function ConnectionRequestCard({
     .join(", ");
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0d0f15] transition-all duration-300 hover:border-indigo-400/25 hover:bg-[#10121b]">
+    <article className="group relative overflow-hidden rounded-2xl border border-white/8 bg-[#0d0f15] transition-all duration-300 hover:border-indigo-400/25 hover:bg-[#10121b]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-400/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
       <div className="p-4 sm:p-5">
@@ -52,7 +52,7 @@ export default function ConnectionRequestCard({
           <Link
             href={`/identity/${sender.username}`}
             aria-label={`View ${sender.name}'s identity`}
-            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] sm:h-16 sm:w-16"
+            className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/4 sm:h-16 sm:w-16"
           >
             {sender.avatar ? (
               <Image
@@ -101,12 +101,12 @@ export default function ConnectionRequestCard({
         </div>
 
         {request.message && (
-          <div className="mt-4 rounded-xl border border-indigo-400/10 bg-indigo-500/[0.05] p-3">
+          <div className="mt-4 rounded-xl border border-indigo-400/10 bg-indigo-500/5 p-3">
             <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium text-indigo-300">
               <MessageSquareText size={13} />
               Personal message
             </div>
-            <p className="whitespace-pre-wrap break-words text-xs leading-5 text-white/65">
+            <p className="whitespace-pre-wrap wrap-break-word text-xs leading-5 text-white/65">
               {request.message}
             </p>
           </div>
@@ -126,7 +126,7 @@ export default function ConnectionRequestCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 border-t border-white/[0.06] bg-white/[0.015] p-3 sm:px-5 sm:py-4">
+      <div className="grid grid-cols-2 gap-2 border-t border-white/6 bg-white/15 p-3 sm:px-5 sm:py-4">
         <button
           type="button"
           //   onClick={() => onAccept(request.id)}
@@ -142,7 +142,7 @@ export default function ConnectionRequestCard({
           type="button"
           //   onClick={() => onIgnore(request.id)}
           //   disabled={}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/[0.09] bg-white/[0.025] px-3 text-sm font-medium text-white/65 transition-colors hover:border-red-400/20 hover:bg-red-400/[0.07] hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/9 bg-white/2.5 px-3 text-sm font-medium text-white/65 transition-colors hover:border-red-400/20 hover:bg-red-400/[0.07] hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <X size={16} />
           {/* {isIgnoring ? "Ignoring..." : "Ignore"} */}

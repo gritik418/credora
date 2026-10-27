@@ -17,7 +17,7 @@ import EmptyState from "./EmptyState";
 import RequestsDrawer from "./RequestsDrawer";
 import { useAppSelector } from "@/store/hooks";
 import { selectConnections } from "@/features/connection/connection.selectors";
-import SuggestedPersonCard from "../discover/SuggestedPersonCard";
+import SuggestedPersonCard from "./SuggestedPersonCard";
 
 const ConnectionsPage = () => {
   const [search, setSearch] = useState("");
@@ -25,7 +25,6 @@ const ConnectionsPage = () => {
   const connections = useAppSelector(selectConnections);
   const [isRequestsOpen, setIsRequestsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<SuggestedPeople[]>([]);
-  const [sentRequests, setSentRequests] = useState<string[]>([]);
 
   const { data, isLoading, isError } = useGetSuggestedPeopleQuery({
     limit: 150,
@@ -85,11 +84,6 @@ const ConnectionsPage = () => {
     });
   }, [suggestions, search, filter]);
 
-  const getPersonId = (person: SuggestedPeople) => {
-    const item = person as any;
-    return String(item.id ?? item.userId ?? item.user?.id ?? "");
-  };
-
   return (
     <main className="min-h-screen text-white">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -117,7 +111,7 @@ const ConnectionsPage = () => {
 
           <button
             onClick={() => setIsRequestsOpen(true)}
-            className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl border border-white/10 bg-white/4 px-4 text-sm font-medium text-zinc-200 transition hover:border-violet-400/30 hover:bg-white/7 md:self-auto"
+            className="inline-flex cursor-pointer h-11 items-center justify-center gap-2 self-start rounded-xl border border-white/10 bg-white/4 px-4 text-sm font-medium text-zinc-200 transition hover:border-violet-400/30 hover:bg-white/7 md:self-auto"
           >
             <Users size={16} />
             Manage requests

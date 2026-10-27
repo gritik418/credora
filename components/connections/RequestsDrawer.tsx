@@ -10,8 +10,13 @@ import {
   X,
 } from "lucide-react";
 import { useAppSelector } from "@/store/hooks";
-import { selectConnectionRequests } from "@/features/connection-request/connection-request.selectors";
+import {
+  selectConnectionRequests,
+  selectSentConnectionRequestIds,
+  selectSentConnectionRequests,
+} from "@/features/connection-request/connection-request.selectors";
 import ConnectionRequestCard from "./ConnectionRequestCard";
+import SentConnectionRequestCard from "./SentConnectionRequestCard";
 
 type Props = {
   open: boolean;
@@ -24,7 +29,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
   const [activeTab, setActiveTab] = useState<RequestTab>("received");
 
   const receivedRequests = useAppSelector(selectConnectionRequests);
-  const sentRequests: any[] = [];
+  const sentRequests = useAppSelector(selectSentConnectionRequests);
 
   const requests = activeTab === "received" ? receivedRequests : sentRequests;
 
@@ -55,10 +60,10 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
         className="absolute inset-0 cursor-default bg-black/65 backdrop-blur-[3px]"
       />
 
-      <aside className="absolute inset-y-0 right-0 flex w-full max-w-[440px] flex-col border-l border-white/10 bg-[#0b0c12] shadow-2xl shadow-black/50">
-        <div className="flex items-start justify-between border-b border-white/[0.07] p-6">
+      <aside className="absolute inset-y-0 right-0 flex w-full max-w-110 flex-col border-l border-white/10 bg-[#0b0c12] shadow-2xl shadow-black/50">
+        <div className="flex items-start justify-between border-b border-white/7 p-6">
           <div>
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-400/[0.08] text-violet-300">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-400/8 text-violet-300">
               <Inbox size={19} />
             </div>
 
@@ -74,19 +79,19 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
           <button
             onClick={onClose}
             aria-label="Close drawer"
-            className="rounded-xl border border-white/[0.08] p-2 text-zinc-400 transition hover:bg-white/[0.06] hover:text-white"
+            className="rounded-xl border border-white/8 p-2 text-zinc-400 transition hover:bg-white/6 hover:text-white"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-1 border-b border-white/[0.07] p-3">
+        <div className="grid grid-cols-2 gap-1 border-b border-white/7 p-3">
           <button
             onClick={() => setActiveTab("received")}
             className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
               activeTab === "received"
                 ? "bg-violet-500/15 text-violet-200"
-                : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+                : "text-zinc-500 hover:bg-white/4 hover:text-zinc-300"
             }`}
           >
             <ArrowDownLeft size={16} />
@@ -103,13 +108,13 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
             className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
               activeTab === "sent"
                 ? "bg-violet-500/15 text-violet-200"
-                : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+                : "text-zinc-500 hover:bg-white/4 hover:text-zinc-300"
             }`}
           >
             <ArrowUpRight size={16} />
             Sent
             {sentRequests.length > 0 && (
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[10px] text-zinc-300">
+              <span className="rounded-full bg-white/6 px-2 py-0.5 text-[10px] text-zinc-300">
                 {sentRequests.length}
               </span>
             )}
@@ -131,10 +136,19 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
                     <ConnectionRequestCard key={request.id} request={request} />
                   ))
                 : null}
+
+              {activeTab === "sent"
+                ? sentRequests.map((request) => (
+                    <SentConnectionRequestCard
+                      key={request.id}
+                      request={request}
+                    />
+                  ))
+                : null}
             </div>
           ) : (
             <div className="flex min-h-75 flex-col items-center justify-center text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] text-zinc-500">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/7 bg-white/2.5 text-zinc-500">
                 {activeTab === "received" ? (
                   <Inbox size={25} />
                 ) : (
@@ -148,7 +162,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
                   : "No pending invitations"}
               </h3>
 
-              <p className="mt-2 max-w-[270px] text-sm leading-6 text-zinc-500">
+              <p className="mt-2 max-w-67.5 text-sm leading-6 text-zinc-500">
                 {activeTab === "received"
                   ? "When someone wants to connect with you, their request will appear here."
                   : "Connection invitations you send will appear here until they're accepted or withdrawn."}
@@ -156,7 +170,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
 
               <button
                 onClick={onClose}
-                className="mt-5 rounded-xl border border-white/[0.09] px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:bg-white/[0.05]"
+                className="mt-5 rounded-xl border border-white/9 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:bg-white/5"
               >
                 Back to discovery
               </button>
@@ -164,7 +178,7 @@ const RequestsDrawer = ({ open, onClose }: Props) => {
           )}
         </div>
 
-        <div className="border-t border-white/[0.07] p-4">
+        <div className="border-t border-white/7 p-4">
           <p className="text-center text-xs leading-5 text-zinc-600">
             Build your network with people you know and trust.
           </p>

@@ -7,7 +7,10 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
 } from "@/features/auth/auth.selectors";
-import { useGetConnectionRequestsQuery } from "@/features/connection-request/connection-request.api";
+import {
+  useGetConnectionRequestsQuery,
+  useGetSentConnectionRequestsQuery,
+} from "@/features/connection-request/connection-request.api";
 import { useGetConnectionsQuery } from "@/features/connection/connection.api";
 import { useGetNotificationsQuery } from "@/features/notification/notification.api";
 import {
@@ -53,6 +56,12 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   });
 
   useGetConnectionRequestsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    skip: !isAuthenticated,
+  });
+
+  useGetSentConnectionRequestsQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     skip: !isAuthenticated,
