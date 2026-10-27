@@ -131,7 +131,7 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
           </div>
         </div>
 
-        <div className="my-5 h-px bg-white/[0.055]" />
+        <div className="my-5 h-px bg-white/5.5" />
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
@@ -142,7 +142,7 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
                 className="h-9 w-9 shrink-0 rounded-full border border-white/10 object-cover"
               />
             ) : (
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/8 bg-white/[0.05] text-xs font-medium text-zinc-300">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/8 bg-white/5 text-xs font-medium text-zinc-300">
                 {getInitials(invite.invitedBy.name)}
               </div>
             )}
@@ -163,12 +163,12 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
 
           <div className="flex flex-wrap items-center gap-2">
             {invite.department && (
-              <span className="rounded-lg border border-white/[0.07] bg-white/[0.025] px-3 py-2 text-xs text-zinc-400">
+              <span className="rounded-lg border border-white/[0.07] bg-white/2.5 px-3 py-2 text-xs text-zinc-400">
                 {invite.department}
               </span>
             )}
 
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/15 bg-indigo-400/[0.06] px-3 py-2 text-xs text-indigo-200">
+            <span className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/15 bg-indigo-400/6 px-3 py-2 text-xs text-indigo-200">
               <UserRound size={13} />
               {getRoleLabel(invite.role)}
             </span>
@@ -182,7 +182,7 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
           </p>
         )}
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-white/[0.055] pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-5 flex flex-col gap-3 border-t border-white/5.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p
             className={`flex items-center gap-1.5 text-xs ${
               expired ? "text-red-400" : "text-zinc-500"
@@ -197,7 +197,7 @@ const OrganizationInviteCard = ({ invite }: OrganizationInviteCardProps) => {
               type="button"
               disabled={disabled || !onDecline}
               onClick={() => handleAction("decline")}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.09] px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-red-400/25 hover:bg-red-400/[0.06] hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/9 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-red-400/25 hover:bg-red-400/6 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
             >
               {processing === "decline" ? (
                 <LoaderCircle size={15} className="animate-spin" />

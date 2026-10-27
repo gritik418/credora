@@ -3,7 +3,9 @@
 import { ICurrentUser } from "@/features/auth/auth.interface";
 import { getInitials } from "@/lib/string.utils";
 import {
+  Building,
   ChevronDown,
+  Inbox,
   LogOut,
   Network,
   Settings,
@@ -98,12 +100,30 @@ const ProfileMenu = ({ user }: Props) => {
             </Link>
 
             <Link
+              href="/org"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
+            >
+              <Building size={16} />
+              Your Organizations
+            </Link>
+
+            <Link
               href="/connections"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
             >
               <Network size={16} />
-              Connections
+              Your Connections
+            </Link>
+
+            <Link
+              href="/invites"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/55 transition hover:bg-white/5 hover:text-white"
+            >
+              <Inbox size={16} />
+              Invitations
             </Link>
 
             <Link

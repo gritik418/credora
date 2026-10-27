@@ -1,6 +1,9 @@
 import baseApi from "@/store/api/base-api";
 import SendInviteDto from "./dto/send-invite.dto";
 import {
+  AcceptOrgInviteRequestDto,
+  BaseOrgInviteResponseDto,
+  DeclineOrgInviteRequestDto,
   GetOrganizationMemberInvitesResponseDto,
   SendOrganizationInviteResponseDto,
 } from "./organization-invite.interface";
@@ -32,10 +35,32 @@ const organizationInviteApi = baseApi.injectEndpoints({
       }),
       providesTags: ["OrgInvite", "SwitchOrg"],
     }),
+
+    acceptOrgInvite: build.mutation<
+      BaseOrgInviteResponseDto,
+      AcceptOrgInviteRequestDto
+    >({
+      query: ({ inviteId, token }) => ({
+        url: `/organization-invites/${inviteId}/${token}/accept`,
+        method: "PATCH",
+      }),
+    }),
+
+    declineOrgInvite: build.mutation<
+      BaseOrgInviteResponseDto,
+      DeclineOrgInviteRequestDto
+    >({
+      query: ({ inviteId, token }) => ({
+        url: `/organization-invites/${inviteId}/${token}/decline`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
 export const {
+  useAcceptOrgInviteMutation,
+  useDeclineOrgInviteMutation,
   useGetOrganizationInvitesQuery,
   useSendOrganizationInviteMutation,
 } = organizationInviteApi;

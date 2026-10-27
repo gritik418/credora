@@ -16,10 +16,9 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
-import { BiSolidDashboard } from "react-icons/bi";
 import { BsChatText } from "react-icons/bs";
-import ProfileMenu from "./ProfileMenu";
 import NotificationBell from "../notifications/NotificationBell";
+import ProfileMenu from "./ProfileMenu";
 
 interface NavItem {
   label: string;
@@ -149,7 +148,7 @@ const Navbar = () => {
                   key={item.label}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                  className={`flex items-center gap-3 rounded-xl px-1 py-3 text-sm font-medium transition-all ${
                     active
                       ? "bg-indigo-500/10 text-white"
                       : "text-zinc-400 hover:bg-white/4 hover:text-white"

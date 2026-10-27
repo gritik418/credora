@@ -16,6 +16,21 @@ export interface SendOrganizationInviteResponseDto {
   data?: { inviteId: string };
 }
 
+export interface AcceptOrgInviteRequestDto {
+  inviteId: string;
+  token: string;
+}
+
+export interface DeclineOrgInviteRequestDto {
+  inviteId: string;
+  token: string;
+}
+
+export interface BaseOrgInviteResponseDto {
+  success: boolean;
+  message: string;
+}
+
 export interface OrganizationInvite {
   id: string;
   email: string;

@@ -2,25 +2,16 @@
 
 import { selectReceivedOrganizationInvites } from "@/features/user/user.selectors";
 import { useAppSelector } from "@/store/hooks";
-import { Building2, Inbox, Search, SlidersHorizontal } from "lucide-react";
+import { Building2, Inbox, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import OrganizationInviteCard from "./OrganizationInviteCard";
 
 type InviteFilter = "ALL" | "PENDING" | "ACCEPTED" | "DECLINED";
 
-const filters: { label: string; value: InviteFilter }[] = [
-  { label: "All invites", value: "ALL" },
-  { label: "Pending", value: "PENDING" },
-  { label: "Accepted", value: "ACCEPTED" },
-  { label: "Declined", value: "DECLINED" },
-];
-
 const InvitesList = () => {
   const invites = useAppSelector(selectReceivedOrganizationInvites);
   const [activeFilter, setActiveFilter] = useState<InviteFilter>("ALL");
   const [search, setSearch] = useState("");
-
-  console.log(invites);
 
   const pendingCount = invites.filter(
     (invite) =>
@@ -73,7 +64,7 @@ const InvitesList = () => {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search organizations..."
-            className="h-11 w-full rounded-xl border border-white/[0.08] pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-indigo-400/40 focus:ring-2 focus:ring-indigo-500/10"
+            className="h-11 w-full rounded-xl border border-white/8 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-indigo-400/40 focus:ring-2 focus:ring-indigo-500/10"
           />
         </div>
       </div>
@@ -85,7 +76,7 @@ const InvitesList = () => {
           ))}
         </div>
       ) : (
-        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.09] bg-white/[0.01] px-6 py-12 text-center">
+        <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-dashed border-white/9 bg-white/1 px-6 py-12 text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.07]">
             {search ? (
               <Search size={23} className="text-zinc-500" />
@@ -117,7 +108,7 @@ const InvitesList = () => {
                 setSearch("");
                 setActiveFilter("ALL");
               }}
-              className="mt-5 rounded-xl border border-white/[0.09] px-4 py-2 text-sm text-zinc-300 transition hover:bg-white/[0.05] hover:text-white"
+              className="mt-5 rounded-xl border border-white/9 px-4 py-2 text-sm text-zinc-300 transition hover:bg-white/5 hover:text-white"
             >
               Clear filters
             </button>
