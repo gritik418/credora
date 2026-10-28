@@ -8,6 +8,11 @@ import ProjectMembersTable from "./ProjectMembersTable";
 import ProjectMembersToolbar, {
   MemberRoleFilter,
 } from "./ProjectMembersToolbar";
+import { useAppSelector } from "@/store/hooks";
+import {
+  selectProjectMemberIds,
+  selectProjectMembers,
+} from "@/features/project-member/project-member.selectors";
 
 interface Props {
   workspaceId: string;
@@ -15,7 +20,7 @@ interface Props {
 }
 
 const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
-  const [members, setMembers] = useState<any[]>([]);
+  const members = useAppSelector(selectProjectMembers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<MemberRoleFilter>("All roles");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,9 +31,9 @@ const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
     return members.filter((member) => {
       const matchesSearch =
         !query ||
-        member.name.toLowerCase().includes(query) ||
-        member.email.toLowerCase().includes(query) ||
-        member.department.toLowerCase().includes(query);
+        member.user.name.toLowerCase().includes(query) ||
+        member.user.email.toLowerCase().includes(query) ||
+        member.role.toLowerCase().includes(query);
 
       const matchesRole =
         roleFilter === "All roles" || member.role === roleFilter;
@@ -37,33 +42,15 @@ const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
     });
   }, [members, search, roleFilter]);
 
-  const stats = useMemo(
-    () => ({
-      totalMembers: members.length,
-      activeTasks: members.reduce(
-        (total, member) => total + member.activeTasks,
-        0,
-      ),
-      completedTasks: members.reduce(
-        (total, member) => total + member.tasksCompleted,
-        0,
-      ),
-      departments: new Set(members.map((member) => member.department)).size,
-    }),
-    [members],
-  );
-
   return (
     <div className="min-h-screen bg-[#08090e] text-white">
       <div className="mx-auto max-w-375 space-y-7">
         <ProjectMembersHeader
-          workspaceId={workspaceId}
-          projectId={projectId}
           memberCount={members.length}
           onAddMembers={() => setIsModalOpen(true)}
         />
 
-        <ProjectMembersStats {...stats} />
+        {/* <ProjectMembersStats {...stats} /> */}
 
         <section className="space-y-4">
           <ProjectMembersToolbar

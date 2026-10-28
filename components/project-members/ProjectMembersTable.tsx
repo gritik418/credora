@@ -1,17 +1,18 @@
 "use client";
 
+import { ProjectMember } from "@/features/project-member/project-member.interface";
+import { ProjectMemberRole } from "@/features/project/project.interface";
+import { getInitials } from "@/lib/string.utils";
 import { MoreHorizontal, ShieldCheck, UserMinus, Users } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
-  members: any[];
+  members: ProjectMember[];
 }
 
-const roleStyles: Record<any["role"], string> = {
-  "Project Lead": "border-violet-400/20 bg-violet-500/10 text-violet-300",
-  Developer: "border-blue-400/20 bg-blue-500/10 text-blue-300",
-  Designer: "border-pink-400/20 bg-pink-500/10 text-pink-300",
-  QA: "border-amber-400/20 bg-amber-500/10 text-amber-300",
+const roleStyles: Record<ProjectMember["role"], string> = {
+  ADMIN: "border-violet-400/20 bg-violet-500/10 text-violet-300",
+  MEMBER: "border-blue-400/20 bg-blue-500/10 text-blue-300",
 };
 
 const ProjectMembersTable = ({ members }: Props) => {
@@ -19,7 +20,7 @@ const ProjectMembersTable = ({ members }: Props) => {
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/7 bg-[#0c0e14]">
+    <div className="rounded-2xl border border-white/7 bg-[#0c0e14]">
       <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
         <div>
           <h2 className="text-sm font-semibold text-white">Team directory</h2>
@@ -68,17 +69,17 @@ const ProjectMembersTable = ({ members }: Props) => {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${member.avatarColor} text-xs font-semibold text-white shadow-lg shadow-black/20`}
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br text-xs font-semibold text-white shadow-lg shadow-black/20`}
                         >
-                          {member.initials}
+                          {getInitials(member.user.name)}
                         </div>
 
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="truncate text-sm font-medium text-gray-100">
-                              {member.name}
+                              {member.user.name}
                             </p>
-                            {member.role === "Project Lead" && (
+                            {member.role === "ADMIN" && (
                               <ShieldCheck
                                 size={14}
                                 className="shrink-0 text-violet-300"
@@ -86,10 +87,10 @@ const ProjectMembersTable = ({ members }: Props) => {
                             )}
                           </div>
                           <p className="mt-1 truncate text-xs text-gray-500">
-                            {member.email}
+                            {member.user.email}
                           </p>
                           <p className="mt-1 text-[11px] text-gray-600">
-                            {member.department}
+                            {member.role}
                           </p>
                         </div>
                       </div>
@@ -133,7 +134,7 @@ const ProjectMembersTable = ({ members }: Props) => {
 
                     <td className="px-4 py-4">
                       <span className="text-sm font-medium text-gray-200">
-                        {member.tasksCompleted}
+                        {/* {member.tasksCompleted} */}
                       </span>
                       <span className="ml-1 text-xs text-gray-600">tasks</span>
                     </td>
@@ -141,15 +142,19 @@ const ProjectMembersTable = ({ members }: Props) => {
                     <td className="px-4 py-4">
                       <span className="inline-flex items-center gap-2 text-sm text-gray-300">
                         <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
-                        {member.activeTasks}
+                        {/* {member.activeTasks} */}
                       </span>
                     </td>
 
                     <td className="px-4 py-4 text-xs text-gray-500">
-                      {member.joinedAt}
+                      {new Date(member.joinedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </td>
 
-                    <td className="px-4 py-4 text-right">
+                    <td className="px-4 py-4 text-right z-10">
                       <div className="relative inline-block">
                         <button
                           type="button"
@@ -159,7 +164,7 @@ const ProjectMembersTable = ({ members }: Props) => {
                             )
                           }
                           className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/7 hover:text-white"
-                          aria-label={`Actions for ${member.name}`}
+                          aria-label={`Actions for ${member.user.name}`}
                         >
                           <MoreHorizontal size={18} />
                         </button>
@@ -177,7 +182,7 @@ const ProjectMembersTable = ({ members }: Props) => {
                               <ShieldCheck size={14} />
                               Change role
                             </button>
-                            {member.role !== "Project Lead" && (
+                            {member.role !== "ADMIN" && (
                               <button
                                 type="button"
                                 onClick={() => {
@@ -204,15 +209,15 @@ const ProjectMembersTable = ({ members }: Props) => {
               <div key={member.id} className="p-4">
                 <div className="flex items-start gap-3">
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${member.avatarColor} text-xs font-semibold text-white`}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br text-xs font-semibold text-white`}
                   >
-                    {member.initials}
+                    {getInitials(member.user.name)}
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-sm font-medium text-white">
-                        {member.name}
+                        {member.user.name}
                       </p>
                       <span
                         className={`rounded-full border px-2 py-0.5 text-[10px] ${roleStyles[member.role]}`}
@@ -221,38 +226,32 @@ const ProjectMembersTable = ({ members }: Props) => {
                       </span>
                     </div>
                     <p className="mt-1 truncate text-xs text-gray-500">
-                      {member.email}
+                      {member.user.email}
                     </p>
-                    <p className="mt-1 text-xs text-gray-600">
-                      {member.department}
-                    </p>
+                    <p className="mt-1 text-xs text-gray-600">{member.role}</p>
 
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-400">
-                      <span>{member.tasksCompleted} completed</span>
-                      <span>{member.activeTasks} active</span>
+                      {/* <span>{member.tasksCompleted} completed</span>
+                      <span>{member.activeTasks} active</span> */}
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
                       <select
-                        aria-label={`Change role for ${member.name}`}
+                        aria-label={`Change role for ${member.user.name}`}
                         value={member.role}
+                        onChange={(e) => {
+                          console.log("role changed", e.target.value);
+                        }}
                         className="rounded-lg border border-white/8 bg-[#11141c] px-2.5 py-2 text-xs text-gray-300 outline-none"
                       >
-                        {(
-                          [
-                            "Project Lead",
-                            "Developer",
-                            "Designer",
-                            "QA",
-                          ] as any["role"][]
-                        ).map((role) => (
+                        {Object.values(ProjectMemberRole).map((role) => (
                           <option key={role} value={role}>
                             {role}
                           </option>
                         ))}
                       </select>
 
-                      {member.role !== "Project Lead" && (
+                      {member.role !== ProjectMemberRole.ADMIN && (
                         <button
                           type="button"
                           className="inline-flex items-center gap-1.5 rounded-lg border border-rose-400/15 px-2.5 py-2 text-xs text-rose-300 hover:bg-rose-500/10"

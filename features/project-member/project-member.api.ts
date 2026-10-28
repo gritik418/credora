@@ -2,6 +2,7 @@ import baseApi from "@/store/api/base-api";
 import {
   AddProjectMembersRequestDto,
   AddProjectMembersResponseDto,
+  GetProjectMembersResponseDto,
 } from "./project-member.interface";
 
 const projectMemberApi = baseApi.injectEndpoints({
@@ -16,9 +17,16 @@ const projectMemberApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    getProjectMembers: build.query<
+      GetProjectMembersResponseDto,
+      { projectId: string }
+    >({
+      query: ({ projectId }) => ({ url: `/projects/${projectId}/members` }),
+    }),
   }),
 });
 
-export const { useAddProjectMembersMutation } = projectMemberApi;
+export const { useAddProjectMembersMutation, useGetProjectMembersQuery } =
+  projectMemberApi;
 
 export default projectMemberApi;

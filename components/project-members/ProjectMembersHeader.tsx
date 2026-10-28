@@ -1,23 +1,11 @@
-"use client";
-
-import { ArrowLeft, Plus, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 
 interface Props {
-  workspaceId: string;
-  projectId: string;
   memberCount: number;
   onAddMembers: () => void;
 }
 
-const ProjectMembersHeader = ({
-  workspaceId,
-  projectId,
-  memberCount,
-  onAddMembers,
-}: Props) => {
-  const router = useRouter();
-
+const ProjectMembersHeader = ({ memberCount, onAddMembers }: Props) => {
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-3">
@@ -41,7 +29,7 @@ const ProjectMembersHeader = ({
       <button
         type="button"
         onClick={onAddMembers}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:bg-indigo-400"
+        className="inline-flex cursor-pointer h-11 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-950/30 transition hover:bg-indigo-400"
       >
         <Plus size={17} />
         Add members

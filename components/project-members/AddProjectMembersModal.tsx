@@ -2,6 +2,7 @@
 
 import { useAddProjectMembersMutation } from "@/features/project-member/project-member.api";
 import { AddProjectMembersResponseDto } from "@/features/project-member/project-member.interface";
+import { selectProjectMemberIds } from "@/features/project-member/project-member.selectors";
 import { selectSelectedProject } from "@/features/project/project.selectors";
 import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
 import { getInitials } from "@/lib/string.utils";
@@ -21,6 +22,7 @@ const AddProjectMembersModal = ({ open, onClose }: Props) => {
   const [addMembers, { isLoading }] = useAddProjectMembersMutation();
   const workspaceMembers = useAppSelector(selectWorkspaceMembers);
   const project = useAppSelector(selectSelectedProject);
+  const projectMemberIds = useAppSelector(selectProjectMemberIds);
 
   const [search, setSearch] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -76,10 +78,13 @@ const AddProjectMembersModal = ({ open, onClose }: Props) => {
 
   const filteredMembers = useMemo(() => {
     const query = search.trim().toLowerCase();
+    const filtered = workspaceMembers.filter(
+      (member) => !projectMemberIds.includes(member.userId),
+    );
 
-    if (!query) return workspaceMembers;
+    if (!query) return filtered;
 
-    return workspaceMembers.filter(
+    return filtered.filter(
       (member) =>
         member.user.name.toLowerCase().includes(query) ||
         member.user.email.toLowerCase().includes(query) ||

@@ -1,4 +1,5 @@
 "use client";
+import { useGetProjectMembersQuery } from "@/features/project-member/project-member.api";
 import {
   useGetProjectBySlugQuery,
   useGetTaskAssigneesQuery,
@@ -44,6 +45,16 @@ const ProjectProvider = ({ children, projectSlug }: Props) => {
     {
       projectId: project?.id ?? "",
       workspaceId: workspace?.id ?? "",
+    },
+    {
+      skip: !workspace?.id || !project?.id,
+      refetchOnMountOrArgChange: true,
+    },
+  );
+
+  useGetProjectMembersQuery(
+    {
+      projectId: project?.id ?? "",
     },
     {
       skip: !workspace?.id || !project?.id,

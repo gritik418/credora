@@ -12,6 +12,7 @@ import notificationSlice from "@/features/notification/notification.slice";
 import connectionSlice from "@/features/connection/connection.slice";
 import connectionRequestSlice from "@/features/connection-request/connection-request.slice";
 import userSlice from "@/features/user/user.slice";
+import projectMemberSlice from "@/features/project-member/project-member.slice";
 
 const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
     [notificationSlice.reducerPath]: notificationSlice.reducer,
     [connectionSlice.reducerPath]: connectionSlice.reducer,
     [connectionRequestSlice.reducerPath]: connectionRequestSlice.reducer,
+    [projectMemberSlice.reducerPath]: projectMemberSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),
