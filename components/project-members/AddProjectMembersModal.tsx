@@ -1,26 +1,71 @@
 "use client";
 
+import { useAddProjectMembersMutation } from "@/features/project-member/project-member.api";
+import { AddProjectMembersResponseDto } from "@/features/project-member/project-member.interface";
+import { selectSelectedProject } from "@/features/project/project.selectors";
+import { selectWorkspaceMembers } from "@/features/workspace-member/workspace-member.selectors";
+import { getInitials } from "@/lib/string.utils";
+import { useAppSelector } from "@/store/hooks";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, CheckCheck, Search, UserPlus, Users, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
-  members: any[];
-  isLoading: boolean;
   onClose: () => void;
-  onSubmit: (memberIds: string[]) => void;
 }
 
-const AddProjectMembersModal = ({
-  open,
-  members,
-  isLoading,
-  onClose,
-  onSubmit,
-}: Props) => {
-  const [search, setSearch] = useState("");
+const AddProjectMembersModal = ({ open, onClose }: Props) => {
+  const [addMembers, { isLoading }] = useAddProjectMembersMutation();
+  const workspaceMembers = useAppSelector(selectWorkspaceMembers);
+  const project = useAppSelector(selectSelectedProject);
+
+  const [search, setSearch] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const handleAddMembers = async () => {
+    try {
+      if (!project?.id) {
+        toast.error("Project not found!");
+        return;
+      }
+
+      const result = await addMembers({
+        projectId: project.id,
+        data: { members: selectedIds },
+      }).unwrap();
+
+      if (result.success) {
+        if (result.data?.addedCount) {
+          toast.success(
+            `${result.data.addedCount} member${result.data.addedCount > 1 ? "s" : ""} added successfully.`,
+          );
+        } else {
+          toast.success(result.message || "No members added.");
+        }
+        onClose();
+      } else {
+        toast.error(result.message || "Failed to add members.");
+      }
+    } catch (error: any) {
+      if ("data" in (error as FetchBaseQueryError)) {
+        const response = (error as FetchBaseQueryError)
+          .data as AddProjectMembersResponseDto;
+
+        toast.error(response.message || "Something went wrong.");
+        return;
+      }
+
+      if (error.status === "FETCH_ERROR") {
+        toast.error("Network Error. Please check your connection.");
+        return;
+      }
+
+      toast.error(error?.data?.message || "Something went wrong.");
+    }
+  };
 
   useEffect(() => {
     if (open) {
@@ -32,15 +77,15 @@ const AddProjectMembersModal = ({
   const filteredMembers = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    if (!query) return members;
+    if (!query) return workspaceMembers;
 
-    return members.filter(
+    return workspaceMembers.filter(
       (member) =>
-        member.name.toLowerCase().includes(query) ||
-        member.email.toLowerCase().includes(query) ||
-        member.department.toLowerCase().includes(query),
+        member.user.name.toLowerCase().includes(query) ||
+        member.user.email.toLowerCase().includes(query) ||
+        member.role.toLowerCase().includes(query),
     );
-  }, [members, search]);
+  }, [workspaceMembers, search]);
 
   const toggleMember = (memberId: string) => {
     setSelectedIds((current) =>
@@ -72,7 +117,7 @@ const AddProjectMembersModal = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget && !isLoading) {
+            if (event.target === event.currentTarget) {
               onClose();
             }
           }}
@@ -110,7 +155,7 @@ const AddProjectMembersModal = ({
                 onClick={onClose}
                 disabled={isLoading}
                 aria-label="Close modal"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/6 hover:text-white disabled:opacity-40"
+                className="flex h-8 cursor-pointer w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/6 hover:text-white disabled:opacity-40"
               >
                 <X size={18} />
               </button>
@@ -169,35 +214,35 @@ const AddProjectMembersModal = ({
               ) : (
                 <div className="space-y-2">
                   {filteredMembers.map((member) => {
-                    const selected = selectedIds.includes(member.id);
+                    const selected = selectedIds.includes(member.userId);
 
                     return (
                       <button
                         type="button"
                         key={member.id}
                         disabled={isLoading}
-                        onClick={() => toggleMember(member.id)}
-                        className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
+                        onClick={() => toggleMember(member.userId)}
+                        className={`flex cursor-pointer w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
                           selected
                             ? "border-indigo-400/35 bg-indigo-500/9"
                             : "border-white/6 bg-white/1.5 hover:border-white/12 hover:bg-white/[0.035]"
                         } disabled:opacity-60`}
                       >
                         <div
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${member.avatarColor} text-xs font-semibold text-white`}
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br text-xs font-semibold text-white`}
                         >
-                          {member.initials}
+                          {getInitials(member.user.name || "")}
                         </div>
 
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-sm font-medium text-gray-100">
-                            {member.name}
+                            {member.user.name}
                           </p>
                           <p className="mt-1 truncate text-xs text-gray-500">
-                            {member.email}
+                            {member.user.email}
                           </p>
                           <p className="mt-1 text-[11px] text-gray-600">
-                            {member.department}
+                            {member.role}
                           </p>
                         </div>
 
@@ -228,16 +273,16 @@ const AddProjectMembersModal = ({
                   type="button"
                   onClick={onClose}
                   disabled={isLoading}
-                  className="h-10 flex-1 rounded-xl border border-white/8 px-4 text-sm font-medium text-gray-300 transition hover:bg-white/4 disabled:opacity-50 sm:flex-none"
+                  className="h-10 flex-1 cursor-pointer rounded-xl border border-white/8 px-4 text-sm font-medium text-gray-300 transition hover:bg-white/4 disabled:opacity-50 sm:flex-none"
                 >
                   Cancel
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => onSubmit(selectedIds)}
+                  onClick={handleAddMembers}
                   disabled={selectedIds.length === 0 || isLoading}
-                  className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 text-sm font-semibold text-white transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
+                  className="inline-flex cursor-pointer h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 text-sm font-semibold text-white transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
                 >
                   {isLoading ? (
                     <>

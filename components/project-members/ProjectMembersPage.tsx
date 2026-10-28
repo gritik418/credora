@@ -19,17 +19,6 @@ const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<MemberRoleFilter>("All roles");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAddingMembers, setIsAddingMembers] = useState(false);
-
-  const assignedMemberIds = useMemo(
-    () => new Set(members.map((member) => member.id)),
-    [members],
-  );
-
-  const availableToAdd = useMemo(
-    () => [].filter((member: any) => !assignedMemberIds.has(member.id)),
-    [assignedMemberIds],
-  );
 
   const filteredMembers = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -64,14 +53,6 @@ const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
     [members],
   );
 
-  const handleAddMembers = async (memberIds: string[]) => {
-    setIsAddingMembers(true);
-  };
-
-  const handleRemoveMember = () => {};
-
-  const handleRoleChange = (memberId: string) => {};
-
   return (
     <div className="min-h-screen bg-[#08090e] text-white">
       <div className="mx-auto max-w-375 space-y-7">
@@ -98,12 +79,9 @@ const ProjectMembersPage = ({ workspaceId, projectId }: Props) => {
 
       <AddProjectMembersModal
         open={isModalOpen}
-        members={availableToAdd}
-        isLoading={isAddingMembers}
         onClose={() => {
-          if (!isAddingMembers) setIsModalOpen(false);
+          setIsModalOpen(false);
         }}
-        onSubmit={handleAddMembers}
       />
     </div>
   );
