@@ -24,10 +24,9 @@ const WorkspaceLayout = ({ children }: Props) => {
         onClose={() => setMobileOpen(false)}
       />
 
-      <main className="min-h-screen min-w-0 lg:pl-19">
+      <main className="h-screen min-w-0 lg:pl-19">
         <WorkspaceHeader onMenuClick={() => setMobileOpen(true)} />
-
-        {children}
+        <div className="h-[calc(100%-76px)] overflow-y-scroll">{children}</div>
       </main>
     </div>
   );

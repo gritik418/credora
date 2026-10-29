@@ -1,5 +1,6 @@
 "use client";
 
+import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
 import { useAppSelector } from "@/store/hooks";
 import {
@@ -7,6 +8,7 @@ import {
   ArrowLeft,
   Building,
   CircleHelp,
+  Folder,
   FolderKanban,
   LayoutDashboard,
   MessageSquare,
@@ -18,7 +20,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import WorkspaceSelector from "./WorkspaceSelector";
-import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
+import { selectProjects } from "@/features/project/project.selectors";
 
 interface Props {
   mobileOpen: boolean;
@@ -30,6 +32,7 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
   const pathname = usePathname();
   const workspace = useAppSelector(selectSelectedWorkspace);
   const organization = useAppSelector(selectSelectedOrganization);
+  const projects = useAppSelector(selectProjects);
   const basePath = `/workspace/${workspace?.slug}`;
 
   const navigation = [
@@ -61,9 +64,7 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
   ];
 
   const isActive = (href: string) =>
-    href === basePath
-      ? pathname === basePath
-      : pathname === href || pathname.startsWith(`${href}/`);
+    href === basePath ? pathname === basePath : pathname === href;
 
   return (
     <>
@@ -156,6 +157,59 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
           </nav>
 
           <div className="mb-3 mt-8 whitespace-nowrap px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
+            Projects
+          </div>
+          <div className="flex max-h-48 min-h-0 flex-col gap-1 overflow-y-auto overflow-x-hidden overscroll-contain pr-1 scrollbar-thin [scrollbar-color:rgb(63_63_70)_transparent]">
+            {projects.length > 0 ? (
+              projects.map((project) => {
+                const projectHref = `/workspace/${project.workspace.slug}/projects/${project.slug}`;
+                const active = isActive(projectHref);
+
+                return (
+                  <Link
+                    key={project.id}
+                    href={projectHref}
+                    title={project.name}
+                    onClick={onClose}
+                    className={`flex h-8 shrink-0 items-center gap-3 overflow-hidden rounded-sm px-3 transition-colors ${
+                      active
+                        ? "bg-indigo-500/10 text-white"
+                        : "text-zinc-500 hover:bg-white/4 hover:text-zinc-200"
+                    }`}
+                  >
+                    <Folder
+                      size={16}
+                      className={`ml-0.5 shrink-0 ${
+                        active ? "text-indigo-400" : ""
+                      }`}
+                    />
+
+                    <span className="truncate whitespace-nowrap text-[13px] font-medium opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
+                      {project.name}
+                    </span>
+                  </Link>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center rounded-xl border border-dashed border-white/8 bg-white/2 px-3 py-5 text-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/8 bg-white/4 text-zinc-500">
+                  <Folder size={17} />
+                </div>
+
+                <p className="mt-2 text-xs font-medium text-zinc-300 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
+                  No projects yet
+                </p>
+
+                <p className="mt-1 text-[11px] leading-relaxed text-zinc-500 opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
+                  Projects will appear here.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="shrink-0 border-t border-white/6 p-3">
+          <div className="mb-3 whitespace-nowrap px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600 opacity-100 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
             Manage
           </div>
 
@@ -174,27 +228,6 @@ const WorkspaceSidebar = ({ mobileOpen, onClose, setIsSwitching }: Props) => {
               Settings
             </span>
           </Link>
-        </div>
-
-        <div className="shrink-0 border-t border-white/6 p-3">
-          <Link
-            href="/organizations"
-            title="Back to organizations"
-            onClick={onClose}
-            className="flex h-11 items-center gap-3 overflow-hidden rounded-xl px-3 text-zinc-500 transition-colors hover:bg-white/4 hover:text-zinc-200"
-          >
-            <ArrowLeft size={18} className="ml-0.5 shrink-0" />
-            <span className="whitespace-nowrap text-[13px] font-medium opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
-              Organizations
-            </span>
-          </Link>
-
-          <div className="mt-2 flex h-11 items-center gap-3 overflow-hidden rounded-xl px-3 text-zinc-600">
-            <CircleHelp size={18} className="ml-0.5 shrink-0" />
-            <span className="whitespace-nowrap text-xs opacity-100 transition-opacity duration-200 lg:opacity-0 lg:group-hover/sidebar:opacity-100 lg:group-focus-within/sidebar:opacity-100">
-              Help & support
-            </span>
-          </div>
         </div>
       </aside>
     </>

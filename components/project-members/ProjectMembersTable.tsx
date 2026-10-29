@@ -153,8 +153,7 @@ const ProjectMembersTable = ({ members }: Props) => {
                         day: "numeric",
                       })}
                     </td>
-
-                    <td className="px-4 py-4 text-right z-10">
+                    <td className="relative px-4 py-4 text-right">
                       <div className="relative inline-block">
                         <button
                           type="button"
@@ -163,14 +162,23 @@ const ProjectMembersTable = ({ members }: Props) => {
                               current === member.id ? null : member.id,
                             )
                           }
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/7 hover:text-white"
+                          className="flex cursor-pointer h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-white/7 hover:text-white"
                           aria-label={`Actions for ${member.user.name}`}
                         >
                           <MoreHorizontal size={18} />
                         </button>
 
                         {openMenuId === member.id && (
-                          <div className="absolute right-0 top-9 z-20 w-44 rounded-xl border border-white/10 bg-[#151821] p-1.5 shadow-2xl shadow-black/50">
+                          <div
+                            className={`absolute right-0 z-50 w-44 rounded-xl border border-white/10 bg-[#151821] p-1.5 shadow-2xl shadow-black/50 ${
+                              members.findIndex(
+                                (item) => item.id === member.id,
+                              ) >=
+                              members.length - 2
+                                ? "bottom-9"
+                                : "top-9"
+                            }`}
+                          >
                             <button
                               type="button"
                               onClick={() => {
