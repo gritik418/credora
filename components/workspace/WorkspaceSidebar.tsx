@@ -1,13 +1,12 @@
 "use client";
 
 import { selectSelectedOrganization } from "@/features/organization/organization.selectors";
+import { selectProjects } from "@/features/project/project.selectors";
 import { selectSelectedWorkspace } from "@/features/workspace/workspace.selectors";
 import { useAppSelector } from "@/store/hooks";
 import {
   Activity,
-  ArrowLeft,
   Building,
-  CircleHelp,
   Folder,
   FolderKanban,
   LayoutDashboard,
@@ -20,7 +19,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import WorkspaceSelector from "./WorkspaceSelector";
-import { selectProjects } from "@/features/project/project.selectors";
 
 interface Props {
   mobileOpen: boolean;

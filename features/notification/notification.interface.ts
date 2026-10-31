@@ -2,6 +2,74 @@ export interface GetNotificationResponseDto {
   success: boolean;
   message: string;
   data: {
-    notifications: any[];
+    notifications: Notification[];
+  };
+}
+
+enum NotificationType {
+  ORGANIZATION_INVITE = "ORGANIZATION_INVITE",
+  ORGANIZATION_JOINED = "ORGANIZATION_JOINED",
+  ORGANIZATION_ROLE_CHANGED = "ORGANIZATION_ROLE_CHANGED",
+  ORGANIZATION_REMOVED = "ORGANIZATION_REMOVED",
+
+  WORKSPACE_MEMBER_ADDED = "WORKSPACE_MEMBER_ADDED",
+  WORKSPACE_ROLE_CHANGED = "WORKSPACE_ROLE_CHANGED",
+
+  PROJECT_MEMBER_ADDED = "PROJECT_MEMBER_ADDED",
+  PROJECT_ROLE_CHANGED = "PROJECT_ROLE_CHANGED",
+
+  TASK_ASSIGNED = "TASK_ASSIGNED",
+  TASK_UNASSIGNED = "TASK_UNASSIGNED",
+  TASK_DUE_SOON = "TASK_DUE_SOON",
+  TASK_OVERDUE = "TASK_OVERDUE",
+  TASK_STATUS_CHANGED = "TASK_STATUS_CHANGED",
+  TASK_REVIEW_REQUESTED = "TASK_REVIEW_REQUESTED",
+  TASK_REVIEW_COMPLETED = "TASK_REVIEW_COMPLETED",
+  TASK_COMMENT_ADDED = "TASK_COMMENT_ADDED",
+  CONTRIBUTION_REQUESTED = "CONTRIBUTION_REQUESTED",
+  CONTRIBUTION_VERIFIED = "CONTRIBUTION_VERIFIED",
+
+  CONNECTION_REQUEST_RECEIVED = "CONNECTION_REQUEST_RECEIVED",
+  CONNECTION_REQUEST_ACCEPTED = "CONNECTION_REQUEST_ACCEPTED",
+  CONNECTION_REQUEST_DECLINED = "CONNECTION_REQUEST_DECLINED",
+
+  NEW_MESSAGE = "NEW_MESSAGE",
+  GROUP_MESSAGE = "GROUP_MESSAGE",
+  MENTIONED = "MENTIONED",
+
+  POST_REACTION = "POST_REACTION",
+  POST_COMMENT = "POST_COMMENT",
+  COMMENT_REPLY = "COMMENT_REPLY",
+
+  ACCOUNT_VERIFIED = "ACCOUNT_VERIFIED",
+  SECURITY_ALERT = "SECURITY_ALERT",
+}
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+
+  recipientId: string;
+  actorId: string;
+
+  title: string;
+  message: string;
+
+  entityType?: string;
+  entityId?: string;
+
+  actionUrl?: string;
+
+  metadata?: object;
+
+  readAt: string;
+  createdAt: string;
+  expiresAt: string;
+
+  actor?: {
+    avatar: string | null;
+    id: string;
+    name: string;
+    username: string;
   };
 }

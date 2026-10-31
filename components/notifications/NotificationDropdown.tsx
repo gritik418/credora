@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import {
   Bell,
   CheckCheck,
@@ -9,12 +8,12 @@ import {
   Settings2,
   Sparkles,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
+import { selectNotifications } from "@/features/notification/notification.selectors";
+import { useAppSelector } from "@/store/hooks";
 import NotificationItem from "./NotificationItem";
-import {
-  initialNotifications,
-  type AppNotification,
-} from "./notifications.data";
+import { Notification } from "@/features/notification/notification.interface";
 
 type NotificationDropdownProps = {
   onClose: () => void;
@@ -27,8 +26,9 @@ export default function NotificationDropdown({
   onClose,
   onOpenAll,
 }: NotificationDropdownProps) {
-  const [notifications, setNotifications] =
-    useState<AppNotification[]>(initialNotifications);
+  const notifications = useAppSelector(selectNotifications);
+
+  console.log(notifications);
 
   const [filter, setFilter] = useState<NotificationFilter>("all");
 
@@ -44,45 +44,16 @@ export default function NotificationDropdown({
     [notifications, filter],
   );
 
-  const markAsRead = (id: string) => {
-    setNotifications((current) =>
-      current.map((notification) =>
-        notification.id === id ? { ...notification, read: true } : notification,
-      ),
-    );
-  };
+  const markAsRead = (id: string) => {};
 
-  const markAllAsRead = () => {
-    setNotifications((current) =>
-      current.map((notification) => ({
-        ...notification,
-        read: true,
-      })),
-    );
-  };
+  const markAllAsRead = () => {};
 
-  const dismissNotification = (id: string) => {
-    setNotifications((current) =>
-      current.filter((notification) => notification.id !== id),
-    );
-  };
+  const dismissNotification = (id: string) => {};
 
   const handleAction = (
-    notification: AppNotification,
+    notification: Notification,
     action: "primary" | "secondary",
-  ) => {
-    if (notification.type === "connection_request" && action === "secondary") {
-      dismissNotification(notification.id);
-      return;
-    }
-
-    markAsRead(notification.id);
-
-    if (notification.href) {
-      onClose();
-      window.location.assign(notification.href);
-    }
-  };
+  ) => {};
 
   return (
     <div
@@ -160,9 +131,6 @@ export default function NotificationDropdown({
               <NotificationItem
                 key={notification.id}
                 notification={notification}
-                onRead={markAsRead}
-                onDismiss={dismissNotification}
-                onAction={handleAction}
               />
             ))}
           </div>
