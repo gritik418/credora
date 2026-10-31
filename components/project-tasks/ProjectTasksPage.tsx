@@ -8,14 +8,36 @@ import {
   ListTodo,
   TrendingUp,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TaskBoard from "./TaskBoard";
 import TaskToolbar from "./TaskToolbar";
 import CreateTask from "../tasks/CreateTask";
+import { useGetTasksQuery } from "@/features/task/task.api";
+import { useParams } from "next/navigation";
+import { useAppSelector } from "@/store/hooks";
+import { selectSelectedProject } from "@/features/project/project.selectors";
 
 const ProjectTasksPage = () => {
+  const project = useAppSelector(selectSelectedProject);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [search, setSearch] = useState<string>("");
+
+  const { data, isLoading } = useGetTasksQuery(
+    {
+      projectId: project?.id ?? "",
+      pagination: {
+        limit,
+        page,
+      },
+      query: { search },
+    },
+    {
+      skip: !project?.id,
+    },
+  );
+
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "All statuses">(
     "All statuses",
   );
@@ -71,6 +93,14 @@ const ProjectTasksPage = () => {
       current.map((task) => (task.id === taskId ? { ...task, status } : task)),
     );
   };
+
+  useEffect(() => {
+    if (data?.data?.tasks) {
+      setTasks(data.data.tasks);
+    }
+  }, [data]);
+
+  console.log(tasks);
 
   return (
     <div className="min-h-screen bg-[#070912] text-slate-200">

@@ -1,5 +1,10 @@
+import {
+  PaginatedResponse,
+  PaginationQueryDto,
+} from "@/common/interfaces/pagination.interface";
 import { ProjectMemberRole } from "../project/project.interface";
 import CreateTaskDto from "./dto/create-task.dto";
+import TaskQueryDto from "./dto/task-query.dto";
 
 export interface Task {
   id: string;
@@ -61,4 +66,16 @@ export interface CreateTaskResponseDto {
 export interface CreateTaskRequestDto {
   projectId: string;
   data: CreateTaskDto;
+}
+
+export interface GetTasksResponseDto {
+  success: boolean;
+  message: string;
+  data?: PaginatedResponse<Task[], "tasks">;
+}
+
+export interface GetTasksRequestDto {
+  projectId: string;
+  pagination: PaginationQueryDto;
+  query: TaskQueryDto;
 }
