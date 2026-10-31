@@ -103,7 +103,7 @@ const WorkspaceProvider = ({ children, slug }: Props) => {
 
   if (!organization?.id) {
     return (
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
+      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-[#050505] px-6">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(79,70,229,0.12),transparent_42%)]" />
 
         <div className="relative flex w-full max-w-md flex-col items-center text-center">

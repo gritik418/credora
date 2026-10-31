@@ -59,9 +59,9 @@ export const columnStyles: Record<
 const TaskBoard = ({ onTaskClick, onCreateTask, onStatusChange }: Props) => {
   const [selectedStatusView, setSelectedStatusView] = useState<TaskStatus[]>([
     TaskStatus.TODO,
-    TaskStatus.IN_PROGRESS,
-    TaskStatus.IN_REVIEW,
-    TaskStatus.ESCALATED,
+    // TaskStatus.IN_PROGRESS,
+    // TaskStatus.IN_REVIEW,
+    // TaskStatus.ESCALATED,
   ]);
 
   const handleSelectStatus = (status: TaskStatus) => {

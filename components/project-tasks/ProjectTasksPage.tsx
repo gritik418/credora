@@ -22,20 +22,6 @@ const ProjectTasksPage = () => {
   const [limit, setLimit] = useState<number>(10);
   const [search, setSearch] = useState<string>("");
 
-  const { data, isLoading } = useGetTasksQuery(
-    {
-      projectId: project?.id ?? "",
-      pagination: {
-        limit,
-        page,
-      },
-      query: { search },
-    },
-    {
-      skip: !project?.id,
-    },
-  );
-
   const [tasks, setTasks] = useState<Task[]>([]);
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "All statuses">(
     "All statuses",
@@ -97,14 +83,8 @@ const ProjectTasksPage = () => {
     );
   };
 
-  useEffect(() => {
-    if (data?.data?.tasks) {
-      setTasks(data.data.tasks);
-    }
-  }, [data]);
-
   return (
-    <div className="min-h-screen bg-[#070912] text-slate-200">
+    <div className="bg-[#070912] text-slate-200">
       <div className="mx-auto max-w-[1700px] space-y-6">
         <div className="space-y-5">
           <div className="flex flex-col justify-between gap-5 xl:flex-row xl:items-end">

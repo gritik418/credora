@@ -1,10 +1,9 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { useParams } from "next/navigation";
-import WorkspaceSidebar from "./WorkspaceSidebar";
-import WorkspaceHeader from "./WorkspaceHeader";
 import WorkspaceSwitchLoader from "../loaders/WorkspaceSwitchLoader";
+import WorkspaceHeader from "./WorkspaceHeader";
+import WorkspaceSidebar from "./WorkspaceSidebar";
 
 interface Props {
   children: ReactNode;
@@ -17,14 +16,14 @@ const WorkspaceLayout = ({ children }: Props) => {
   if (isSwitching) return <WorkspaceSwitchLoader />;
 
   return (
-    <div className="min-h-screen bg-[#080a10] text-white">
+    <div className="h-screen! bg-[#080a10] overflow-hidden text-white">
       <WorkspaceSidebar
         mobileOpen={mobileOpen}
         setIsSwitching={setIsSwitching}
         onClose={() => setMobileOpen(false)}
       />
 
-      <main className="h-screen min-w-0 lg:pl-19">
+      <main className="h-screen overflow-hidden lg:pl-19">
         <WorkspaceHeader onMenuClick={() => setMobileOpen(true)} />
         <div className="h-[calc(100%-76px)] overflow-y-scroll">{children}</div>
       </main>
