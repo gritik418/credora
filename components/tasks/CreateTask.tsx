@@ -36,6 +36,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 interface CreateTaskProps {
   open: boolean;
   onClose: () => void;
+  defaultStatus?: TaskStatus;
 }
 
 const formatDateInput = (date: Date) => {
@@ -46,7 +47,7 @@ const formatDateInput = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const CreateTask = ({ open, onClose }: CreateTaskProps) => {
+const CreateTask = ({ open, onClose, defaultStatus }: CreateTaskProps) => {
   const [createTask, { isLoading }] = useCreateTaskMutation();
 
   const user = useAppSelector(selectCurrentUser);
@@ -74,7 +75,7 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
     defaultValues: {
       title: "",
       description: "",
-      status: TaskStatus.TODO,
+      status: defaultStatus ?? TaskStatus.TODO,
       priority: TaskPriority.MEDIUM,
       startDate: formatDateInput(new Date()),
       dueDate: "",
@@ -150,6 +151,12 @@ const CreateTask = ({ open, onClose }: CreateTaskProps) => {
     setLabels("");
     setSubmitError("");
   }, [open, reset, user?.id]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    setValue("status", defaultStatus);
+  }, [open, defaultStatus, setValue]);
 
   const handleAssigneeToggle = (member: SelectableMember) => {
     setSelectedAssigneeIds((current) => {

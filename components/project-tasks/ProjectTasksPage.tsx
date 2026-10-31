@@ -1,6 +1,9 @@
 "use client";
 
+import { selectSelectedProject } from "@/features/project/project.selectors";
+import { useGetTasksQuery } from "@/features/task/task.api";
 import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
+import { useAppSelector } from "@/store/hooks";
 import {
   CheckCircle2,
   CircleDashed,
@@ -9,13 +12,9 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import CreateTask from "../tasks/CreateTask";
 import TaskBoard from "./TaskBoard";
 import TaskToolbar from "./TaskToolbar";
-import CreateTask from "../tasks/CreateTask";
-import { useGetTasksQuery } from "@/features/task/task.api";
-import { useParams } from "next/navigation";
-import { useAppSelector } from "@/store/hooks";
-import { selectSelectedProject } from "@/features/project/project.selectors";
 
 const ProjectTasksPage = () => {
   const project = useAppSelector(selectSelectedProject);
@@ -46,6 +45,9 @@ const ProjectTasksPage = () => {
   >("All priorities");
   const [view, setView] = useState<"board" | "list">("board");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [defaultStatus, setDefaultStatus] = useState<TaskStatus>(
+    TaskStatus.TODO,
+  );
 
   const filteredTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -80,8 +82,9 @@ const ProjectTasksPage = () => {
     ? Math.round((completedCount / tasks.length) * 100)
     : 0;
 
-  const openCreateDrawer = (status: TaskStatus = TaskStatus.TODO) => {
+  const openCreateDrawer = (defaultStatus: TaskStatus = TaskStatus.TODO) => {
     setDrawerOpen(true);
+    setDefaultStatus(defaultStatus);
   };
 
   const openEditDrawer = (task: Task) => {
@@ -99,8 +102,6 @@ const ProjectTasksPage = () => {
       setTasks(data.data.tasks);
     }
   }, [data]);
-
-  console.log(tasks);
 
   return (
     <div className="min-h-screen bg-[#070912] text-slate-200">
@@ -214,8 +215,6 @@ const ProjectTasksPage = () => {
         />
 
         <TaskBoard
-          tasks={filteredTasks}
-          view={view}
           onTaskClick={openEditDrawer}
           onCreateTask={openCreateDrawer}
           onStatusChange={handleStatusChange}
@@ -236,6 +235,7 @@ const ProjectTasksPage = () => {
         onClose={() => {
           setDrawerOpen(false);
         }}
+        defaultStatus={defaultStatus}
       />
     </div>
   );

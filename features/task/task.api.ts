@@ -14,6 +14,7 @@ const taskApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Task"],
     }),
     getTasks: build.query<GetTasksResponseDto, GetTasksRequestDto>({
       query: ({ pagination, projectId, query }) => {
@@ -31,6 +32,7 @@ const taskApi = baseApi.injectEndpoints({
           params,
         };
       },
+      providesTags: ["Task"],
     }),
   }),
 });

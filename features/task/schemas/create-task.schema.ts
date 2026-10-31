@@ -30,9 +30,7 @@ const CreateTaskSchema = z
 
     dueDate: optionalDate,
 
-    assignees: z
-      .array(z.string().min(1, "Assignee ID is required"))
-      .min(1, "At least one assignee is required."),
+    assignees: z.array(z.string().min(1, "Assignee ID is required")).optional(),
 
     reviewers: z
       .array(z.string().min(1, "Reviewer ID is required"))

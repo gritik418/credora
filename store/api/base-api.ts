@@ -17,6 +17,7 @@ const baseApi = createApi({
     "SwitchWorkspace",
     "Workspace",
     "Project",
+    "Task",
     "ConnectionRequestSend",
     "ConnectionRequestAccept",
     "AcceptOrgInvite",
