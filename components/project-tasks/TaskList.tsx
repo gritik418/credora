@@ -1,13 +1,46 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { columnStyles } from "./TaskBoard";
 import { Task } from "@/features/task/task.interface";
+import { useGetTasksQuery } from "@/features/task/task.api";
+import { useAppSelector } from "@/store/hooks";
+import { selectSelectedProject } from "@/features/project/project.selectors";
 
 interface Props {
-  tasks: Task[];
+  search: string;
   onTaskClick: (task: Task) => void;
 }
 
-const TaskList = ({ tasks, onTaskClick }: Props) => {
+const LIMIT: number = 5;
+
+const TaskList = ({ search, onTaskClick }: Props) => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [page, setPage] = useState<number>(1);
+
+  const project = useAppSelector(selectSelectedProject);
+  const { data: currentData } = useGetTasksQuery(
+    {
+      projectId: project?.id ?? "",
+      pagination: {
+        limit: LIMIT,
+        page,
+      },
+      query: { search },
+    },
+    {
+      skip: !project?.id,
+    },
+  );
+
+  useEffect(() => {
+    const newTasks = currentData?.data?.tasks;
+
+    if (!newTasks) return;
+
+    setTasks((prev) => (page === 1 ? newTasks : [...prev, ...newTasks]));
+  }, [currentData, page]);
+
   return (
     <div className="overflow-hidden rounded-2xl border border-white/7 bg-[#0c0f18]">
       <div className="overflow-x-auto">

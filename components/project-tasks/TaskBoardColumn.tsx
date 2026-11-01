@@ -12,15 +12,17 @@ import { useAppSelector } from "@/store/hooks";
 import { selectSelectedProject } from "@/features/project/project.selectors";
 
 interface Props {
+  search: string;
   status: TaskStatus;
   onCreateTask: (status: TaskStatus) => void;
   onTaskClick: (task: Task) => void;
   onStatusChange: (taskId: string, status: TaskStatus) => void;
 }
 
-const LIMIT = 4;
+const LIMIT = 10;
 
 const TaskBoardColumn = ({
+  search,
   status,
   onCreateTask,
   onTaskClick,
@@ -28,7 +30,6 @@ const TaskBoardColumn = ({
 }: Props) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [search, setSearch] = useState<string>("");
 
   const [isAtBottom, setIsAtBottom] = useState(false);
 

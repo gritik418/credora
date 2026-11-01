@@ -89,30 +89,32 @@ const TaskToolbar = ({
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:flex">
-          <div className="relative">
-            <SlidersHorizontal
-              size={13}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
-            />
-            <select
-              value={statusFilter}
-              onChange={(event) =>
-                onStatusFilterChange(
-                  event.target.value as TaskStatus | "All statuses",
-                )
-              }
-              className="h-10 w-full appearance-none rounded-xl border border-white/7 bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
-            >
-              <option>All statuses</option>
-              {Object.values(TaskStatus).map((status) => (
-                <option key={status}>{status}</option>
-              ))}
-            </select>
-            <ChevronDown
-              size={13}
-              className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500"
-            />
-          </div>
+          {view !== "board" ? (
+            <div className="relative">
+              <SlidersHorizontal
+                size={13}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+              />
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  onStatusFilterChange(
+                    event.target.value as TaskStatus | "All statuses",
+                  )
+                }
+                className="h-10 w-full appearance-none rounded-xl border border-white/7 bg-[#080b13] pl-8 pr-8 text-xs text-slate-300 outline-none focus:border-indigo-400/40 sm:w-40"
+              >
+                <option>All statuses</option>
+                {Object.values(TaskStatus).map((status) => (
+                  <option key={status}>{status}</option>
+                ))}
+              </select>
+              <ChevronDown
+                size={13}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500"
+              />
+            </div>
+          ) : null}
 
           <div className="relative">
             <FlagIcon />

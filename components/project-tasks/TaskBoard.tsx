@@ -1,20 +1,12 @@
 "use client";
 
 import { Task, TaskStatus } from "@/features/task/task.interface";
-import {
-  Check,
-  CheckCircle2,
-  Circle,
-  CircleDashed,
-  Clock3,
-  Plus,
-  X,
-} from "lucide-react";
+import { CheckCircle2, Circle, CircleDashed, Clock3, X } from "lucide-react";
 import { useState } from "react";
-import TaskCard from "./TaskCard";
 import TaskBoardColumn from "./TaskBoardColumn";
 
 interface Props {
+  search: string;
   onTaskClick: (task: Task) => void;
   onCreateTask: (defaultStatus: TaskStatus) => void;
   onStatusChange: (taskId: string, status: TaskStatus) => void;
@@ -56,12 +48,17 @@ export const columnStyles: Record<
   },
 };
 
-const TaskBoard = ({ onTaskClick, onCreateTask, onStatusChange }: Props) => {
+const TaskBoard = ({
+  search,
+  onTaskClick,
+  onCreateTask,
+  onStatusChange,
+}: Props) => {
   const [selectedStatusView, setSelectedStatusView] = useState<TaskStatus[]>([
     TaskStatus.TODO,
-    // TaskStatus.IN_PROGRESS,
-    // TaskStatus.IN_REVIEW,
-    // TaskStatus.ESCALATED,
+    TaskStatus.IN_PROGRESS,
+    TaskStatus.IN_REVIEW,
+    TaskStatus.ESCALATED,
   ]);
 
   const handleSelectStatus = (status: TaskStatus) => {
@@ -132,6 +129,7 @@ const TaskBoard = ({ onTaskClick, onCreateTask, onStatusChange }: Props) => {
           return (
             <TaskBoardColumn
               key={status}
+              search={search}
               onStatusChange={onStatusChange}
               onCreateTask={onCreateTask}
               onTaskClick={onTaskClick}

@@ -16,7 +16,7 @@ const WorkspaceLayout = ({ children }: Props) => {
   if (isSwitching) return <WorkspaceSwitchLoader />;
 
   return (
-    <div className="h-screen! bg-[#080a10] overflow-hidden text-white">
+    <div className="h-screen! bg-[#080a10] text-white">
       <WorkspaceSidebar
         mobileOpen={mobileOpen}
         setIsSwitching={setIsSwitching}
@@ -25,7 +25,7 @@ const WorkspaceLayout = ({ children }: Props) => {
 
       <main className="h-screen overflow-hidden lg:pl-19">
         <WorkspaceHeader onMenuClick={() => setMobileOpen(true)} />
-        <div className="h-[calc(100%-76px)] overflow-y-scroll">{children}</div>
+        <div className="h-[calc(100%-76px)]! overflow-y-scroll">{children}</div>
       </main>
     </div>
   );

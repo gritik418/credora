@@ -1,9 +1,6 @@
 "use client";
 
-import { selectSelectedProject } from "@/features/project/project.selectors";
-import { useGetTasksQuery } from "@/features/task/task.api";
 import { Task, TaskPriority, TaskStatus } from "@/features/task/task.interface";
-import { useAppSelector } from "@/store/hooks";
 import {
   CheckCircle2,
   CircleDashed,
@@ -11,15 +8,13 @@ import {
   ListTodo,
   TrendingUp,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import CreateTask from "../tasks/CreateTask";
 import TaskBoard from "./TaskBoard";
+import TaskList from "./TaskList";
 import TaskToolbar from "./TaskToolbar";
 
 const ProjectTasksPage = () => {
-  const project = useAppSelector(selectSelectedProject);
-  const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [search, setSearch] = useState<string>("");
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -194,11 +189,16 @@ const ProjectTasksPage = () => {
           resultCount={filteredTasks.length}
         />
 
-        <TaskBoard
-          onTaskClick={openEditDrawer}
-          onCreateTask={openCreateDrawer}
-          onStatusChange={handleStatusChange}
-        />
+        {view === "board" ? (
+          <TaskBoard
+            search={search}
+            onTaskClick={openEditDrawer}
+            onCreateTask={openCreateDrawer}
+            onStatusChange={handleStatusChange}
+          />
+        ) : (
+          <TaskList search={search} onTaskClick={openEditDrawer} />
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/6 pt-4">
           <p className="text-[10px] text-slate-600">
