@@ -202,7 +202,7 @@ const ConnectionsPage = () => {
           )}
         </section>
 
-        <section className="mt-10 border-t border-white/[0.07] pt-8">
+        <section className="mt-10 border-t border-white/7 pt-8">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2">
@@ -227,7 +227,7 @@ const ConnectionsPage = () => {
           </div>
 
           {filteredSuggestions.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4">
               {filteredSuggestions.map((suggestion) => (
                 <SuggestedPersonCard key={suggestion.id} person={suggestion} />
               ))}
