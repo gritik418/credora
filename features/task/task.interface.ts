@@ -24,6 +24,11 @@ export interface Task {
   updatedAt: Date;
 }
 
+export interface TaskInfo extends Task {
+  assignees: TaskAssignee[];
+  reviewRecipients: TaskReviewRecipient[];
+}
+
 export enum TaskStatus {
   TODO = "TODO",
   IN_PROGRESS = "IN_PROGRESS",
@@ -38,6 +43,25 @@ export enum TaskPriority {
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
   URGENT = "URGENT",
+}
+
+export interface TaskReviewRecipient {
+  id: string;
+
+  taskId: string;
+
+  memberId: string;
+  member: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    avatar: string | null;
+  };
+
+  isDefault: boolean;
+
+  createdAt: Date;
 }
 
 export interface TaskAssignee {
